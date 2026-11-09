@@ -157,7 +157,7 @@ export default function HostelCard({
           {/* Key Amenities row */}
           <div className="flex flex-wrap items-center gap-1.5 mt-2 text-xs font-medium">
             {hostel.amenities.includes('wifi') && (
-              <span className="inline-flex items-center gap-1 bg-[#ffbe00] text-white px-2 py-0.5 rounded text-[11px] font-medium shadow-xs">
+              <span className="inline-flex items-center gap-1 bg-[#0f3a98] text-white px-2 py-0.5 rounded text-[11px] font-medium shadow-xs">
                 <FaIcon icon="fa-solid fa-wifi" className="text-[10px] text-white" /> WiFi
               </span>
             )}
@@ -167,7 +167,7 @@ export default function HostelCard({
               </span>
             )}
             {hostel.amenities.includes('water') && (
-              <span className="inline-flex items-center gap-1 bg-[#ffbe00] text-white px-2 py-0.5 rounded text-[11px] font-medium shadow-xs">
+              <span className="inline-flex items-center gap-1 bg-[#0f3a98] text-white px-2 py-0.5 rounded text-[11px] font-medium shadow-xs">
                 <FaIcon icon="fa-solid fa-droplet" className="text-[10px] text-white" /> Water
               </span>
             )}
