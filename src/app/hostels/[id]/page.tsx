@@ -38,6 +38,7 @@ export default function HostelDetailPage() {
   // Modals
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [reportReason, setReportReason] = useState('wrong_price');
   const [reportDetails, setReportDetails] = useState('');
@@ -122,7 +123,10 @@ export default function HostelDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-        <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
+        <Navbar onOpenAuth={(mode) => {
+        setAuthMode(mode || 'login');
+        setIsAuthOpen(true);
+      }} />
         <div className="max-w-6xl mx-auto w-full p-6 animate-pulse space-y-4">
           <div className="h-8 w-48 bg-slate-200 rounded"></div>
           <div className="h-96 bg-slate-200 rounded-2xl"></div>
@@ -134,7 +138,10 @@ export default function HostelDetailPage() {
   if (!hostel) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-        <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
+        <Navbar onOpenAuth={(mode) => {
+        setAuthMode(mode || 'login');
+        setIsAuthOpen(true);
+      }} />
         <div className="max-w-xl mx-auto my-16 p-8 bg-white rounded-2xl border text-center space-y-4">
           <h2 className="text-xl font-bold">Hostel not found</h2>
           <button
@@ -154,7 +161,10 @@ export default function HostelDetailPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
+      <Navbar onOpenAuth={(mode) => {
+        setAuthMode(mode || 'login');
+        setIsAuthOpen(true);
+      }} />
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6">
         
@@ -460,6 +470,7 @@ export default function HostelDetailPage() {
 
       <AuthModal
         isOpen={isAuthOpen}
+        initialMode={authMode}
         onClose={() => setIsAuthOpen(false)}
       />
 

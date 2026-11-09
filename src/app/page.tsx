@@ -34,6 +34,7 @@ export default function HomePage() {
   const [activeOffers, setActiveOffers] = useState<Offer[]>([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   // Filter state
   const [filters, setFilters] = useState<FilterState>({
@@ -181,7 +182,10 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <Navbar
-        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAuth={(mode) => {
+          setAuthMode(mode || 'login');
+          setIsAuthOpen(true);
+        }}
         shortlistCount={compareList.length}
         onOpenCompare={() => setIsCompareOpen(true)}
       />
@@ -353,6 +357,7 @@ export default function HomePage() {
       {/* Auth Modal */}
       <AuthModal
         isOpen={isAuthOpen}
+        initialMode={authMode}
         onClose={() => setIsAuthOpen(false)}
       />
 

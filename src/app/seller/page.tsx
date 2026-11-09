@@ -23,6 +23,7 @@ export default function SellerPortalPage() {
   const { currentUser, switchRole } = useAuth();
   const [activeTab, setActiveTab] = useState<'listings' | 'analytics' | 'subscription' | 'add'>('listings');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   // Data states
   const [hostels, setHostels] = useState<Hostel[]>([]);
@@ -224,7 +225,10 @@ export default function SellerPortalPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
+      <Navbar onOpenAuth={(mode) => {
+        setAuthMode(mode || 'login');
+        setIsAuthOpen(true);
+      }} />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6">
         
@@ -849,7 +853,11 @@ export default function SellerPortalPage() {
 
       </main>
 
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <AuthModal
+        isOpen={isAuthOpen}
+        initialMode={authMode}
+        onClose={() => setIsAuthOpen(false)}
+      />
     </div>
   );
 }

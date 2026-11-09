@@ -18,12 +18,23 @@ import {
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialMode?: 'login' | 'register';
 }
 
-export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalProps) {
   const { loginWithPhone, registerUser } = useAuth();
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
+
+  // Reset mode when opened
+  React.useEffect(() => {
+    if (isOpen) {
+      setMode(initialMode);
+      setStep('phone');
+      setError('');
+      setSuccessMsg('');
+    }
+  }, [isOpen, initialMode]);
   
   // Form fields
   const [phone, setPhone] = useState('+256 ');

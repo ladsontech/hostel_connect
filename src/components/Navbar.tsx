@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 interface NavbarProps {
-  onOpenAuth?: () => void;
+  onOpenAuth?: (mode: 'login' | 'register') => void;
   shortlistCount?: number;
   onOpenCompare?: () => void;
 }
@@ -146,12 +146,20 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
               </button>
             </div>
           ) : (
-            <button
-              onClick={onOpenAuth}
-              className="px-4 py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-sm font-bold shadow-sm transition"
-            >
-              Sign In / Register
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => onOpenAuth?.('login')}
+                className="px-3.5 py-1.5 rounded-lg border border-slate-200 hover:border-[#0f3a98] text-[#0f3a98] hover:bg-[#e8effc] text-xs sm:text-sm font-bold transition"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => onOpenAuth?.('register')}
+                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs sm:text-sm font-bold shadow-sm transition"
+              >
+                Register
+              </button>
+            </div>
           )}
 
           {/* Mobile menu button */}
