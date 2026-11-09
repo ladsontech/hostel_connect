@@ -205,11 +205,14 @@ export default function FilterBar({
                     onClick={() => toggleAmenity(amenity.id)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 border transition ${
                       active
-                        ? 'border-[#0f3a98] bg-[#0f3a98] text-[#ffbe00] shadow-sm'
+                        ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-sm'
                         : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300'
                     }`}
                   >
-                    <FaIcon icon={active ? 'fa-solid fa-check' : amenity.icon} className="text-xs" />
+                    <FaIcon
+                      icon={active ? 'fa-solid fa-check' : amenity.icon}
+                      className={`text-xs ${active ? 'text-white' : 'text-slate-500'}`}
+                    />
                     <span>{amenity.label}</span>
                   </button>
                 );

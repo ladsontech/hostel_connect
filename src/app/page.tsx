@@ -340,20 +340,20 @@ export default function HomePage() {
                       </Link>
 
                       {/* Key Amenities */}
-                      <div className="flex flex-wrap items-center gap-1.5 mt-2 text-slate-600 text-xs font-medium">
+                      <div className="flex flex-wrap items-center gap-1.5 mt-2 text-xs font-medium">
                         {item.hostel.amenities.includes('wifi') && (
-                          <span className="inline-flex items-center gap-1 bg-[#e8effc] text-[#0f3a98] px-2 py-0.5 rounded text-[11px]">
-                            <FaIcon icon="fa-solid fa-wifi" className="text-[10px] text-[#0f3a98]" /> WiFi
+                          <span className="inline-flex items-center gap-1 bg-[#0f3a98] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
+                            <FaIcon icon="fa-solid fa-wifi" className="text-[10px] text-white" /> WiFi
                           </span>
                         )}
                         {item.hostel.amenities.includes('power_backup') && (
-                          <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 px-2 py-0.5 rounded text-[11px]">
-                            <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-[#ffbe00]" /> Generator
+                          <span className="inline-flex items-center gap-1 bg-[#0f3a98] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
+                            <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-white" /> Generator
                           </span>
                         )}
                         {item.hostel.amenities.includes('water') && (
-                          <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-900 px-2 py-0.5 rounded text-[11px]">
-                            <FaIcon icon="fa-solid fa-droplet" className="text-[10px] text-[#0f3a98]" /> Water
+                          <span className="inline-flex items-center gap-1 bg-[#0f3a98] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
+                            <FaIcon icon="fa-solid fa-droplet" className="text-[10px] text-white" /> Water
                           </span>
                         )}
                       </div>
