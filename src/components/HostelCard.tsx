@@ -107,21 +107,6 @@ export default function HostelCard({
             </button>
           )}
         </div>
-
-        {/* Live availability banner at bottom of image */}
-        <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#0a2666] text-white text-xs">
-          <span className="font-medium">
-            {totalAvailable > 0 ? (
-              <span className="text-[#ffbe00] flex items-center gap-1.5">
-                <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#ffbe00]" />
-                {totalAvailable} rooms vacant
-              </span>
-            ) : (
-              <span className="text-rose-400">Fully Occupied</span>
-            )}
-          </span>
-          <span className="text-[11px] text-blue-200 font-medium">{hostel.distanceCampusApprox}</span>
-        </div>
       </div>
 
       {/* Card Body */}
@@ -149,6 +134,25 @@ export default function HostelCard({
               {hostel.name}
             </h3>
           </Link>
+
+          {/* Vacancy & Distance Details */}
+          <div className="flex items-center justify-between text-xs text-slate-600 mt-1.5">
+            <div className="flex items-center gap-1.5 font-medium">
+              {totalAvailable > 0 ? (
+                <span className="inline-flex items-center gap-1 text-[#0f3a98]">
+                  <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98]" />
+                  <span>{totalAvailable} rooms vacant</span>
+                </span>
+              ) : (
+                <span className="text-rose-500">Fully Occupied</span>
+              )}
+            </div>
+            {hostel.distanceCampusApprox && (
+              <span className="text-[11px] text-slate-500 font-normal truncate max-w-[140px]" title={hostel.distanceCampusApprox}>
+                {hostel.distanceCampusApprox}
+              </span>
+            )}
+          </div>
 
           {/* Key Amenities row */}
           <div className="flex flex-wrap items-center gap-1.5 mt-2 text-xs font-medium">

@@ -309,17 +309,6 @@ export default function HomePage() {
                         Featured Room
                       </span>
                     </div>
-
-                    {/* Vacancy indicator banner */}
-                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#0a2666] text-white text-xs">
-                      <span className="text-[#ffbe00] flex items-center gap-1.5 font-medium">
-                        <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#ffbe00]" />
-                        {item.roomsAvailable} rooms vacant
-                      </span>
-                      <span className="text-[11px] text-blue-200 font-normal truncate max-w-[110px]">
-                        {item.hostel.area}
-                      </span>
-                    </div>
                   </div>
 
                   {/* Card Body */}
@@ -339,6 +328,17 @@ export default function HomePage() {
                           {item.roomName}
                         </h3>
                       </Link>
+
+                      {/* Vacancy & Proximity Details */}
+                      <div className="flex items-center justify-between text-xs text-slate-600 mt-1.5">
+                        <span className="inline-flex items-center gap-1 text-[#0f3a98] font-medium">
+                          <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98]" />
+                          <span>{item.roomsAvailable} rooms vacant</span>
+                        </span>
+                        <span className="text-[11px] text-slate-500 font-normal truncate max-w-[130px]" title={item.hostel.distanceCampusApprox || item.hostel.area}>
+                          {item.hostel.distanceCampusApprox || item.hostel.area}
+                        </span>
+                      </div>
 
                       {/* Key Amenities */}
                       <div className="flex flex-wrap items-center gap-1.5 mt-2 text-xs font-medium">
