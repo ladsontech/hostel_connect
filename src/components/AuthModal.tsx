@@ -137,8 +137,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               onClick={() => { setMode('login'); setError(''); }}
               className={`flex-1 py-1.5 text-xs font-medium rounded-lg transition-all ${
                 mode === 'login'
-                  ? 'bg-white text-[#0f3a98] shadow-sm'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-[#0f3a98] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Sign In
@@ -148,8 +148,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               onClick={() => { setMode('register'); setError(''); }}
               className={`flex-1 py-1.5 text-xs font-medium rounded-lg transition-all ${
                 mode === 'register'
-                  ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-[#0f3a98] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Create Account
@@ -291,43 +291,54 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
               {/* Role Picker */}
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">I am joining as a</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">I am joining as a</label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setRole('student')}
-                    className={`p-2 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2.5 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition-all ${
                       role === 'student'
-                        ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98] ring-1 ring-[#0f3a98]'
+                        ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-sm'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300 bg-white'
                     }`}
                   >
-                    <FaIcon icon="fa-solid fa-graduation-cap" className="text-sm" />
-                    Student
+                    <FaIcon
+                      icon="fa-solid fa-graduation-cap"
+                      className={`text-sm ${role === 'student' ? 'text-white' : 'text-slate-500'}`}
+                    />
+                    <span>Student</span>
                   </button>
+
                   <button
                     type="button"
                     onClick={() => setRole('custodian')}
-                    className={`p-2 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2.5 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition-all ${
                       role === 'custodian'
-                        ? 'border-[#0f3a98] bg-[#0f3a98] text-[#ffbe00]'
+                        ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-sm'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300 bg-white'
                     }`}
                   >
-                    <FaIcon icon="fa-solid fa-hotel" className="text-sm" />
-                    Custodian
+                    <FaIcon
+                      icon="fa-solid fa-hotel"
+                      className={`text-sm ${role === 'custodian' ? 'text-white' : 'text-slate-500'}`}
+                    />
+                    <span>Custodian</span>
                   </button>
+
                   <button
                     type="button"
                     onClick={() => setRole('broker')}
-                    className={`p-2 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2.5 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition-all ${
                       role === 'broker'
-                        ? 'border-[#ffbe00] bg-amber-50 text-amber-900 ring-1 ring-[#ffbe00]'
+                        ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-sm'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300 bg-white'
                     }`}
                   >
-                    <FaIcon icon="fa-solid fa-handshake" className="text-sm" />
-                    Broker
+                    <FaIcon
+                      icon="fa-solid fa-handshake"
+                      className={`text-sm ${role === 'broker' ? 'text-white' : 'text-slate-500'}`}
+                    />
+                    <span>Broker</span>
                   </button>
                 </div>
               </div>
