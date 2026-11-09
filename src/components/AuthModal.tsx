@@ -100,38 +100,38 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col font-sans">
+    <div className="fixed inset-0 z-50 overflow-y-auto p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center py-6 sm:py-8 animate-in fade-in">
+      <div className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 flex flex-col font-sans max-h-[90vh] my-auto overflow-hidden">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition shadow-sm"
+          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition shadow-sm"
           aria-label="Close dialog"
         >
           <FaIcon icon="fa-solid fa-xmark" className="text-sm" />
         </button>
 
-        {/* Top Header with Hostel Connect Logo */}
-        <div className="pt-7 pb-4 px-6 sm:px-8 text-center bg-white">
-          <div className="flex justify-center mb-3">
+        {/* Top Header with Hostel Connect Logo & Switcher (Fixed at top) */}
+        <div className="pt-6 pb-3 px-6 sm:px-8 text-center bg-white border-b border-slate-100 shrink-0">
+          <div className="flex justify-center mb-2.5">
             <img
               src="/logo.png"
               alt="Hostel Connect"
-              className="h-11 sm:h-12 w-auto object-contain"
+              className="h-10 sm:h-11 w-auto object-contain"
             />
           </div>
-          <h3 className="text-xl font-medium text-[#0f3a98] tracking-tight">
+          <h3 className="text-lg sm:text-xl font-medium text-[#0f3a98] tracking-tight">
             {mode === 'login' ? 'Welcome Back' : 'Create an Account'}
           </h3>
-          <p className="text-xs text-slate-500 mt-1 font-normal max-w-xs mx-auto">
+          <p className="text-xs text-slate-500 mt-0.5 font-normal max-w-xs mx-auto">
             {mode === 'login' 
               ? 'Sign in to access verified student accommodations' 
               : 'Join as a Student, Custodian, or Broker in Uganda'}
           </p>
 
           {/* Mode Tabs (Sign In / Register) */}
-          <div className="flex rounded-xl bg-slate-100 p-1 mt-4">
+          <div className="flex rounded-xl bg-slate-100 p-1 mt-3">
             <button
               type="button"
               onClick={() => { setMode('login'); setError(''); }}
@@ -157,8 +157,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           </div>
         </div>
 
-        {/* Form Body */}
-        <div className="px-6 sm:px-8 pb-7 space-y-4">
+        {/* Scrollable Form Body */}
+        <div className="px-6 sm:px-8 py-5 space-y-4 overflow-y-auto flex-1">
           {error && (
             <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2 animate-in fade-in">
               <FaIcon icon="fa-solid fa-triangle-exclamation" className="shrink-0 text-sm" />
