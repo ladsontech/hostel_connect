@@ -30,9 +30,9 @@ export default function HostelCard({
   const coverPhoto = hostel.photos.find(p => p.isCover) || hostel.photos[0];
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans">
-      {/* Image Container */}
-      <div className="relative aspect-[16/10] w-full bg-slate-100 overflow-hidden">
+    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-full max-w-[300px] mx-auto">
+      {/* Image Container: 300px by 190px */}
+      <div className="relative w-full h-[190px] bg-slate-100 overflow-hidden">
         {coverPhoto ? (
           <img
             src={coverPhoto.url}
@@ -125,18 +125,18 @@ export default function HostelCard({
       </div>
 
       {/* Card Body */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
+      <div className="p-3.5 flex-1 flex flex-col justify-between">
         <div>
           {/* Rating and Area */}
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
-            <div className="flex items-center gap-1 font-medium text-slate-700">
-              <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98]" />
-              <span>{hostel.area}</span>
+          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+            <div className="flex items-center gap-1 font-medium text-slate-700 truncate mr-2">
+              <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98] shrink-0" />
+              <span className="truncate">{hostel.area}</span>
               <span className="text-slate-300">•</span>
-              <span className="text-slate-500">{hostel.campus}</span>
+              <span className="text-slate-500 truncate">{hostel.campus}</span>
             </div>
 
-            <div className="flex items-center gap-1 text-[#0f3a98] font-medium">
+            <div className="flex items-center gap-1 text-[#0f3a98] font-medium shrink-0">
               <FaIcon icon="fa-solid fa-star" className="text-xs text-[#ffbe00]" />
               <span>{hostel.ratingAvg.toFixed(1)}</span>
               <span className="text-[11px] text-slate-400 font-normal">({hostel.ratingCount})</span>
@@ -145,13 +145,13 @@ export default function HostelCard({
 
           {/* Name */}
           <Link href={`/hostels/${hostel.id}`}>
-            <h3 className="font-medium text-slate-900 text-base sm:text-lg group-hover:text-[#0f3a98] transition line-clamp-1">
+            <h3 className="font-medium text-slate-900 text-base group-hover:text-[#0f3a98] transition line-clamp-1">
               {hostel.name}
             </h3>
           </Link>
 
           {/* Key Amenities row */}
-          <div className="flex items-center gap-2 mt-2.5 text-slate-600 text-xs font-medium">
+          <div className="flex flex-wrap items-center gap-1.5 mt-2 text-slate-600 text-xs font-medium">
             {hostel.amenities.includes('wifi') && (
               <span className="inline-flex items-center gap-1 bg-[#e8effc] text-[#0f3a98] px-2 py-0.5 rounded text-[11px] font-medium">
                 <FaIcon icon="fa-solid fa-wifi" className="text-[10px] text-[#0f3a98]" /> WiFi
@@ -176,10 +176,10 @@ export default function HostelCard({
         </div>
 
         {/* Pricing & CTA */}
-        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-          <div>
+        <div className="mt-3.5 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
+          <div className="min-w-0">
             <div className="text-[10px] text-slate-400 uppercase font-medium tracking-wider">Semester Rent</div>
-            <div className="text-[#0f3a98] font-medium text-base">
+            <div className="text-[#0f3a98] font-medium text-xs sm:text-sm truncate">
               {minRent === maxRent ? (
                 formatUGX(minRent)
               ) : (
@@ -188,11 +188,11 @@ export default function HostelCard({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {onContactClick ? (
               <button
                 onClick={() => onContactClick(hostel)}
-                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
+                className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
               >
                 <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
                 Contact

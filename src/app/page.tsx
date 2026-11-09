@@ -255,9 +255,9 @@ export default function HomePage() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-80 rounded-2xl bg-slate-200 animate-pulse" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="h-[360px] w-full max-w-[300px] rounded-2xl bg-slate-200 animate-pulse mx-auto" />
               ))}
             </div>
           ) : filteredHostels.length === 0 ? (
@@ -286,7 +286,7 @@ export default function HomePage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
               {filteredHostels.map(hostel => (
                 <HostelCard
                   key={hostel.id}
