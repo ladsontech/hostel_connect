@@ -257,7 +257,7 @@ export default function HomePage() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-[360px] w-full max-w-[300px] rounded-2xl bg-slate-200 animate-pulse mx-auto" />
+                <div key={i} className="h-[390px] w-full max-w-[300px] rounded-2xl bg-slate-200 animate-pulse mx-auto" />
               ))}
             </div>
           ) : filteredHostels.length === 0 ? (

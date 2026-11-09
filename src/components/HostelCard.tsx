@@ -31,8 +31,8 @@ export default function HostelCard({
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-full max-w-[300px] mx-auto">
-      {/* Image Container: 300px by 190px */}
-      <div className="relative w-full h-[190px] bg-slate-100 overflow-hidden">
+      {/* Image Container: 300px by 220px */}
+      <div className="relative w-full h-[220px] bg-slate-100 overflow-hidden">
         {coverPhoto ? (
           <img
             src={coverPhoto.url}
