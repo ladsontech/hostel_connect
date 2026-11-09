@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/auth-context';
 import { Hostel } from '@/types';
 import FaIcon from '@/components/FaIcon';
@@ -411,6 +412,8 @@ export default function AdminPanelPage() {
         )}
 
       </main>
+
+      <Footer />
     </div>
   );
 }

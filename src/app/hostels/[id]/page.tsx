@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ContactModal from '@/components/ContactModal';
 import AuthModal from '@/components/AuthModal';
+import Footer from '@/components/Footer';
 import { Hostel, Offer, Review } from '@/types';
 import { formatUGX, formatDateEAT } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
@@ -524,6 +525,9 @@ export default function HostelDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Detailed Theme Blue Footer */}
+      <Footer />
     </div>
   );
 }

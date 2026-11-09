@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import AuthModal from '@/components/AuthModal';
+import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/auth-context';
 import { Hostel, SubscriptionPlan, UserSubscription } from '@/types';
 import { formatUGX } from '@/lib/utils';
@@ -847,6 +848,8 @@ export default function SellerPortalPage() {
         initialMode={authMode}
         onClose={() => setIsAuthOpen(false)}
       />
+
+      <Footer />
     </div>
   );
 }

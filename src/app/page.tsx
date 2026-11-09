@@ -8,6 +8,7 @@ import FilterBar, { FilterState } from '@/components/FilterBar';
 import ContactModal from '@/components/ContactModal';
 import CompareModal from '@/components/CompareModal';
 import AuthModal from '@/components/AuthModal';
+import Footer from '@/components/Footer';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
 import { formatUGX } from '@/lib/utils';
@@ -268,7 +269,7 @@ export default function HomePage() {
 
         {/* Featured Rooms Section */}
         {featuredRooms.length > 0 && !filters.q && (
-          <div className="space-y-4 pt-2">
+          <div id="featured-rooms" className="space-y-4 pt-2">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2">
@@ -384,7 +385,7 @@ export default function HomePage() {
         )}
 
         {/* Hostel List */}
-        <div>
+        <div id="explore">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-lg font-medium text-[#0f3a98]">
@@ -508,18 +509,7 @@ export default function HomePage() {
       />
 
       {/* Footer */}
-      <footer className="mt-16 bg-white border-t border-slate-200 py-8 px-4 sm:px-6 text-slate-500 text-xs">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="Hostel Connect" className="h-6 w-auto object-contain" />
-            <span className="font-medium text-[#0f3a98]">Hostel Connect Uganda</span>
-            <span>• Compliant with Uganda Data Protection and Privacy Act, 2019</span>
-          </div>
-          <div className="font-medium text-slate-600">
-            Built strictly adhering to the Hostel Marketplace App SRS (Draft 1.0)
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
