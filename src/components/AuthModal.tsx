@@ -106,10 +106,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition shadow-sm"
+          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-[#0f3a98] hover:bg-[#0a2666] text-white flex items-center justify-center transition shadow-sm"
           aria-label="Close dialog"
         >
-          <FaIcon icon="fa-solid fa-xmark" className="text-sm" />
+          <FaIcon icon="fa-solid fa-xmark" className="text-xs text-white" />
         </button>
 
         {/* Top Header with Hostel Connect Logo & Switcher (Fixed at top) */}

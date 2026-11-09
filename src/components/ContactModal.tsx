@@ -96,9 +96,9 @@ export default function ContactModal({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition"
+            className="w-8 h-8 rounded-full bg-[#0f3a98] hover:bg-[#0a2666] text-white flex items-center justify-center transition shadow-sm"
           >
-            <FaIcon icon="fa-solid fa-xmark" className="text-sm" />
+            <FaIcon icon="fa-solid fa-xmark" className="text-xs text-white" />
           </button>
         </div>
 
