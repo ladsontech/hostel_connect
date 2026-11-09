@@ -342,17 +342,17 @@ export default function HomePage() {
                       {/* Key Amenities */}
                       <div className="flex flex-wrap items-center gap-1.5 mt-2 text-xs font-medium">
                         {item.hostel.amenities.includes('wifi') && (
-                          <span className="inline-flex items-center gap-1 bg-[#0f3a98] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
+                          <span className="inline-flex items-center gap-1 bg-[#ffbe00] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
                             <FaIcon icon="fa-solid fa-wifi" className="text-[10px] text-white" /> WiFi
                           </span>
                         )}
                         {item.hostel.amenities.includes('power_backup') && (
-                          <span className="inline-flex items-center gap-1 bg-[#0f3a98] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
+                          <span className="inline-flex items-center gap-1 bg-[#ffbe00] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
                             <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-white" /> Generator
                           </span>
                         )}
                         {item.hostel.amenities.includes('water') && (
-                          <span className="inline-flex items-center gap-1 bg-[#0f3a98] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
+                          <span className="inline-flex items-center gap-1 bg-[#ffbe00] text-white px-2 py-0.5 rounded text-[11px] shadow-xs">
                             <FaIcon icon="fa-solid fa-droplet" className="text-[10px] text-white" /> Water
                           </span>
                         )}
