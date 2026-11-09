@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import HostelCard from '@/components/HostelCard';
 import FilterBar, { FilterState } from '@/components/FilterBar';
@@ -9,6 +10,7 @@ import CompareModal from '@/components/CompareModal';
 import AuthModal from '@/components/AuthModal';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
+import { formatUGX } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
 
 export default function HomePage() {
@@ -172,6 +174,39 @@ export default function HomePage() {
     return hostels.filter(h => compareList.includes(h.id));
   }, [hostels, compareList]);
 
+  // Featured Rooms Selection
+  const featuredRooms = useMemo(() => {
+    const list: Array<{
+      roomId: string;
+      roomName: string;
+      roomType: string;
+      rentUgx: number;
+      roomsAvailable: number;
+      hostel: Hostel;
+      photoUrl: string;
+    }> = [];
+
+    hostels.forEach(h => {
+      if (h.rooms && h.rooms.length > 0) {
+        const room = h.rooms.find(r => r.roomsAvailable > 0 && r.type.includes('single')) || h.rooms[0];
+        if (room) {
+          const photo = h.photos.find(p => !p.isCover)?.url || h.photos[0]?.url;
+          list.push({
+            roomId: room.id,
+            roomName: room.name,
+            roomType: room.type,
+            rentUgx: room.rentUgx,
+            roomsAvailable: room.roomsAvailable,
+            hostel: h,
+            photoUrl: photo
+          });
+        }
+      }
+    });
+
+    return list.slice(0, 4);
+  }, [hostels]);
+
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <Navbar
@@ -230,6 +265,123 @@ export default function HomePage() {
           })}
           totalResults={filteredHostels.length}
         />
+
+        {/* Featured Rooms Section */}
+        {featuredRooms.length > 0 && !filters.q && (
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98] border border-blue-200">
+                    <FaIcon icon="fa-solid fa-fire" className="text-xs text-[#ffbe00] mr-1" />
+                    Prime Vacancies
+                  </span>
+                  <span className="text-xs text-slate-500 font-normal">Direct Custodian Verified</span>
+                </div>
+                <h2 className="text-xl font-medium text-[#0f3a98] mt-1">Featured Rooms</h2>
+                <p className="text-xs text-slate-500 font-normal">
+                  Hand-picked student rooms with guaranteed amenities, verified custodians & close campus proximity
+                </p>
+              </div>
+            </div>
+
+            {/* Featured Rooms Cards Grid (300px width by 220px image height) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+              {featuredRooms.map(item => (
+                <div
+                  key={item.roomId}
+                  className="group bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-full max-w-[300px] mx-auto"
+                >
+                  {/* Image Container: 300px by 220px */}
+                  <div className="relative w-full h-[220px] bg-slate-100 overflow-hidden">
+                    <img
+                      src={item.photoUrl}
+                      alt={item.roomName}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+
+                    {/* Featured Room Badge */}
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-[#0f3a98] text-white shadow-sm border border-blue-900">
+                        <FaIcon icon="fa-solid fa-star" className="text-xs text-[#ffbe00]" />
+                        Featured Room
+                      </span>
+                    </div>
+
+                    {/* Vacancy indicator banner */}
+                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#0a2666] text-white text-xs">
+                      <span className="text-[#ffbe00] flex items-center gap-1.5 font-medium">
+                        <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#ffbe00]" />
+                        {item.roomsAvailable} rooms vacant
+                      </span>
+                      <span className="text-[11px] text-blue-200 font-normal truncate max-w-[110px]">
+                        {item.hostel.area}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Body */}
+                  <div className="p-3.5 flex-1 flex flex-col justify-between">
+                    <div>
+                      {/* Hostel Name & Campus */}
+                      <div className="flex items-center gap-1 text-xs text-slate-500 mb-1">
+                        <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98] shrink-0" />
+                        <span className="truncate">{item.hostel.name}</span>
+                        <span className="text-slate-300">•</span>
+                        <span className="text-slate-400 truncate">{item.hostel.campus}</span>
+                      </div>
+
+                      {/* Room Name */}
+                      <Link href={`/hostels/${item.hostel.id}`}>
+                        <h3 className="font-medium text-slate-900 text-base group-hover:text-[#0f3a98] transition line-clamp-1">
+                          {item.roomName}
+                        </h3>
+                      </Link>
+
+                      {/* Key Amenities */}
+                      <div className="flex flex-wrap items-center gap-1.5 mt-2 text-slate-600 text-xs font-medium">
+                        {item.hostel.amenities.includes('wifi') && (
+                          <span className="inline-flex items-center gap-1 bg-[#e8effc] text-[#0f3a98] px-2 py-0.5 rounded text-[11px]">
+                            <FaIcon icon="fa-solid fa-wifi" className="text-[10px] text-[#0f3a98]" /> WiFi
+                          </span>
+                        )}
+                        {item.hostel.amenities.includes('power_backup') && (
+                          <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 px-2 py-0.5 rounded text-[11px]">
+                            <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-[#ffbe00]" /> Generator
+                          </span>
+                        )}
+                        {item.hostel.amenities.includes('water') && (
+                          <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-900 px-2 py-0.5 rounded text-[11px]">
+                            <FaIcon icon="fa-solid fa-droplet" className="text-[10px] text-[#0f3a98]" /> Water
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Price & Contact */}
+                    <div className="mt-3.5 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="text-[10px] text-slate-400 uppercase font-medium tracking-wider">Semester Rent</div>
+                        <div className="text-[#0f3a98] font-medium text-xs sm:text-sm truncate">
+                          {formatUGX(item.rentUgx)}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => handleContactClick(item.hostel)}
+                        className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition shrink-0"
+                      >
+                        <FaIcon icon="fa-solid fa-phone" className="text-xs text-white" />
+                        Contact
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Hostel List */}
         <div>
