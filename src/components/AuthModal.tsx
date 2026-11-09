@@ -18,6 +18,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   // Form fields
   const [phoneOrEmail, setPhoneOrEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [name, setName] = useState('');
   const [role, setRole] = useState<UserRole>('student');
   const [university, setUniversity] = useState('Makerere University');
@@ -48,7 +50,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     if (res.success) {
       onClose();
     } else {
-      setError(res.error || 'Login failed');
+      setError(res.error || 'Login failed. Please check your credentials.');
     }
   };
 
@@ -67,11 +69,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError('Please provide your name');
+      setError('Please provide your full name');
       return;
     }
     if (!phoneOrEmail.trim()) {
-      setError('Please provide your phone number or email');
+      setError('Please provide your phone number or email address');
       return;
     }
 
@@ -99,33 +101,67 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col font-sans">
+      <div className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col font-sans">
         
-        {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-          <div>
-            <h3 className="font-medium text-[#0f3a98] text-lg">
-              {mode === 'login' ? 'Welcome Back' : 'Create an Account'}
-            </h3>
-            <p className="text-xs text-slate-500 font-normal">
-              {mode === 'login' 
-                ? 'Sign in using phone number, email or Google' 
-                : 'Join Hostel Connect as a Student, Broker or Custodian'}
-            </p>
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition shadow-sm"
+          aria-label="Close dialog"
+        >
+          <FaIcon icon="fa-solid fa-xmark" className="text-sm" />
+        </button>
+
+        {/* Top Header with Hostel Connect Logo */}
+        <div className="pt-7 pb-4 px-6 sm:px-8 text-center bg-white">
+          <div className="flex justify-center mb-3">
+            <img
+              src="/logo.png"
+              alt="Hostel Connect"
+              className="h-11 sm:h-12 w-auto object-contain"
+            />
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition"
-          >
-            <FaIcon icon="fa-solid fa-xmark" className="text-sm" />
-          </button>
+          <h3 className="text-xl font-medium text-[#0f3a98] tracking-tight">
+            {mode === 'login' ? 'Welcome Back' : 'Create an Account'}
+          </h3>
+          <p className="text-xs text-slate-500 mt-1 font-normal max-w-xs mx-auto">
+            {mode === 'login' 
+              ? 'Sign in to access verified student accommodations' 
+              : 'Join as a Student, Custodian, or Broker in Uganda'}
+          </p>
+
+          {/* Mode Tabs (Sign In / Register) */}
+          <div className="flex rounded-xl bg-slate-100 p-1 mt-4">
+            <button
+              type="button"
+              onClick={() => { setMode('login'); setError(''); }}
+              className={`flex-1 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                mode === 'login'
+                  ? 'bg-white text-[#0f3a98] shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMode('register'); setError(''); }}
+              className={`flex-1 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                mode === 'register'
+                  ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
         </div>
 
         {/* Form Body */}
-        <div className="p-4 sm:p-6 space-y-4">
+        <div className="px-6 sm:px-8 pb-7 space-y-4">
           {error && (
-            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
-              <FaIcon icon="fa-solid fa-triangle-exclamation" className="shrink-0" />
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2 animate-in fade-in">
+              <FaIcon icon="fa-solid fa-triangle-exclamation" className="shrink-0 text-sm" />
               <span>{error}</span>
             </div>
           )}
@@ -135,16 +171,16 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             type="button"
             onClick={handleGoogleSignIn}
             disabled={googleLoading}
-            className="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:border-[#0f3a98] hover:bg-slate-50 text-slate-800 font-medium text-xs sm:text-sm flex items-center justify-center gap-2.5 transition shadow-sm"
+            className="w-full py-2.5 px-4 rounded-xl border border-slate-300 hover:border-[#0f3a98] hover:bg-slate-50 text-slate-700 font-medium text-xs sm:text-sm flex items-center justify-center gap-3 transition shadow-sm"
           >
             <FaIcon icon="fa-brands fa-google" className="text-red-500 text-base" />
             <span>{googleLoading ? 'Connecting Google...' : 'Continue with Google'}</span>
           </button>
 
-          {/* Divider */}
-          <div className="relative flex items-center justify-center">
+          {/* Clean Divider */}
+          <div className="relative flex items-center justify-center my-2">
             <div className="border-t border-slate-200 w-full"></div>
-            <span className="bg-white px-3 text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+            <span className="bg-white px-3 text-[11px] font-normal text-slate-400 uppercase tracking-wider">
               Or with credentials
             </span>
             <div className="border-t border-slate-200 w-full"></div>
@@ -152,59 +188,94 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
           {mode === 'login' ? (
             <form onSubmit={handleLogin} className="space-y-3.5">
+              {/* Phone / Email Input */}
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Phone Number or Email Address
+                  Phone Number or Email
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                     <FaIcon icon="fa-solid fa-user" className="text-xs" />
                   </span>
                   <input
                     type="text"
                     required
-                    placeholder="+256 700 000 000 or name@domain.com"
+                    placeholder="+256 700 000 000 or email@domain.com"
                     value={phoneOrEmail}
                     onChange={e => setPhoneOrEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] focus:border-transparent font-normal bg-white"
                   />
                 </div>
               </div>
 
+              {/* Password Input */}
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="block text-xs font-medium text-slate-700">Password</label>
                   <span className="text-[11px] text-slate-400 font-normal">Optional for demo</span>
                 </div>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                     <FaIcon icon="fa-solid fa-lock" className="text-xs" />
                   </span>
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                    className="w-full pl-9 pr-10 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] focus:border-transparent font-normal bg-white"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    <FaIcon
+                      icon={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}
+                      className="text-xs"
+                    />
+                  </button>
                 </div>
               </div>
 
+              {/* Remember me and Forgot password row */}
+              <div className="flex items-center justify-between text-xs text-slate-500 pt-0.5">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={e => setRememberMe(e.target.checked)}
+                    className="rounded border-slate-300 text-[#0f3a98] focus:ring-[#0f3a98]"
+                  />
+                  <span>Remember me</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => alert('Password reset link will be sent to your email or phone number.')}
+                  className="text-[#0f3a98] hover:underline font-medium"
+                >
+                  Forgot password?
+                </button>
+              </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-sm transition flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-md transition flex items-center justify-center gap-2 mt-2"
               >
                 <span>{loading ? 'Signing in...' : 'Sign In'}</span>
-                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs" />
+                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs text-[#ffbe00]" />
               </button>
             </form>
           ) : (
             <form onSubmit={handleRegister} className="space-y-3.5">
+              {/* Full Name */}
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                     <FaIcon icon="fa-solid fa-id-card" className="text-xs" />
                   </span>
                   <input
@@ -213,21 +284,22 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     placeholder="e.g. Mary Atuhaire"
                     value={name}
                     onChange={e => setName(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                   />
                 </div>
               </div>
 
+              {/* Role Picker */}
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">Select Role</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">I am joining as a</label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setRole('student')}
-                    className={`p-2 rounded-lg border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
                       role === 'student'
                         ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98] ring-1 ring-[#0f3a98]'
-                        : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                        : 'border-slate-200 text-slate-600 hover:border-slate-300 bg-white'
                     }`}
                   >
                     <FaIcon icon="fa-solid fa-graduation-cap" className="text-sm" />
@@ -236,10 +308,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   <button
                     type="button"
                     onClick={() => setRole('custodian')}
-                    className={`p-2 rounded-lg border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
                       role === 'custodian'
                         ? 'border-[#0f3a98] bg-[#0f3a98] text-[#ffbe00]'
-                        : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                        : 'border-slate-200 text-slate-600 hover:border-slate-300 bg-white'
                     }`}
                   >
                     <FaIcon icon="fa-solid fa-hotel" className="text-sm" />
@@ -248,10 +320,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   <button
                     type="button"
                     onClick={() => setRole('broker')}
-                    className={`p-2 rounded-lg border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2 rounded-xl border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
                       role === 'broker'
                         ? 'border-[#ffbe00] bg-amber-50 text-amber-900 ring-1 ring-[#ffbe00]'
-                        : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                        : 'border-slate-200 text-slate-600 hover:border-slate-300 bg-white'
                     }`}
                   >
                     <FaIcon icon="fa-solid fa-handshake" className="text-sm" />
@@ -260,25 +332,27 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                 </div>
               </div>
 
+              {/* Contact Identifier */}
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Phone Number or Email Address
+                  Phone Number or Email
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-slate-400">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                     <FaIcon icon="fa-solid fa-envelope" className="text-xs" />
                   </span>
                   <input
                     type="text"
                     required
-                    placeholder="+256 700 000 000 or student@mak.ac.ug"
+                    placeholder="+256 700 000 000 or name@domain.com"
                     value={phoneOrEmail}
                     onChange={e => setPhoneOrEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                   />
                 </div>
               </div>
 
+              {/* Student specific fields */}
               {role === 'student' ? (
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">University & Course</label>
@@ -286,7 +360,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     <select
                       value={university}
                       onChange={e => setUniversity(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                      className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal bg-white"
                     >
                       <option>Makerere University</option>
                       <option>MUBS (Makerere Business School)</option>
@@ -296,10 +370,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     </select>
                     <input
                       type="text"
-                      placeholder="e.g. Bachelor of Commerce (Year 1)"
+                      placeholder="Course name (e.g. B. Education)"
                       value={course}
                       onChange={e => setCourse(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                      className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                     />
                   </div>
                 </div>
@@ -309,38 +383,39 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   <div className="space-y-2">
                     <input
                       type="text"
-                      placeholder="Hostel / Agency Business Name"
+                      placeholder="Hostel or Agency Business Name"
                       value={businessName}
                       onChange={e => setBusinessName(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                      className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                     />
                     <input
                       type="text"
                       placeholder="National ID Number (NIN)"
                       value={idNumber}
                       onChange={e => setIdNumber(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                      className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                     />
                   </div>
                 </div>
               )}
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-sm transition flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-md transition flex items-center justify-center gap-2 mt-2"
               >
-                <span>{loading ? 'Registering...' : 'Create Account'}</span>
-                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs" />
+                <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
+                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs text-[#ffbe00]" />
               </button>
             </form>
           )}
 
-          {/* Mode switch */}
-          <div className="pt-3 border-t border-slate-100 text-center text-xs text-slate-600">
+          {/* Mode switch footer */}
+          <div className="pt-3 border-t border-slate-100 text-center text-xs text-slate-500">
             {mode === 'login' ? (
               <span>
-                New to Hostel Connect?{' '}
+                Don't have an account yet?{' '}
                 <button
                   type="button"
                   onClick={() => {
@@ -369,6 +444,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             )}
           </div>
         </div>
+
       </div>
     </div>
   );
