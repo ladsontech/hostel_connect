@@ -132,10 +132,10 @@ export default function HostelDetailPage() {
           setIsAuthOpen(true);
         }} />
         <div className="max-w-xl mx-auto my-16 p-8 bg-white rounded-2xl border text-center space-y-4">
-          <h2 className="text-xl font-bold">Hostel not found</h2>
+          <h2 className="text-xl font-medium">Hostel not found</h2>
           <button
             onClick={() => router.push('/')}
-            className="px-4 py-2 bg-[#0f3a98] text-white rounded-lg text-sm font-bold"
+            className="px-4 py-2 bg-[#0f3a98] text-white rounded-lg text-sm font-medium"
           >
             Back to Home
           </button>
@@ -161,7 +161,7 @@ export default function HostelDetailPage() {
         <div className="flex items-center justify-between">
           <button
             onClick={() => router.push('/')}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-[#0f3a98] bg-white border border-slate-200 px-3.5 py-1.5 rounded-lg transition"
+            className="inline-flex items-center gap-2 text-xs font-medium text-slate-700 hover:text-[#0f3a98] bg-white border border-slate-200 px-3.5 py-1.5 rounded-lg transition"
           >
             <FaIcon icon="fa-solid fa-arrow-left" className="text-xs text-[#0f3a98]" />
             Back to Hostels
@@ -169,7 +169,7 @@ export default function HostelDetailPage() {
 
           <button
             onClick={() => setIsReportOpen(true)}
-            className="text-xs text-slate-600 hover:text-rose-600 flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg transition font-semibold"
+            className="text-xs text-slate-600 hover:text-rose-600 flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg transition font-medium"
           >
             <FaIcon icon="fa-solid fa-triangle-exclamation" className="text-xs text-amber-500" />
             Report Listing
@@ -188,19 +188,19 @@ export default function HostelDetailPage() {
             {/* Badges on main image */}
             <div className="absolute top-4 left-4 flex flex-wrap gap-2">
               {hostel.status === 'claimed' ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-extrabold bg-[#0f3a98] text-white shadow-md">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-[#0f3a98] text-white shadow-md">
                   <FaIcon icon="fa-solid fa-shield-halved" className="text-xs text-[#ffbe00]" />
                   Custodian Verified
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-extrabold bg-[#ffbe00] text-[#0f3a98] shadow-md">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-[#ffbe00] text-[#0f3a98] shadow-md">
                   <FaIcon icon="fa-solid fa-tag" className="text-xs" />
                   Agent Listed
                 </span>
               )}
             </div>
 
-            <div className="absolute bottom-4 right-4 px-3 py-1 bg-black/80 text-white text-xs rounded-lg font-semibold">
+            <div className="absolute bottom-4 right-4 px-3 py-1 bg-black/80 text-white text-xs rounded-lg font-medium">
               Photo {selectedPhotoIndex + 1} of {photos.length}
             </div>
           </div>
@@ -226,11 +226,11 @@ export default function HostelDetailPage() {
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-[#0f3a98] bg-[#e8effc] px-2.5 py-1 rounded-md w-fit mb-2">
+              <div className="flex items-center gap-2 text-xs font-medium text-[#0f3a98] bg-[#e8effc] px-2.5 py-1 rounded-md w-fit mb-2">
                 <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98]" />
                 <span>{hostel.campus} • {hostel.area}</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0f3a98]">{hostel.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-medium text-[#0f3a98]">{hostel.name}</h1>
               <p className="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
                 <span>{hostel.distanceCampusApprox}</span>
                 <span>•</span>
@@ -241,14 +241,14 @@ export default function HostelDetailPage() {
             {/* Quick Contact CTA */}
             <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 bg-[#e8effc] p-4 rounded-xl border border-blue-200">
               <div className="text-right">
-                <div className="text-[10px] text-[#0f3a98] font-extrabold uppercase tracking-wider">Direct Inquiry</div>
-                <div className="text-[#0f3a98] font-extrabold text-sm sm:text-base">
+                <div className="text-[10px] text-[#0f3a98] font-medium uppercase tracking-wider">Direct Inquiry</div>
+                <div className="text-[#0f3a98] font-medium text-sm sm:text-base">
                   {offers.length} Active Contact{offers.length === 1 ? '' : 's'}
                 </div>
               </div>
               <button
                 onClick={handleOpenContact}
-                className="px-5 py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold shadow-sm flex items-center gap-2 transition"
+                className="px-5 py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium shadow-sm flex items-center gap-2 transition"
               >
                 <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
                 Reveal Phone & WhatsApp
@@ -265,7 +265,7 @@ export default function HostelDetailPage() {
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-extrabold text-[#0f3a98]">Room Types & Semester Rates</h3>
+              <h3 className="text-base font-medium text-[#0f3a98]">Room Types & Semester Rates</h3>
               <p className="text-xs text-slate-500 font-medium">Official rents set directly by hostel management</p>
             </div>
             <div className="text-xs text-slate-400 font-medium">
@@ -281,13 +281,13 @@ export default function HostelDetailPage() {
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <h4 className="font-extrabold text-slate-900 text-sm">{room.name}</h4>
+                    <h4 className="font-medium text-slate-900 text-sm">{room.name}</h4>
                     {room.roomsAvailable > 0 ? (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
+                      <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
                         {room.roomsAvailable} Left
                       </span>
                     ) : (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800">
+                      <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-rose-100 text-rose-800">
                         Full
                       </span>
                     )}
@@ -299,7 +299,7 @@ export default function HostelDetailPage() {
 
                 <div className="mt-4 pt-3 border-t border-slate-200 flex items-baseline justify-between">
                   <span className="text-xs text-slate-400 font-medium">Per Semester</span>
-                  <span className="font-extrabold text-[#0f3a98] text-lg">
+                  <span className="font-medium text-[#0f3a98] text-lg">
                     {formatUGX(room.rentUgx)}
                   </span>
                 </div>
@@ -310,7 +310,7 @@ export default function HostelDetailPage() {
 
         {/* Amenities Checklist */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-3 shadow-sm">
-          <h3 className="text-base font-extrabold text-[#0f3a98]">Amenities & Facilities</h3>
+          <h3 className="text-base font-medium text-[#0f3a98]">Amenities & Facilities</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             {[
               { id: 'water', label: 'Constant Water Supply', icon: 'fa-solid fa-droplet' },
@@ -327,7 +327,7 @@ export default function HostelDetailPage() {
                   key={item.id}
                   className={`p-3 rounded-xl border flex items-center gap-2.5 ${
                     present
-                      ? 'border-blue-200 bg-[#e8effc] text-[#0f3a98] font-bold'
+                      ? 'border-blue-200 bg-[#e8effc] text-[#0f3a98] font-medium'
                       : 'border-slate-100 bg-slate-50 text-slate-400 opacity-60'
                   }`}
                 >
@@ -341,11 +341,11 @@ export default function HostelDetailPage() {
 
         {/* Exact Location & Privacy Protection Notice */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-3 shadow-sm">
-          <h3 className="text-base font-extrabold text-[#0f3a98]">Hostel Address & Directions</h3>
+          <h3 className="text-base font-medium text-[#0f3a98]">Hostel Address & Directions</h3>
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
             <FaIcon icon="fa-solid fa-lock" className="text-base text-[#0f3a98] shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-bold text-xs text-slate-800">
+              <h4 className="font-medium text-xs text-slate-800">
                 Privacy Protection Active (FR-2.6)
               </h4>
               <p className="text-xs text-slate-600 mt-0.5 leading-relaxed font-medium">
@@ -354,7 +354,7 @@ export default function HostelDetailPage() {
               </p>
               <button
                 onClick={handleOpenContact}
-                className="mt-2 text-xs font-bold text-[#0f3a98] hover:underline inline-flex items-center gap-1.5"
+                className="mt-2 text-xs font-medium text-[#0f3a98] hover:underline inline-flex items-center gap-1.5"
               >
                 <span>Tap to reveal contact offers</span>
                 <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px]" />
@@ -367,9 +367,9 @@ export default function HostelDetailPage() {
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-extrabold text-[#0f3a98]">Student Reviews & Ratings</h3>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5 font-semibold">
-                <span className="flex items-center text-[#0f3a98] font-bold">
+              <h3 className="text-base font-medium text-[#0f3a98]">Student Reviews & Ratings</h3>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5 font-medium">
+                <span className="flex items-center text-[#0f3a98] font-medium">
                   <FaIcon icon="fa-solid fa-star" className="text-xs text-[#ffbe00] mr-1" />
                   {hostel.ratingAvg.toFixed(1)} / 5.0
                 </span>
@@ -386,7 +386,7 @@ export default function HostelDetailPage() {
               reviews.map(rev => (
                 <div key={rev.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-slate-900">{rev.studentName}</span>
+                    <span className="font-medium text-xs text-slate-900">{rev.studentName}</span>
                     <div className="flex items-center text-[#ffbe00] gap-0.5">
                       {[1, 2, 3, 4, 5].map(star => (
                         <FaIcon
@@ -400,7 +400,7 @@ export default function HostelDetailPage() {
                   <p className="text-xs text-slate-700 font-medium">{rev.text}</p>
                   {rev.sellerReply && (
                     <div className="mt-2 pl-3 border-l-2 border-[#0f3a98] text-xs text-slate-600 bg-white p-2 rounded">
-                      <span className="font-bold text-[#0f3a98]">Hostel Response: </span>
+                      <span className="font-medium text-[#0f3a98]">Hostel Response: </span>
                       {rev.sellerReply}
                     </div>
                   )}
@@ -411,9 +411,9 @@ export default function HostelDetailPage() {
 
           {/* Submit Review Form */}
           <form onSubmit={handleSubmitReview} className="mt-4 pt-4 border-t border-slate-100 space-y-3">
-            <h4 className="text-xs font-bold text-slate-800">Leave a Review (Students Only - BR-7)</h4>
+            <h4 className="text-xs font-medium text-slate-800">Leave a Review (Students Only - BR-7)</h4>
             {reviewMsg && (
-              <div className="p-2.5 rounded bg-blue-50 text-[#0f3a98] text-xs font-bold">
+              <div className="p-2.5 rounded bg-blue-50 text-[#0f3a98] text-xs font-medium">
                 {reviewMsg}
               </div>
             )}
@@ -443,7 +443,7 @@ export default function HostelDetailPage() {
             <button
               type="submit"
               disabled={reviewSubmitting}
-              className="px-4 py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold shadow-sm transition"
+              className="px-4 py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium shadow-sm transition"
             >
               {reviewSubmitting ? 'Posting...' : 'Post Student Review'}
             </button>
@@ -472,15 +472,15 @@ export default function HostelDetailPage() {
       {isReportOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 border shadow-xl">
-            <h3 className="font-extrabold text-[#0f3a98] text-base">Report Listing (FR-7.3)</h3>
+            <h3 className="font-medium text-[#0f3a98] text-base">Report Listing (FR-7.3)</h3>
             {reportSuccess ? (
-              <div className="p-3 bg-blue-50 text-[#0f3a98] rounded-lg text-xs font-bold">
+              <div className="p-3 bg-blue-50 text-[#0f3a98] rounded-lg text-xs font-medium">
                 Thank you. Report submitted to the admin moderation queue.
               </div>
             ) : (
               <form onSubmit={handleReport} className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Reason</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Reason</label>
                   <select
                     value={reportReason}
                     onChange={e => setReportReason(e.target.value)}
@@ -495,7 +495,7 @@ export default function HostelDetailPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Details</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Details</label>
                   <textarea
                     rows={3}
                     placeholder="Provide details for our verification team..."
@@ -508,13 +508,13 @@ export default function HostelDetailPage() {
                   <button
                     type="button"
                     onClick={() => setIsReportOpen(false)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-bold"
+                    className="px-4 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-medium"
                   >
                     Submit Report
                   </button>

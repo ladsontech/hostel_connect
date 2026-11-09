@@ -8,3 +8,4 @@ interface FaIconProps {
 export default function FaIcon({ icon, className = '' }: FaIconProps) {
   return <i className={`${icon} ${className}`} aria-hidden="true" />;
 }
+

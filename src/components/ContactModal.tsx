@@ -84,12 +84,12 @@ export default function ContactModal({
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-start justify-between bg-slate-50">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
+              <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
                 Direct Contact
               </span>
               <span className="text-xs text-slate-500 font-medium">{hostel.campus}</span>
             </div>
-            <h3 className="font-extrabold text-[#0f3a98] text-lg mt-1">{hostel.name}</h3>
+            <h3 className="font-medium text-[#0f3a98] text-lg mt-1">{hostel.name}</h3>
             <p className="text-xs text-slate-500 font-medium">
               Select who you would like to reach. Rent is paid directly to hostel management.
             </p>
@@ -109,10 +109,10 @@ export default function ContactModal({
               <div className="flex items-start gap-2.5">
                 <FaIcon icon="fa-solid fa-triangle-exclamation" className="text-amber-700 text-lg shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-sm text-slate-900">Important Broker Notice</h4>
+                  <h4 className="font-medium text-sm text-slate-900">Important Broker Notice</h4>
                   <p className="text-xs text-slate-700 mt-1 leading-relaxed">
                     This broker may charge an access or viewing fee of{' '}
-                    <strong className="font-bold text-[#0f3a98]">
+                    <strong className="font-medium text-[#0f3a98]">
                       {brokerNoticePending.accessFeeUgx > 0
                         ? formatUGX(brokerNoticePending.accessFeeUgx)
                         : 'No fee'}
@@ -127,13 +127,13 @@ export default function ContactModal({
               <div className="flex justify-end gap-2 pt-1">
                 <button
                   onClick={() => setBrokerNoticePending(null)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-amber-100"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-amber-100"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmBrokerNotice}
-                  className="px-4 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs font-bold transition shadow-sm"
+                  className="px-4 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs font-medium transition shadow-sm"
                 >
                   I Understand & Continue
                 </button>
@@ -166,39 +166,39 @@ export default function ContactModal({
                       {/* Role Badges */}
                       <div className="flex flex-wrap items-center gap-1.5 mb-1">
                         {isCustodian ? (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold bg-[#0f3a98] text-[#ffbe00]">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-[#0f3a98] text-[#ffbe00]">
                             <FaIcon icon="fa-solid fa-shield-halved" className="text-[10px] text-[#ffbe00]" />
                             Official Custodian / Owner
                           </span>
                         ) : offer.isAuthorised ? (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold bg-[#ffbe00] text-[#0f3a98]">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-[#ffbe00] text-[#0f3a98]">
                             <FaIcon icon="fa-solid fa-award" className="text-[10px]" />
                             Authorised Agent
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700">
                             Independent Broker
                           </span>
                         )}
 
                         {offer.responseRatePct && (
-                          <span className="text-[11px] text-slate-500 font-semibold">
+                          <span className="text-[11px] text-slate-500 font-medium">
                             • {offer.responseRatePct}% response rate
                           </span>
                         )}
                       </div>
 
-                      <h4 className="font-bold text-slate-900 text-sm">{offer.userName}</h4>
+                      <h4 className="font-medium text-slate-900 text-sm">{offer.userName}</h4>
 
                       {/* Access Fee Disclosure */}
                       <div className="mt-1 flex items-center gap-2 text-xs font-medium">
                         <span className="text-slate-500">Access Fee:</span>
                         {offer.accessFeeUgx > 0 ? (
-                          <span className="font-bold text-amber-900 bg-amber-100 px-1.5 py-0.5 rounded text-[11px]">
+                          <span className="font-medium text-amber-900 bg-amber-100 px-1.5 py-0.5 rounded text-[11px]">
                             {formatUGX(offer.accessFeeUgx)}
                           </span>
                         ) : (
-                          <span className="font-bold text-[#0f3a98] bg-[#e8effc] px-1.5 py-0.5 rounded text-[11px]">
+                          <span className="font-medium text-[#0f3a98] bg-[#e8effc] px-1.5 py-0.5 rounded text-[11px]">
                             Free (No fee)
                           </span>
                         )}
@@ -219,7 +219,7 @@ export default function ContactModal({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleInitiateAction(offer, 'call')}
-                        className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
+                        className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-medium flex items-center gap-1.5 transition shadow-sm"
                       >
                         <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
                         Call
@@ -227,7 +227,7 @@ export default function ContactModal({
 
                       <button
                         onClick={() => handleInitiateAction(offer, 'whatsapp')}
-                        className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
+                        className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 transition shadow-sm"
                       >
                         <FaIcon icon="fa-brands fa-whatsapp" className="text-xs text-[#ffbe00]" />
                         WhatsApp

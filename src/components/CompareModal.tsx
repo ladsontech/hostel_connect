@@ -40,10 +40,10 @@ export default function CompareModal({
         <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
+              <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
                 FR-2.7 Specification
               </span>
-              <h3 className="font-extrabold text-[#0f3a98] text-lg">Compare Hostels Side-by-Side</h3>
+              <h3 className="font-medium text-[#0f3a98] text-lg">Compare Hostels Side-by-Side</h3>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
               Comparing {hostels.length} of max 3 hostels to make your decision easier.
@@ -66,7 +66,7 @@ export default function CompareModal({
           ) : (
             <div className="grid grid-cols-4 gap-4 min-w-[640px]">
               {/* Feature column */}
-              <div className="space-y-4 pt-48 font-bold text-xs text-slate-500 border-r border-slate-100 pr-3">
+              <div className="space-y-4 pt-48 font-medium text-xs text-slate-500 border-r border-slate-100 pr-3">
                 <div className="h-9 flex items-center">Area & Campus</div>
                 <div className="h-9 flex items-center">Verified Status</div>
                 <div className="h-9 flex items-center">Rating & Reviews</div>
@@ -74,7 +74,7 @@ export default function CompareModal({
                 <div className="h-9 flex items-center">Semester Rent Range</div>
                 <div className="h-9 flex items-center">Available Rooms</div>
                 {AMENITY_KEYS.map(a => (
-                  <div key={a.id} className="h-7 flex items-center text-slate-600 font-semibold gap-1.5">
+                  <div key={a.id} className="h-7 flex items-center text-slate-600 font-medium gap-1.5">
                     <FaIcon icon={a.icon} className="text-[10px] text-slate-400" />
                     <span>{a.label}</span>
                   </div>
@@ -109,10 +109,10 @@ export default function CompareModal({
                         </button>
                       </div>
 
-                      <h4 className="font-extrabold text-slate-900 text-sm line-clamp-1">{hostel.name}</h4>
+                      <h4 className="font-medium text-slate-900 text-sm line-clamp-1">{hostel.name}</h4>
 
                       {/* Row 1: Area & Campus */}
-                      <div className="h-9 flex items-center text-xs font-semibold text-slate-700">
+                      <div className="h-9 flex items-center text-xs font-medium text-slate-700">
                         <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98] mr-1.5 shrink-0" />
                         <span className="truncate">{hostel.area}, {hostel.campus}</span>
                       </div>
@@ -120,18 +120,18 @@ export default function CompareModal({
                       {/* Row 2: Status */}
                       <div className="h-9 flex items-center">
                         {hostel.status === 'claimed' ? (
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#0f3a98] bg-[#e8effc] px-2 py-0.5 rounded">
+                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#0f3a98] bg-[#e8effc] px-2 py-0.5 rounded">
                             <FaIcon icon="fa-solid fa-shield-halved" className="text-[10px] text-[#ffbe00]" /> Verified Owner
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded">
+                          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-amber-900 bg-amber-100 px-2 py-0.5 rounded">
                             <FaIcon icon="fa-solid fa-tag" className="text-[10px]" /> Agent Listed
                           </span>
                         )}
                       </div>
 
                       {/* Row 3: Rating */}
-                      <div className="h-9 flex items-center text-xs font-bold text-slate-800">
+                      <div className="h-9 flex items-center text-xs font-medium text-slate-800">
                         <FaIcon icon="fa-solid fa-star" className="text-xs text-[#ffbe00] mr-1.5" />
                         {hostel.ratingAvg.toFixed(1)} ({hostel.ratingCount})
                       </div>
@@ -142,14 +142,14 @@ export default function CompareModal({
                       </div>
 
                       {/* Row 5: Price */}
-                      <div className="h-9 flex items-center font-extrabold text-xs text-[#0f3a98]">
+                      <div className="h-9 flex items-center font-medium text-xs text-[#0f3a98]">
                         {minRent === maxRent
                           ? formatUGX(minRent)
                           : `${formatUGX(minRent)} - ${formatUGX(maxRent)}`}
                       </div>
 
                       {/* Row 6: Availability */}
-                      <div className="h-9 flex items-center text-xs font-bold">
+                      <div className="h-9 flex items-center text-xs font-medium">
                         {available > 0 ? (
                           <span className="text-[#0f3a98]">{available} vacant</span>
                         ) : (
@@ -175,7 +175,7 @@ export default function CompareModal({
                     <div className="pt-3 border-t border-slate-100">
                       <button
                         onClick={() => onContactClick(hostel)}
-                        className="w-full py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold transition shadow-sm"
+                        className="w-full py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium transition shadow-sm"
                       >
                         Contact Sellers
                       </button>

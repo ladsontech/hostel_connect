@@ -188,7 +188,7 @@ export default function HomePage() {
         {/* Hero Section */}
         <div className="rounded-3xl bg-[#0f3a98] p-6 sm:p-10 text-white shadow-xl border border-blue-900">
           <div className="max-w-2xl space-y-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight leading-tight">
               Find Verified University Hostels in Uganda.
             </h1>
 
@@ -196,7 +196,7 @@ export default function HomePage() {
               Explore hostels around Makerere, MUBS, Kyambogo and more. Connect directly with authoritative hostel custodians and verified student scouts without hidden middleman markups.
             </p>
 
-            <div className="pt-2 flex flex-wrap gap-4 text-xs font-bold text-white">
+            <div className="pt-2 flex flex-wrap gap-4 text-xs font-medium text-white">
               <div className="flex items-center gap-2 bg-[#0a2666] px-3.5 py-2 rounded-lg border border-blue-800">
                 <FaIcon icon="fa-solid fa-hand-holding-dollar" className="text-sm text-[#ffbe00]" />
                 <span>Zero Student Booking Fees</span>
@@ -235,7 +235,7 @@ export default function HomePage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-extrabold text-[#0f3a98]">
+              <h2 className="text-lg font-medium text-[#0f3a98]">
                 {filters.campus || 'All Ugandan Campuses'}
               </h2>
               <p className="text-xs text-slate-500 font-medium">
@@ -246,7 +246,7 @@ export default function HomePage() {
             {compareList.length > 0 && (
               <button
                 onClick={() => setIsCompareOpen(true)}
-                className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-bold flex items-center gap-2 border border-[#0f3a98] transition"
+                className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center gap-2 border border-[#0f3a98] transition"
               >
                 <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
                 Compare ({compareList.length}/3)
@@ -263,7 +263,7 @@ export default function HomePage() {
           ) : filteredHostels.length === 0 ? (
             <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
               <FaIcon icon="fa-solid fa-hotel" className="text-4xl text-slate-300 mx-auto" />
-              <h3 className="font-bold text-slate-800 text-base">No hostels found</h3>
+              <h3 className="font-medium text-slate-800 text-base">No hostels found</h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
                 Try widening your price range or clearing some amenity filters to see more results.
               </p>
@@ -279,7 +279,7 @@ export default function HomePage() {
                   amenities: [],
                   sort: 'relevance'
                 })}
-                className="px-4 py-2 rounded-lg bg-[#0f3a98] text-white text-xs font-bold flex items-center gap-1.5 mx-auto"
+                className="px-4 py-2 rounded-lg bg-[#0f3a98] text-white text-xs font-medium flex items-center gap-1.5 mx-auto"
               >
                 <FaIcon icon="fa-solid fa-rotate-left" className="text-xs" />
                 Clear all filters
@@ -306,13 +306,13 @@ export default function HomePage() {
       {/* Floating Compare Pill */}
       {compareList.length > 0 && (
         <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 bg-[#0f3a98] text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-4 border border-blue-900">
-          <div className="flex items-center gap-2 text-xs font-bold text-white">
+          <div className="flex items-center gap-2 text-xs font-medium text-white">
             <span className="w-2.5 h-2.5 rounded-full bg-[#ffbe00]"></span>
             <span>{compareList.length} of 3 hostels selected</span>
           </div>
           <button
             onClick={() => setIsCompareOpen(true)}
-            className="px-4 py-1.5 rounded-full bg-[#ffbe00] hover:bg-[#e0a700] text-[#0f3a98] text-xs font-extrabold transition shadow-sm"
+            className="px-4 py-1.5 rounded-full bg-[#ffbe00] hover:bg-[#e0a700] text-[#0f3a98] text-xs font-medium transition shadow-sm"
           >
             Compare Now
           </button>
@@ -360,7 +360,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="Hostel Connect" className="h-6 w-auto object-contain" />
-            <span className="font-bold text-[#0f3a98]">Hostel Connect Uganda</span>
+            <span className="font-medium text-[#0f3a98]">Hostel Connect Uganda</span>
             <span>• Compliant with Uganda Data Protection and Privacy Act, 2019</span>
           </div>
           <div className="font-medium text-slate-600">

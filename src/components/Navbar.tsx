@@ -21,44 +21,44 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
       <div className="bg-[#0f3a98] text-white text-xs py-2 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 font-bold text-[#ffbe00]">
+            <span className="inline-flex items-center gap-1.5 font-normal text-[#ffbe00]">
               <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#ffbe00]" />
               Uganda University Hostel Marketplace
             </span>
-            <span className="hidden md:inline text-blue-100 font-medium">• Makerere, MUBS, Kyambogo & more</span>
+            <span className="hidden md:inline text-blue-100 font-normal">• Makerere, MUBS, Kyambogo & more</span>
           </div>
 
           {/* Quick Role Switcher for testing all 4 roles */}
           <div className="flex items-center gap-1 bg-[#0a2666] p-1 rounded-lg border border-blue-900 text-xs">
-            <span className="text-[11px] text-blue-200 px-1.5 hidden sm:inline font-semibold">Role View:</span>
+            <span className="text-[11px] text-blue-200 px-1.5 hidden sm:inline font-normal">Role View:</span>
             <button
               onClick={() => switchRole('student')}
-              className={`px-2 py-0.5 rounded text-[11px] font-semibold transition ${
-                currentUser?.role === 'student' ? 'bg-[#ffbe00] text-[#0f3a98] font-bold' : 'text-blue-100 hover:text-white'
+              className={`px-2 py-0.5 rounded text-[11px] transition ${
+                currentUser?.role === 'student' ? 'bg-[#ffbe00] text-[#0f3a98] font-medium' : 'text-blue-100 hover:text-white font-normal'
               }`}
             >
               Student
             </button>
             <button
               onClick={() => switchRole('custodian')}
-              className={`px-2 py-0.5 rounded text-[11px] font-semibold transition ${
-                currentUser?.role === 'custodian' ? 'bg-[#ffbe00] text-[#0f3a98] font-bold' : 'text-blue-100 hover:text-white'
+              className={`px-2 py-0.5 rounded text-[11px] transition ${
+                currentUser?.role === 'custodian' ? 'bg-[#ffbe00] text-[#0f3a98] font-medium' : 'text-blue-100 hover:text-white font-normal'
               }`}
             >
               Custodian
             </button>
             <button
               onClick={() => switchRole('broker')}
-              className={`px-2 py-0.5 rounded text-[11px] font-semibold transition ${
-                currentUser?.role === 'broker' ? 'bg-[#ffbe00] text-[#0f3a98] font-bold' : 'text-blue-100 hover:text-white'
+              className={`px-2 py-0.5 rounded text-[11px] transition ${
+                currentUser?.role === 'broker' ? 'bg-[#ffbe00] text-[#0f3a98] font-medium' : 'text-blue-100 hover:text-white font-normal'
               }`}
             >
               Broker
             </button>
             <button
               onClick={() => switchRole('admin')}
-              className={`px-2 py-0.5 rounded text-[11px] font-semibold transition ${
-                currentUser?.role === 'admin' ? 'bg-[#ffbe00] text-[#0f3a98] font-bold' : 'text-blue-100 hover:text-white'
+              className={`px-2 py-0.5 rounded text-[11px] transition ${
+                currentUser?.role === 'admin' ? 'bg-[#ffbe00] text-[#0f3a98] font-medium' : 'text-blue-100 hover:text-white font-normal'
               }`}
             >
               Admin
@@ -79,7 +79,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
         </Link>
 
         {/* Desktop Nav Items */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
+        <nav className="hidden md:flex items-center gap-6 text-sm font-normal text-slate-700">
           <Link href="/" className="hover:text-[#0f3a98] transition flex items-center gap-2">
             <FaIcon icon="fa-solid fa-magnifying-glass" className="text-xs text-[#0f3a98]" />
             Find Hostels
@@ -88,7 +88,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
           {shortlistCount > 0 && onOpenCompare && (
             <button
               onClick={onOpenCompare}
-              className="text-[#0f3a98] bg-[#e8effc] px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-bold"
+              className="text-[#0f3a98] bg-[#e8effc] px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-normal"
             >
               <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
               Compare ({shortlistCount})
@@ -114,14 +114,14 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
           {currentUser ? (
             <div className="flex items-center gap-2.5">
               <div className="text-right hidden sm:block">
-                <div className="text-xs font-bold text-slate-900 flex items-center justify-end gap-1.5">
+                <div className="text-xs font-medium text-slate-900 flex items-center justify-end gap-1.5">
                   {currentUser.name}
                   {currentUser.isVerified && (
                     <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98]" />
                   )}
                 </div>
-                <div className="text-[11px] text-slate-500 capitalize flex items-center justify-end gap-1 font-medium">
-                  <span className="text-[#0f3a98] font-bold">{currentUser.role}</span>
+                <div className="text-[11px] text-slate-500 capitalize flex items-center justify-end gap-1 font-normal">
+                  <span className="text-[#0f3a98] font-medium">{currentUser.role}</span>
                   {currentUser.university && (
                     <span className="text-slate-400">• {currentUser.university}</span>
                   )}
@@ -139,14 +139,14 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onOpenAuth?.('login')}
-                className="px-3.5 py-1.5 rounded-lg border border-slate-300 hover:border-[#0f3a98] text-[#0f3a98] hover:bg-[#e8effc] text-xs sm:text-sm font-bold transition flex items-center gap-1.5"
+                className="px-3.5 py-1.5 rounded-lg border border-slate-300 hover:border-[#0f3a98] text-[#0f3a98] hover:bg-[#e8effc] text-xs sm:text-sm font-normal transition flex items-center gap-1.5"
               >
                 <FaIcon icon="fa-solid fa-arrow-right-to-bracket" className="text-xs text-[#0f3a98]" />
                 Login
               </button>
               <button
                 onClick={() => onOpenAuth?.('register')}
-                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs sm:text-sm font-bold shadow-sm transition flex items-center gap-1.5"
+                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs sm:text-sm font-normal shadow-sm transition flex items-center gap-1.5"
               >
                 <FaIcon icon="fa-solid fa-user-plus" className="text-xs text-[#ffbe00]" />
                 Register
@@ -170,7 +170,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
           <Link
             href="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 py-2 text-sm font-semibold text-slate-800"
+            className="flex items-center gap-2 py-2 text-sm font-medium text-slate-800"
           >
             <FaIcon icon="fa-solid fa-magnifying-glass" className="text-sm text-[#0f3a98]" />
             Explore Hostels
@@ -178,7 +178,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
           <Link
             href="/seller"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 py-2 text-sm font-semibold text-slate-800"
+            className="flex items-center gap-2 py-2 text-sm font-medium text-slate-800"
           >
             <FaIcon icon="fa-solid fa-building-user" className="text-sm text-[#0f3a98]" />
             Seller Portal (Custodians & Brokers)
@@ -186,7 +186,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
           <Link
             href="/admin"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 py-2 text-sm font-semibold text-slate-800"
+            className="flex items-center gap-2 py-2 text-sm font-medium text-slate-800"
           >
             <FaIcon icon="fa-solid fa-user-shield" className="text-sm text-[#0f3a98]" />
             Admin Panel (Verification & Merge Tool)

@@ -104,10 +104,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h3 className="font-extrabold text-[#0f3a98] text-lg">
+            <h3 className="font-medium text-[#0f3a98] text-lg">
               {mode === 'login' ? 'Welcome Back' : 'Create an Account'}
             </h3>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 font-normal">
               {mode === 'login' 
                 ? 'Sign in using phone number, email or Google' 
                 : 'Join Hostel Connect as a Student, Broker or Custodian'}
@@ -124,7 +124,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         {/* Form Body */}
         <div className="p-4 sm:p-6 space-y-4">
           {error && (
-            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2">
+            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
               <FaIcon icon="fa-solid fa-triangle-exclamation" className="shrink-0" />
               <span>{error}</span>
             </div>
@@ -135,7 +135,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             type="button"
             onClick={handleGoogleSignIn}
             disabled={googleLoading}
-            className="w-full py-2.5 px-4 rounded-xl border-2 border-slate-200 hover:border-[#0f3a98] hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition shadow-sm"
+            className="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:border-[#0f3a98] hover:bg-slate-50 text-slate-800 font-medium text-xs sm:text-sm flex items-center justify-center gap-2.5 transition shadow-sm"
           >
             <FaIcon icon="fa-brands fa-google" className="text-red-500 text-base" />
             <span>{googleLoading ? 'Connecting Google...' : 'Continue with Google'}</span>
@@ -144,7 +144,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           {/* Divider */}
           <div className="relative flex items-center justify-center">
             <div className="border-t border-slate-200 w-full"></div>
-            <span className="bg-white px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="bg-white px-3 text-[11px] font-medium text-slate-400 uppercase tracking-wider">
               Or with credentials
             </span>
             <div className="border-t border-slate-200 w-full"></div>
@@ -153,7 +153,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           {mode === 'login' ? (
             <form onSubmit={handleLogin} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
                   Phone Number or Email Address
                 </label>
                 <div className="relative">
@@ -166,15 +166,15 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     placeholder="+256 700 000 000 or name@domain.com"
                     value={phoneOrEmail}
                     onChange={e => setPhoneOrEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-medium"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-bold text-slate-700">Password</label>
-                  <span className="text-[11px] text-slate-400 font-medium">Optional for demo</span>
+                  <label className="block text-xs font-medium text-slate-700">Password</label>
+                  <span className="text-[11px] text-slate-400 font-normal">Optional for demo</span>
                 </div>
                 <div className="relative">
                   <span className="absolute left-3.5 top-2.5 text-slate-400">
@@ -185,7 +185,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     placeholder="••••••••"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                   />
                 </div>
               </div>
@@ -193,7 +193,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-bold text-sm shadow-sm transition flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-sm transition flex items-center justify-center gap-2"
               >
                 <span>{loading ? 'Signing in...' : 'Sign In'}</span>
                 <FaIcon icon="fa-solid fa-arrow-right" className="text-xs" />
@@ -202,7 +202,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           ) : (
             <form onSubmit={handleRegister} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
                 <div className="relative">
                   <span className="absolute left-3.5 top-2.5 text-slate-400">
                     <FaIcon icon="fa-solid fa-id-card" className="text-xs" />
@@ -213,18 +213,18 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     placeholder="e.g. Mary Atuhaire"
                     value={name}
                     onChange={e => setName(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Select Role</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Select Role</label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setRole('student')}
-                    className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2 rounded-lg border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
                       role === 'student'
                         ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98] ring-1 ring-[#0f3a98]'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300'
@@ -236,7 +236,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   <button
                     type="button"
                     onClick={() => setRole('custodian')}
-                    className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2 rounded-lg border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
                       role === 'custodian'
                         ? 'border-[#0f3a98] bg-[#0f3a98] text-[#ffbe00]'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300'
@@ -248,7 +248,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                   <button
                     type="button"
                     onClick={() => setRole('broker')}
-                    className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2 rounded-lg border text-xs font-medium flex flex-col items-center gap-1.5 transition ${
                       role === 'broker'
                         ? 'border-[#ffbe00] bg-amber-50 text-amber-900 ring-1 ring-[#ffbe00]'
                         : 'border-slate-200 text-slate-600 hover:border-slate-300'
@@ -261,7 +261,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
                   Phone Number or Email Address
                 </label>
                 <div className="relative">
@@ -274,19 +274,19 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     placeholder="+256 700 000 000 or student@mak.ac.ug"
                     value={phoneOrEmail}
                     onChange={e => setPhoneOrEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                   />
                 </div>
               </div>
 
               {role === 'student' ? (
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">University & Course</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">University & Course</label>
                   <div className="space-y-2">
                     <select
                       value={university}
                       onChange={e => setUniversity(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-medium"
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                     >
                       <option>Makerere University</option>
                       <option>MUBS (Makerere Business School)</option>
@@ -299,27 +299,27 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                       placeholder="e.g. Bachelor of Commerce (Year 1)"
                       value={course}
                       onChange={e => setCourse(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                     />
                   </div>
                 </div>
               ) : (
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Business Name & NIN / ID</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Business Name & NIN / ID</label>
                   <div className="space-y-2">
                     <input
                       type="text"
                       placeholder="Hostel / Agency Business Name"
                       value={businessName}
                       onChange={e => setBusinessName(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                     />
                     <input
                       type="text"
                       placeholder="National ID Number (NIN)"
                       value={idNumber}
                       onChange={e => setIdNumber(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                     />
                   </div>
                 </div>
@@ -328,7 +328,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-bold text-sm shadow-sm transition flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-sm transition flex items-center justify-center gap-2"
               >
                 <span>{loading ? 'Registering...' : 'Create Account'}</span>
                 <FaIcon icon="fa-solid fa-arrow-right" className="text-xs" />
@@ -347,7 +347,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     setMode('register');
                     setError('');
                   }}
-                  className="font-bold text-[#0f3a98] hover:underline"
+                  className="font-medium text-[#0f3a98] hover:underline"
                 >
                   Create an account
                 </button>
@@ -361,7 +361,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     setMode('login');
                     setError('');
                   }}
-                  className="font-bold text-[#0f3a98] hover:underline"
+                  className="font-medium text-[#0f3a98] hover:underline"
                 >
                   Sign in
                 </button>

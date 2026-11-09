@@ -225,14 +225,14 @@ export default function SellerPortalPage() {
         <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
           <div>
             <div className="flex items-center gap-2">
-              <span className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded ${
+              <span className={`text-[11px] font-medium uppercase tracking-wider px-2.5 py-0.5 rounded ${
                 currentUser?.role === 'custodian' ? 'bg-[#e8effc] text-[#0f3a98]' : 'bg-amber-100 text-amber-900'
               }`}>
                 {currentUser?.role === 'custodian' ? 'Custodian Dashboard' : 'Campus Scout / Broker Dashboard'}
               </span>
               <span className="text-xs text-slate-400 font-medium">• Semester Intake Management</span>
             </div>
-            <h1 className="text-2xl font-extrabold text-[#0f3a98] mt-1">
+            <h1 className="text-2xl font-medium text-[#0f3a98] mt-1">
               {currentUser?.businessName || currentUser?.name || 'Seller Hub'}
             </h1>
             <p className="text-xs text-slate-500 font-medium">
@@ -243,7 +243,7 @@ export default function SellerPortalPage() {
           </div>
 
           {/* Quick tab switcher */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-medium">
             <button
               onClick={() => setActiveTab('listings')}
               className={`px-3 py-2 rounded-lg transition ${
@@ -270,7 +270,7 @@ export default function SellerPortalPage() {
             </button>
             <button
               onClick={() => setActiveTab('add')}
-              className={`px-3 py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] font-extrabold transition flex items-center gap-1.5 shadow-sm`}
+              className={`px-3 py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] font-medium transition flex items-center gap-1.5 shadow-sm`}
             >
               <FaIcon icon="fa-solid fa-plus" className="text-xs" />
               Add Hostel
@@ -283,13 +283,13 @@ export default function SellerPortalPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-extrabold text-[#0f3a98]">Active Accommodations</h2>
+                <h2 className="text-lg font-medium text-[#0f3a98]">Active Accommodations</h2>
                 <p className="text-xs text-slate-500 font-medium">Update vacancy numbers or manage room rents</p>
               </div>
             </div>
 
             {updateMsg && (
-              <div className="p-3 bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-bold rounded-xl flex items-center gap-2">
+              <div className="p-3 bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-medium rounded-xl flex items-center gap-2">
                 <FaIcon icon="fa-solid fa-circle-check" className="text-[#0f3a98]" />
                 <span>{updateMsg}</span>
               </div>
@@ -305,17 +305,17 @@ export default function SellerPortalPage() {
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
+                          <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
                             {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
                           </span>
                           <span className="text-xs text-slate-500 font-medium">{hostel.area}</span>
                         </div>
-                        <h3 className="text-lg font-extrabold text-[#0f3a98] mt-1">{hostel.name}</h3>
+                        <h3 className="text-lg font-medium text-[#0f3a98] mt-1">{hostel.name}</h3>
                         <p className="text-xs text-slate-500 font-medium">{hostel.distanceCampusApprox}</p>
                       </div>
 
                       <div className="text-right">
-                        <div className="text-[#0f3a98] font-extrabold text-lg">
+                        <div className="text-[#0f3a98] font-medium text-lg">
                           {availableRooms} / {totalRooms}
                         </div>
                         <div className="text-[11px] text-slate-400 font-medium">Rooms Vacant</div>
@@ -324,7 +324,7 @@ export default function SellerPortalPage() {
 
                     {/* Room inventory quick editor */}
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
-                      <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                      <div className="flex items-center justify-between text-xs font-medium text-slate-700">
                         <span>Room Types & Availability</span>
                         <span className="text-slate-400">BR-1: Owner sets vacancy</span>
                       </div>
@@ -332,10 +332,10 @@ export default function SellerPortalPage() {
                       {hostel.rooms.map(room => (
                         <div key={room.id} className="flex items-center justify-between text-xs py-1 border-b border-slate-200/50">
                           <div>
-                            <span className="font-bold text-slate-800">{room.name}</span>
+                            <span className="font-medium text-slate-800">{room.name}</span>
                             <span className="text-slate-500 ml-2">({formatUGX(room.rentUgx)})</span>
                           </div>
-                          <span className="font-extrabold text-[#0f3a98] bg-white px-2 py-0.5 rounded border border-slate-200">
+                          <span className="font-medium text-[#0f3a98] bg-white px-2 py-0.5 rounded border border-slate-200">
                             {room.roomsAvailable} left
                           </span>
                         </div>
@@ -359,7 +359,7 @@ export default function SellerPortalPage() {
                           />
                           <button
                             onClick={() => handleUpdateRooms(hostel.id)}
-                            className="px-3 py-1 bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold rounded transition"
+                            className="px-3 py-1 bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium rounded transition"
                           >
                             Update Vacancy
                           </button>
@@ -382,7 +382,7 @@ export default function SellerPortalPage() {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-lg font-extrabold text-[#0f3a98]">Student Inquiries & Leads (FR-9.1)</h2>
+                <h2 className="text-lg font-medium text-[#0f3a98]">Student Inquiries & Leads (FR-9.1)</h2>
                 <p className="text-xs text-slate-500 font-medium">
                   Track real students reaching your listings via WhatsApp, phone calls, and saves
                 </p>
@@ -392,14 +392,14 @@ export default function SellerPortalPage() {
                 <select
                   value={selectedHostelForAnalytics}
                   onChange={e => setSelectedHostelForAnalytics(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg border text-xs font-bold bg-white text-[#0f3a98]"
+                  className="px-3 py-1.5 rounded-lg border text-xs font-medium bg-white text-[#0f3a98]"
                 >
                   {hostels.map(h => (
                     <option key={h.id} value={h.id}>{h.name}</option>
                   ))}
                 </select>
 
-                <div className="flex items-center bg-slate-200 p-0.5 rounded-lg text-xs font-bold">
+                <div className="flex items-center bg-slate-200 p-0.5 rounded-lg text-xs font-medium">
                   {(['today', '7days', 'semester'] as const).map(t => (
                     <button
                       key={t}
@@ -419,21 +419,21 @@ export default function SellerPortalPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between text-slate-400 mb-2">
-                  <span className="text-xs font-bold text-slate-500">Listing Views</span>
+                  <span className="text-xs font-medium text-slate-500">Listing Views</span>
                   <FaIcon icon="fa-solid fa-eye" className="text-sm text-[#0f3a98]" />
                 </div>
-                <div className="text-2xl font-extrabold text-[#0f3a98]">
+                <div className="text-2xl font-medium text-[#0f3a98]">
                   {analyticsData?.views || 1420}
                 </div>
-                <div className="text-[11px] text-[#0f3a98] font-bold mt-1">↑ 18% this week</div>
+                <div className="text-[11px] text-[#0f3a98] font-medium mt-1">↑ 18% this week</div>
               </div>
 
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between text-slate-400 mb-2">
-                  <span className="text-xs font-bold text-slate-500">WhatsApp Inquiries</span>
+                  <span className="text-xs font-medium text-slate-500">WhatsApp Inquiries</span>
                   <FaIcon icon="fa-brands fa-whatsapp" className="text-base text-[#ffbe00]" />
                 </div>
-                <div className="text-2xl font-extrabold text-[#0f3a98]">
+                <div className="text-2xl font-medium text-[#0f3a98]">
                   {analyticsData?.whatsAppTaps || 48}
                 </div>
                 <div className="text-[11px] text-slate-400 mt-1 font-medium">Direct wa.me chats</div>
@@ -441,10 +441,10 @@ export default function SellerPortalPage() {
 
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between text-slate-400 mb-2">
-                  <span className="text-xs font-bold text-slate-500">Phone Calls</span>
+                  <span className="text-xs font-medium text-slate-500">Phone Calls</span>
                   <FaIcon icon="fa-solid fa-phone" className="text-sm text-[#0f3a98]" />
                 </div>
-                <div className="text-2xl font-extrabold text-[#0f3a98]">
+                <div className="text-2xl font-medium text-[#0f3a98]">
                   {analyticsData?.calls || 26}
                 </div>
                 <div className="text-[11px] text-slate-400 mt-1 font-medium">Direct dial attempts</div>
@@ -452,10 +452,10 @@ export default function SellerPortalPage() {
 
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between text-slate-400 mb-2">
-                  <span className="text-xs font-bold text-slate-500">Student Saves</span>
+                  <span className="text-xs font-medium text-slate-500">Student Saves</span>
                   <FaIcon icon="fa-solid fa-heart" className="text-sm text-rose-500" />
                 </div>
-                <div className="text-2xl font-extrabold text-[#0f3a98]">
+                <div className="text-2xl font-medium text-[#0f3a98]">
                   {analyticsData?.saves || 312}
                 </div>
                 <div className="text-[11px] text-slate-400 mt-1 font-medium">Added to shortlists</div>
@@ -466,7 +466,7 @@ export default function SellerPortalPage() {
             <div className="p-4 rounded-2xl bg-[#e8effc] border border-blue-200 flex items-center gap-3">
               <FaIcon icon="fa-solid fa-wand-magic-sparkles" className="text-lg text-[#ffbe00] shrink-0" />
               <div>
-                <h4 className="font-bold text-sm text-[#0f3a98]">Weekly Performance Summary (FR-9.2)</h4>
+                <h4 className="font-medium text-sm text-[#0f3a98]">Weekly Performance Summary (FR-9.2)</h4>
                 <p className="text-xs text-slate-700 mt-0.5 font-medium">
                   "Your hostel received <strong>{analyticsData?.views || 1420} views</strong> and <strong>{(analyticsData?.whatsAppTaps || 48) + (analyticsData?.calls || 26)} direct enquiries</strong> this week. Availability confirmed 2 days ago."
                 </p>
@@ -476,15 +476,15 @@ export default function SellerPortalPage() {
             {/* FR-9.3 Broker Breakdown for Custodians */}
             {currentUser?.role === 'custodian' && (
               <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
-                <h3 className="text-base font-extrabold text-[#0f3a98]">Broker Agent Contribution (FR-9.3)</h3>
+                <h3 className="text-base font-medium text-[#0f3a98]">Broker Agent Contribution (FR-9.3)</h3>
                 <div className="space-y-2">
                   <div className="p-3 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
                       <FaIcon icon="fa-solid fa-users" className="text-xs text-[#0f3a98]" />
-                      <span className="font-bold text-slate-800">Brian Kigozi (Campus Scout)</span>
-                      <span className="bg-[#ffbe00] text-[#0f3a98] px-1.5 py-0.5 rounded text-[10px] font-bold">Authorised</span>
+                      <span className="font-medium text-slate-800">Brian Kigozi (Campus Scout)</span>
+                      <span className="bg-[#ffbe00] text-[#0f3a98] px-1.5 py-0.5 rounded text-[10px] font-medium">Authorised</span>
                     </div>
-                    <div className="font-extrabold text-[#0f3a98]">22 Student Inquiries Driven</div>
+                    <div className="font-medium text-[#0f3a98]">22 Student Inquiries Driven</div>
                   </div>
                 </div>
               </div>
@@ -498,30 +498,30 @@ export default function SellerPortalPage() {
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
+                  <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
                     FR-6.1 to FR-6.6 Specifications
                   </span>
-                  <h2 className="text-xl font-extrabold text-[#0f3a98] mt-1">Per-Semester Subscription</h2>
+                  <h2 className="text-xl font-medium text-[#0f3a98] mt-1">Per-Semester Subscription</h2>
                   <p className="text-xs text-slate-500 font-medium">
                     Hostel Connect collects semester subscriptions from sellers. Students are never charged.
                   </p>
                 </div>
 
                 {subscription ? (
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                     subscription.status === 'active' ? 'bg-[#0f3a98] text-[#ffbe00]' : 'bg-amber-100 text-amber-800'
                   }`}>
                     {subscription.isTrial ? 'Free Trial Active' : 'Semester Pass Active'}
                   </span>
                 ) : (
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#ffbe00] text-[#0f3a98]">
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-[#ffbe00] text-[#0f3a98]">
                     30-Day Free Trial
                   </span>
                 )}
               </div>
 
               {paymentSuccessMsg && (
-                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-bold flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-medium flex items-center gap-2">
                   <FaIcon icon="fa-solid fa-circle-check" className="text-[#0f3a98]" />
                   <span>{paymentSuccessMsg}</span>
                 </div>
@@ -542,9 +542,9 @@ export default function SellerPortalPage() {
                       }`}
                     >
                       <div>
-                        <div className="text-xs font-bold text-slate-500 uppercase">{plan.role}</div>
-                        <h3 className="font-extrabold text-slate-900 text-base mt-1">{plan.name}</h3>
-                        <div className="text-2xl font-extrabold text-[#0f3a98] mt-2">
+                        <div className="text-xs font-medium text-slate-500 uppercase">{plan.role}</div>
+                        <h3 className="font-medium text-slate-900 text-base mt-1">{plan.name}</h3>
+                        <div className="text-2xl font-medium text-[#0f3a98] mt-2">
                           {formatUGX(plan.priceUgx)}
                         </div>
                         <div className="text-[11px] text-slate-500 font-medium">per semester (120 days)</div>
@@ -560,7 +560,7 @@ export default function SellerPortalPage() {
                       </div>
 
                       <div className="mt-4 pt-3 border-t border-slate-200 text-center">
-                        <span className={`text-xs font-bold ${isSelected ? 'text-[#0f3a98]' : 'text-slate-500'}`}>
+                        <span className={`text-xs font-medium ${isSelected ? 'text-[#0f3a98]' : 'text-slate-500'}`}>
                           {isSelected ? '✓ Plan Selected' : 'Tap to Select'}
                         </span>
                       </div>
@@ -571,7 +571,7 @@ export default function SellerPortalPage() {
 
               {/* MTN MoMo & Airtel Money Checkout Form */}
               <div className="mt-6 pt-6 border-t border-slate-200">
-                <h3 className="font-extrabold text-[#0f3a98] text-base mb-1">
+                <h3 className="font-medium text-[#0f3a98] text-base mb-1">
                   Pay via Mobile Money (MTN MoMo / Airtel Money)
                 </h3>
                 <p className="text-xs text-slate-500 mb-4 font-medium">
@@ -580,12 +580,12 @@ export default function SellerPortalPage() {
 
                 <form onSubmit={handleProcessMomoPayment} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Payment Provider</label>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Payment Provider</label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => setMomoProvider('mtn_momo')}
-                        className={`p-2 rounded-lg border text-xs font-bold flex items-center justify-center gap-1.5 transition ${
+                        className={`p-2 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition ${
                           momoProvider === 'mtn_momo'
                             ? 'border-[#ffbe00] bg-[#fff9e6] text-[#0f3a98] ring-2 ring-[#ffbe00]'
                             : 'border-slate-200 text-slate-600'
@@ -597,7 +597,7 @@ export default function SellerPortalPage() {
                       <button
                         type="button"
                         onClick={() => setMomoProvider('airtel_money')}
-                        className={`p-2 rounded-lg border text-xs font-bold flex items-center justify-center gap-1.5 transition ${
+                        className={`p-2 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition ${
                           momoProvider === 'airtel_money'
                             ? 'border-rose-400 bg-rose-50 text-rose-900 ring-2 ring-rose-400'
                             : 'border-slate-200 text-slate-600'
@@ -610,7 +610,7 @@ export default function SellerPortalPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Mobile Money Number</label>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Mobile Money Number</label>
                     <input
                       type="text"
                       required
@@ -624,7 +624,7 @@ export default function SellerPortalPage() {
                     <button
                       type="submit"
                       disabled={paymentProcessing}
-                      className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs font-bold shadow-sm transition"
+                      className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs font-medium shadow-sm transition"
                     >
                       {paymentProcessing ? 'Sending MoMo Prompt...' : 'Pay Subscription via MoMo'}
                     </button>
@@ -640,12 +640,12 @@ export default function SellerPortalPage() {
           <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm max-w-3xl mx-auto space-y-6">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
+                <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
                   Section 5 Specification
                 </span>
                 <span className="text-xs text-slate-500 font-medium">Duplicate Prevention Protected</span>
               </div>
-              <h2 className="text-xl font-extrabold text-[#0f3a98] mt-1">List a New Campus Hostel</h2>
+              <h2 className="text-xl font-medium text-[#0f3a98] mt-1">List a New Campus Hostel</h2>
               <p className="text-xs text-slate-500 font-medium">
                 A hostel exists once per physical building. If an existing building matches your submission, you will attach as an offer.
               </p>
@@ -656,13 +656,13 @@ export default function SellerPortalPage() {
                 <div className="flex items-start gap-3">
                   <FaIcon icon="fa-solid fa-triangle-exclamation" className="text-amber-700 text-lg shrink-0 mt-0.5" />
                   <div>
-                    <h3 className="text-base font-extrabold text-amber-950">
+                    <h3 className="text-base font-medium text-amber-950">
                       Duplicate Detected: Is this the same hostel? (Section 5)
                     </h3>
                     <p className="text-xs text-amber-900 mt-1 font-medium">
                       Our duplicate prevention engine detected high similarity with an existing registered building:
                     </p>
-                    <ul className="mt-2 list-disc list-inside text-xs font-bold text-amber-950 space-y-1">
+                    <ul className="mt-2 list-disc list-inside text-xs font-medium text-amber-950 space-y-1">
                       {duplicateWarning.matchReasons?.map((r: string, i: number) => (
                         <li key={i}>{r}</li>
                       ))}
@@ -678,7 +678,7 @@ export default function SellerPortalPage() {
                       className="w-16 h-12 object-cover rounded-lg"
                     />
                     <div>
-                      <h4 className="font-extrabold text-sm text-slate-900">
+                      <h4 className="font-medium text-sm text-slate-900">
                         {duplicateWarning.matchedHostel.name}
                       </h4>
                       <p className="text-xs text-slate-500 font-medium">
@@ -689,7 +689,7 @@ export default function SellerPortalPage() {
                 )}
 
                 <div className="space-y-3 pt-2 border-t border-amber-200">
-                  <p className="text-xs text-amber-950 font-bold">
+                  <p className="text-xs text-amber-950 font-medium">
                     If this is a brand new separate building, enter a reason for admin review:
                   </p>
                   <textarea
@@ -703,7 +703,7 @@ export default function SellerPortalPage() {
                     <button
                       type="button"
                       onClick={() => setDuplicateWarning(null)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-amber-100 hover:bg-amber-200"
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-amber-100 hover:bg-amber-200"
                     >
                       Yes, it is the same (Cancel new)
                     </button>
@@ -711,7 +711,7 @@ export default function SellerPortalPage() {
                       type="button"
                       disabled={!bypassReason.trim() || formSubmitting}
                       onClick={(e) => handleAddHostel(e, true)}
-                      className="px-4 py-1.5 rounded-lg bg-[#0f3a98] text-[#ffbe00] text-xs font-extrabold shadow-sm transition disabled:opacity-50"
+                      className="px-4 py-1.5 rounded-lg bg-[#0f3a98] text-[#ffbe00] text-xs font-medium shadow-sm transition disabled:opacity-50"
                     >
                       No, submit with reason for Admin Review
                     </button>
@@ -723,7 +723,7 @@ export default function SellerPortalPage() {
             <form onSubmit={e => handleAddHostel(e, false)} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Hostel Name</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Hostel Name</label>
                   <input
                     type="text"
                     required
@@ -735,11 +735,11 @@ export default function SellerPortalPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">University Campus</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">University Campus</label>
                   <select
                     value={formCampus}
                     onChange={e => setFormCampus(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-semibold text-slate-700"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium text-slate-700"
                   >
                     <option>Makerere University</option>
                     <option>MUBS</option>
@@ -750,7 +750,7 @@ export default function SellerPortalPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Description</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Description</label>
                 <textarea
                   required
                   rows={3}
@@ -763,7 +763,7 @@ export default function SellerPortalPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Area / Neighborhood</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Area / Neighborhood</label>
                   <input
                     type="text"
                     required
@@ -774,7 +774,7 @@ export default function SellerPortalPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Prominent Landmark</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Prominent Landmark</label>
                   <input
                     type="text"
                     placeholder="e.g. Caltec Academy"
@@ -784,7 +784,7 @@ export default function SellerPortalPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Contact Phone</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Contact Phone</label>
                   <input
                     type="text"
                     required
@@ -798,25 +798,25 @@ export default function SellerPortalPage() {
               {/* Room Rent & Broker access fee fields */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Single Room Rent (UGX)</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Single Room Rent (UGX)</label>
                   <input
                     type="number"
                     value={formSingleRent}
                     onChange={e => setFormSingleRent(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-semibold"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Double Room Rent (UGX)</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Double Room Rent (UGX)</label>
                   <input
                     type="number"
                     value={formDoubleRent}
                     onChange={e => setFormDoubleRent(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-semibold"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
                     Broker Access Fee (FR-4.4)
                   </label>
                   <input
@@ -824,7 +824,7 @@ export default function SellerPortalPage() {
                     placeholder="0 or positive UGX"
                     value={formAccessFee}
                     onChange={e => setFormAccessFee(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-semibold"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium"
                   />
                 </div>
               </div>
@@ -832,7 +832,7 @@ export default function SellerPortalPage() {
               <button
                 type="submit"
                 disabled={formSubmitting}
-                className="w-full py-3 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-extrabold text-sm shadow-md transition"
+                className="w-full py-3 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-md transition"
               >
                 {formSubmitting ? 'Running Duplicate Checks...' : 'Verify & Publish Listing'}
               </button>

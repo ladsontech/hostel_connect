@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,11 +8,19 @@
   --font-poppins: 'Poppins', sans-serif;
 }
 
-body {
+body, button, input, select, textarea {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+}
+
+body {
   color: #1e293b;
   background: #f8fafc;
   -webkit-tap-highlight-color: transparent;
+}
+
+b, strong {
+  font-weight: 500;
 }
 
 /* Custom scrollbars */

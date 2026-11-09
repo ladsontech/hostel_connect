@@ -86,7 +86,7 @@ export default function FilterBar({
           <select
             value={filters.campus}
             onChange={e => onChange({ ...filters, campus: e.target.value === 'All Universities' ? '' : e.target.value })}
-            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-semibold text-slate-700"
+            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-medium text-slate-700"
           >
             {campuses.map(c => (
               <option key={c} value={c === 'All Universities' ? '' : c}>
@@ -100,7 +100,7 @@ export default function FilterBar({
         <div className="sm:col-span-3 flex items-center gap-2 justify-end">
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`px-3 py-2.5 rounded-xl border text-sm font-bold flex items-center gap-2 transition ${
+            className={`px-3 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition ${
               showAdvanced || filters.roomType || filters.amenities.length > 0
                 ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98]'
                 : 'border-slate-200 hover:border-slate-300 text-slate-700'
@@ -109,7 +109,7 @@ export default function FilterBar({
             <FaIcon icon="fa-solid fa-sliders" className="text-xs" />
             <span>Filters</span>
             {filters.amenities.length > 0 && (
-              <span className="w-5 h-5 rounded-full bg-[#ffbe00] text-[#0f3a98] text-[11px] flex items-center justify-center font-extrabold">
+              <span className="w-5 h-5 rounded-full bg-[#ffbe00] text-[#0f3a98] text-[11px] flex items-center justify-center font-medium">
                 {filters.amenities.length}
               </span>
             )}
@@ -118,7 +118,7 @@ export default function FilterBar({
           <select
             value={filters.sort}
             onChange={e => onChange({ ...filters, sort: e.target.value })}
-            className="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+            className="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
           >
             <option value="relevance">Sort: Recommended</option>
             <option value="price_asc">Price: Low to High</option>
@@ -134,7 +134,7 @@ export default function FilterBar({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Room Type */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">Room Type</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1.5">Room Type</label>
               <select
                 value={filters.roomType}
                 onChange={e => onChange({ ...filters, roomType: e.target.value })}
@@ -150,9 +150,9 @@ export default function FilterBar({
 
             {/* Max Budget (UGX) */}
             <div>
-              <div className="flex justify-between text-xs font-bold text-slate-700 mb-1.5">
+              <div className="flex justify-between text-xs font-medium text-slate-700 mb-1.5">
                 <span>Budget Max:</span>
-                <span className="text-[#0f3a98] font-extrabold">{formatUGX(filters.maxPrice)}</span>
+                <span className="text-[#0f3a98] font-medium">{formatUGX(filters.maxPrice)}</span>
               </div>
               <input
                 type="range"
@@ -171,7 +171,7 @@ export default function FilterBar({
 
             {/* Gender Policy */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">Gender Policy</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1.5">Gender Policy</label>
               <select
                 value={filters.gender}
                 onChange={e => onChange({ ...filters, gender: e.target.value })}
@@ -187,7 +187,7 @@ export default function FilterBar({
 
           {/* Amenities Checklist with FontAwesome Icons */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-2">Must-Have Amenities</label>
+            <label className="block text-xs font-medium text-slate-700 mb-2">Must-Have Amenities</label>
             <div className="flex flex-wrap gap-2">
               {[
                 { id: 'water', label: 'Constant Water', icon: 'fa-solid fa-droplet' },
@@ -203,7 +203,7 @@ export default function FilterBar({
                   <button
                     key={amenity.id}
                     onClick={() => toggleAmenity(amenity.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 border transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 border transition ${
                       active
                         ? 'border-[#0f3a98] bg-[#0f3a98] text-[#ffbe00] shadow-sm'
                         : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300'
@@ -219,12 +219,12 @@ export default function FilterBar({
 
           {/* Action Row */}
           <div className="flex items-center justify-between pt-2">
-            <span className="text-xs font-semibold text-slate-600">
+            <span className="text-xs font-medium text-slate-600">
               Showing <strong className="text-[#0f3a98]">{totalResults}</strong> matching hostels
             </span>
             <button
               onClick={onReset}
-              className="text-xs font-bold text-rose-600 hover:underline"
+              className="text-xs font-medium text-rose-600 hover:underline"
             >
               Reset all filters
             </button>
