@@ -79,20 +79,13 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
 
       {/* Main Nav */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Brand */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-xl bg-[#0f3a98] flex items-center justify-center text-[#ffbe00] shadow-sm">
-            <Building2 className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-lg text-[#0f3a98] tracking-tight">Hostel Connect</span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
-                Uganda
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 font-medium -mt-1">Verified campus accommodations</p>
-          </div>
+        {/* Brand Logo */}
+        <Link href="/" className="flex items-center py-1">
+          <img
+            src="/logo.png"
+            alt="Hostel Connect"
+            className="h-10 sm:h-11 w-auto object-contain"
+          />
         </Link>
 
         {/* Desktop Nav Items */}

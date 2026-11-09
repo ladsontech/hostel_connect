@@ -365,7 +365,7 @@ export default function HomePage() {
       <footer className="mt-16 bg-white border-t border-slate-200 py-8 px-4 sm:px-6 text-slate-500 text-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-[#0f3a98]" />
+            <img src="/logo.png" alt="Hostel Connect" className="h-6 w-auto object-contain" />
             <span className="font-bold text-[#0f3a98]">Hostel Connect Uganda</span>
             <span>• Compliant with Uganda Data Protection and Privacy Act, 2019</span>
           </div>
