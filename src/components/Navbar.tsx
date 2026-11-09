@@ -94,19 +94,6 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
               Compare ({shortlistCount})
             </button>
           )}
-
-          <Link href="/seller" className="hover:text-[#0f3a98] transition flex items-center gap-2">
-            <FaIcon icon="fa-solid fa-building-user" className="text-xs text-[#0f3a98]" />
-            Seller Portal
-            {currentUser?.role === 'custodian' || currentUser?.role === 'broker' ? (
-              <span className="w-2 h-2 rounded-full bg-[#ffbe00]"></span>
-            ) : null}
-          </Link>
-
-          <Link href="/admin" className="hover:text-[#0f3a98] transition flex items-center gap-2">
-            <FaIcon icon="fa-solid fa-user-shield" className="text-xs text-[#0f3a98]" />
-            Admin Panel
-          </Link>
         </nav>
 
         {/* User Account / Login & Register Action */}
@@ -174,22 +161,6 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
           >
             <FaIcon icon="fa-solid fa-magnifying-glass" className="text-sm text-[#0f3a98]" />
             Explore Hostels
-          </Link>
-          <Link
-            href="/seller"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 py-2 text-sm font-medium text-slate-800"
-          >
-            <FaIcon icon="fa-solid fa-building-user" className="text-sm text-[#0f3a98]" />
-            Seller Portal (Custodians & Brokers)
-          </Link>
-          <Link
-            href="/admin"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 py-2 text-sm font-medium text-slate-800"
-          >
-            <FaIcon icon="fa-solid fa-user-shield" className="text-sm text-[#0f3a98]" />
-            Admin Panel (Verification & Merge Tool)
           </Link>
         </div>
       )}
