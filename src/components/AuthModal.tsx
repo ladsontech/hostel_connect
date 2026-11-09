@@ -15,12 +15,18 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   const { loginWithCredentials, loginWithGoogle, registerUser } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   
-  // Form fields
-  const [phoneOrEmail, setPhoneOrEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // Login fields
+  const [loginIdentifier, setLoginIdentifier] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
-  const [name, setName] = useState('');
+
+  // Register fields
+  const [regName, setRegName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPhone, setRegPhone] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [showRegPassword, setShowRegPassword] = useState(false);
   const [role, setRole] = useState<UserRole>('student');
   const [university, setUniversity] = useState('Makerere University');
   const [course, setCourse] = useState('');
@@ -45,7 +51,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     setError('');
     setLoading(true);
 
-    const res = await loginWithCredentials(phoneOrEmail, password);
+    const res = await loginWithCredentials(loginIdentifier, loginPassword);
     setLoading(false);
     if (res.success) {
       onClose();
@@ -68,12 +74,16 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
+    if (!regName.trim()) {
       setError('Please provide your full name');
       return;
     }
-    if (!phoneOrEmail.trim()) {
-      setError('Please provide your phone number or email address');
+    if (!regEmail.trim()) {
+      setError('Please provide your email address for Google sign-in and account access');
+      return;
+    }
+    if (!regEmail.includes('@') || !regEmail.includes('.')) {
+      setError('Please enter a valid email address');
       return;
     }
 
@@ -81,9 +91,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     setLoading(true);
 
     const res = await registerUser({
-      name,
-      phoneOrEmail,
-      password,
+      name: regName.trim(),
+      email: regEmail.trim(),
+      phone: regPhone.trim() || undefined,
+      phoneOrEmail: regEmail.trim(),
+      password: regPassword,
       role,
       university: role === 'student' ? university : undefined,
       course: role === 'student' ? course : undefined,
@@ -112,7 +124,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           <FaIcon icon="fa-solid fa-xmark" className="text-xs text-white" />
         </button>
 
-        {/* Top Header with Hostel Connect Logo & Switcher (Fixed at top) */}
+        {/* Top Header with Hostel Connect Logo & Switcher */}
         <div className="pt-6 pb-3 px-6 sm:px-8 text-center bg-white border-b border-slate-100 shrink-0">
           <div className="flex justify-center mb-2.5">
             <img
@@ -166,127 +178,130 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             </div>
           )}
 
-          {/* One-Click Google Authentication */}
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            disabled={googleLoading}
-            className="w-full py-2.5 px-4 rounded-xl border border-slate-300 hover:border-[#0f3a98] hover:bg-slate-50 text-slate-700 font-medium text-xs sm:text-sm flex items-center justify-center gap-2.5 transition shadow-sm bg-white"
-          >
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                fill="#4285F4"
-                d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
-              />
-              <path
-                fill="#EA4335"
-                d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
-              />
-            </svg>
-            <span>{googleLoading ? 'Connecting Google...' : 'Continue with Google'}</span>
-          </button>
-
-          {/* Clean Divider */}
-          <div className="relative flex items-center justify-center my-3">
-            <div className="border-t border-slate-200 w-full"></div>
-            <span className="bg-white px-3 text-[11px] font-normal text-slate-400 uppercase tracking-normal whitespace-nowrap shrink-0">
-              or with credentials
-            </span>
-            <div className="border-t border-slate-200 w-full"></div>
-          </div>
-
+          {/* ================= LOGIN MODE ================= */}
           {mode === 'login' ? (
-            <form onSubmit={handleLogin} className="space-y-3.5">
-              {/* Phone / Email Input */}
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Phone Number or Email
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
-                    <FaIcon icon="fa-solid fa-user" className="text-xs" />
-                  </span>
-                  <input
-                    type="text"
-                    required
-                    placeholder="+256 700 000 000 or email@domain.com"
-                    value={phoneOrEmail}
-                    onChange={e => setPhoneOrEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] focus:border-transparent font-normal bg-white"
+            <div className="space-y-4">
+              {/* One-Click Google Authentication (Only in Login) */}
+              <button
+                type="button"
+                onClick={handleGoogleSignIn}
+                disabled={googleLoading}
+                className="w-full py-2.5 px-4 rounded-xl border border-slate-300 hover:border-[#0f3a98] hover:bg-slate-50 text-slate-700 font-medium text-xs sm:text-sm flex items-center justify-center gap-2.5 transition shadow-sm bg-white"
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill="#4285F4"
+                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
                   />
-                </div>
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+                  />
+                </svg>
+                <span>{googleLoading ? 'Connecting Google...' : 'Continue with Google'}</span>
+              </button>
+
+              {/* Clean Divider */}
+              <div className="relative flex items-center justify-center my-3">
+                <div className="border-t border-slate-200 w-full"></div>
+                <span className="bg-white px-3 text-[11px] font-normal text-slate-400 uppercase tracking-normal whitespace-nowrap shrink-0">
+                  or with credentials
+                </span>
+                <div className="border-t border-slate-200 w-full"></div>
               </div>
 
-              {/* Password Input */}
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-medium text-slate-700">Password</label>
-                  <span className="text-[11px] text-slate-400 font-normal">Optional for demo</span>
+              {/* Login Form */}
+              <form onSubmit={handleLogin} className="space-y-3.5">
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                    Phone Number or Email
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                      <FaIcon icon="fa-solid fa-user" className="text-xs" />
+                    </span>
+                    <input
+                      type="text"
+                      required
+                      placeholder="+256 700 000 000 or email@domain.com"
+                      value={loginIdentifier}
+                      onChange={e => setLoginIdentifier(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] focus:border-transparent font-normal bg-white"
+                    />
+                  </div>
                 </div>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
-                    <FaIcon icon="fa-solid fa-lock" className="text-xs" />
-                  </span>
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    className="w-full pl-9 pr-10 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] focus:border-transparent font-normal bg-white"
-                  />
+
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-xs font-medium text-slate-700">Password</label>
+                    <span className="text-[11px] text-slate-400 font-normal">Optional for demo</span>
+                  </div>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                      <FaIcon icon="fa-solid fa-lock" className="text-xs" />
+                    </span>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      value={loginPassword}
+                      onChange={e => setLoginPassword(e.target.value)}
+                      className="w-full pl-9 pr-10 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] focus:border-transparent font-normal bg-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                      title={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      <FaIcon
+                        icon={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}
+                        className="text-xs"
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Remember me & Forgot Password */}
+                <div className="flex items-center justify-between text-xs text-slate-500 pt-0.5">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={e => setRememberMe(e.target.checked)}
+                      className="rounded border-slate-300 text-[#0f3a98] focus:ring-[#0f3a98]"
+                    />
+                    <span>Remember me</span>
+                  </label>
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
-                    title={showPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => alert('Password reset link will be sent to your email or phone number.')}
+                    className="text-[#0f3a98] hover:underline font-medium"
                   >
-                    <FaIcon
-                      icon={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}
-                      className="text-xs"
-                    />
+                    Forgot password?
                   </button>
                 </div>
-              </div>
 
-              {/* Remember me and Forgot password row */}
-              <div className="flex items-center justify-between text-xs text-slate-500 pt-0.5">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={e => setRememberMe(e.target.checked)}
-                    className="rounded border-slate-300 text-[#0f3a98] focus:ring-[#0f3a98]"
-                  />
-                  <span>Remember me</span>
-                </label>
+                {/* Submit Button */}
                 <button
-                  type="button"
-                  onClick={() => alert('Password reset link will be sent to your email or phone number.')}
-                  className="text-[#0f3a98] hover:underline font-medium"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white font-medium text-sm shadow-md transition flex items-center justify-center gap-2 mt-2"
                 >
-                  Forgot password?
+                  <span>{loading ? 'Signing in...' : 'Sign In'}</span>
+                  <FaIcon icon="fa-solid fa-arrow-right" className="text-xs text-white" />
                 </button>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white font-medium text-sm shadow-md transition flex items-center justify-center gap-2 mt-2"
-              >
-                <span>{loading ? 'Signing in...' : 'Sign In'}</span>
-                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs text-white" />
-              </button>
-            </form>
+              </form>
+            </div>
           ) : (
+            /* ================= REGISTER MODE (NO GOOGLE BUTTON, COLLECTS EMAIL) ================= */
             <form onSubmit={handleRegister} className="space-y-3.5">
               {/* Full Name */}
               <div>
@@ -299,8 +314,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     type="text"
                     required
                     placeholder="e.g. Mary Atuhaire"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
+                    value={regName}
+                    onChange={e => setRegName(e.target.value)}
                     className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
                   />
                 </div>
@@ -360,23 +375,71 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                 </div>
               </div>
 
-              {/* Contact Identifier */}
+              {/* Email Address (Used for Google Authentication later) */}
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Phone Number or Email
-                </label>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-xs font-medium text-slate-700">Email Address</label>
+                  <span className="text-[11px] text-[#0f3a98] font-normal">Used for Google sign-in</span>
+                </div>
                 <div className="relative">
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                     <FaIcon icon="fa-solid fa-envelope" className="text-xs" />
                   </span>
                   <input
-                    type="text"
+                    type="email"
                     required
-                    placeholder="+256 700 000 000 or name@domain.com"
-                    value={phoneOrEmail}
-                    onChange={e => setPhoneOrEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal"
+                    placeholder="e.g. name@gmail.com or student@mak.ac.ug"
+                    value={regEmail}
+                    onChange={e => setRegEmail(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal bg-white"
                   />
+                </div>
+              </div>
+
+              {/* Phone Number (Optional / Direct Contact) */}
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Uganda Phone Number
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                    <FaIcon icon="fa-solid fa-phone" className="text-xs" />
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="e.g. +256 700 000 000 (for WhatsApp & calls)"
+                    value={regPhone}
+                    onChange={e => setRegPhone(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Password</label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                    <FaIcon icon="fa-solid fa-lock" className="text-xs" />
+                  </span>
+                  <input
+                    type={showRegPassword ? 'text' : 'password'}
+                    placeholder="Create a password"
+                    value={regPassword}
+                    onChange={e => setRegPassword(e.target.value)}
+                    className="w-full pl-9 pr-10 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowRegPassword(!showRegPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                    title={showRegPassword ? 'Hide password' : 'Show password'}
+                  >
+                    <FaIcon
+                      icon={showRegPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}
+                      className="text-xs"
+                    />
+                  </button>
                 </div>
               </div>
 

@@ -112,7 +112,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const registerUser = async (data: {
     name: string;
-    phoneOrEmail: string;
+    email?: string;
+    phone?: string;
+    phoneOrEmail?: string;
     password?: string;
     role: UserRole;
     university?: string;
@@ -120,11 +122,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     businessName?: string;
     idNumber?: string;
   }): Promise<{ success: boolean; error?: string }> => {
-    const isEmail = data.phoneOrEmail.includes('@');
+    const emailVal = data.email || (data.phoneOrEmail && data.phoneOrEmail.includes('@') ? data.phoneOrEmail : undefined);
+    const phoneVal = data.phone || (data.phoneOrEmail && !data.phoneOrEmail.includes('@') ? data.phoneOrEmail : '+256700000000');
     const newUser: User = {
       id: `usr_${Date.now()}`,
-      phone: isEmail ? '+256700000000' : data.phoneOrEmail,
-      email: isEmail ? data.phoneOrEmail : undefined,
+      phone: phoneVal,
+      email: emailVal,
       name: data.name,
       role: data.role,
       status: 'active',
