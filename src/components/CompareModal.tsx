@@ -10,7 +10,6 @@ import {
   Star, 
   ShieldCheck, 
   MapPin, 
-  Building2,
   Trash2 
 } from 'lucide-react';
 
@@ -42,17 +41,17 @@ export default function CompareModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/70 backdrop-blur-sm animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/70 backdrop-blur-sm">
       <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col overflow-hidden">
         
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
                 FR-2.7 Specification
               </span>
-              <h3 className="font-extrabold text-slate-900 text-lg">Compare Hostels Side-by-Side</h3>
+              <h3 className="font-extrabold text-[#0f3a98] text-lg">Compare Hostels Side-by-Side</h3>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
               Comparing {hostels.length} of max 3 hostels to make your decision easier.
@@ -69,13 +68,13 @@ export default function CompareModal({
         {/* Content Table */}
         <div className="p-4 sm:p-6 overflow-x-auto flex-1">
           {hostels.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">
+            <div className="text-center py-12 text-slate-500 text-sm">
               No hostels selected for comparison. Tap the layers icon on any hostel card to add it!
             </div>
           ) : (
             <div className="grid grid-cols-4 gap-4 min-w-[640px]">
               {/* Feature column */}
-              <div className="space-y-4 pt-48 font-semibold text-xs text-slate-500 border-r border-slate-100 pr-3">
+              <div className="space-y-4 pt-48 font-bold text-xs text-slate-500 border-r border-slate-100 pr-3">
                 <div className="h-9 flex items-center">Area & Campus</div>
                 <div className="h-9 flex items-center">Verified Status</div>
                 <div className="h-9 flex items-center">Rating & Reviews</div>
@@ -83,7 +82,7 @@ export default function CompareModal({
                 <div className="h-9 flex items-center">Semester Rent Range</div>
                 <div className="h-9 flex items-center">Available Rooms</div>
                 {AMENITY_KEYS.map(a => (
-                  <div key={a.id} className="h-7 flex items-center text-slate-600">
+                  <div key={a.id} className="h-7 flex items-center text-slate-600 font-semibold">
                     {a.label}
                   </div>
                 ))}
@@ -117,22 +116,22 @@ export default function CompareModal({
                         </button>
                       </div>
 
-                      <h4 className="font-bold text-slate-900 text-sm line-clamp-1">{hostel.name}</h4>
+                      <h4 className="font-extrabold text-slate-900 text-sm line-clamp-1">{hostel.name}</h4>
 
                       {/* Row 1: Area & Campus */}
-                      <div className="h-9 flex items-center text-xs text-slate-700">
-                        <MapPin className="w-3.5 h-3.5 text-emerald-600 mr-1 shrink-0" />
+                      <div className="h-9 flex items-center text-xs font-semibold text-slate-700">
+                        <MapPin className="w-3.5 h-3.5 text-[#0f3a98] mr-1 shrink-0" />
                         <span className="truncate">{hostel.area}, {hostel.campus}</span>
                       </div>
 
                       {/* Row 2: Status */}
                       <div className="h-9 flex items-center">
                         {hostel.status === 'claimed' ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                            <ShieldCheck className="w-3.5 h-3.5" /> Verified Owner
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0f3a98] bg-[#e8effc] px-2 py-0.5 rounded">
+                            <ShieldCheck className="w-3.5 h-3.5 text-[#ffbe00]" /> Verified Owner
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded">
                             Agent Listed
                           </span>
                         )}
@@ -140,17 +139,17 @@ export default function CompareModal({
 
                       {/* Row 3: Rating */}
                       <div className="h-9 flex items-center text-xs font-bold text-slate-800">
-                        <Star className="w-3.5 h-3.5 text-amber-500 fill-current mr-1" />
+                        <Star className="w-3.5 h-3.5 text-[#ffbe00] fill-[#ffbe00] mr-1" />
                         {hostel.ratingAvg.toFixed(1)} ({hostel.ratingCount})
                       </div>
 
                       {/* Row 4: Distance */}
-                      <div className="h-9 flex items-center text-xs text-slate-600">
+                      <div className="h-9 flex items-center text-xs text-slate-600 font-medium">
                         {hostel.distanceCampusApprox}
                       </div>
 
                       {/* Row 5: Price */}
-                      <div className="h-9 flex items-center font-extrabold text-xs text-emerald-700">
+                      <div className="h-9 flex items-center font-extrabold text-xs text-[#0f3a98]">
                         {minRent === maxRent
                           ? formatUGX(minRent)
                           : `${formatUGX(minRent)} - ${formatUGX(maxRent)}`}
@@ -159,7 +158,7 @@ export default function CompareModal({
                       {/* Row 6: Availability */}
                       <div className="h-9 flex items-center text-xs font-bold">
                         {available > 0 ? (
-                          <span className="text-emerald-600">{available} vacant</span>
+                          <span className="text-[#0f3a98]">{available} vacant</span>
                         ) : (
                           <span className="text-rose-600">Full</span>
                         )}
@@ -171,7 +170,7 @@ export default function CompareModal({
                         return (
                           <div key={a.id} className="h-7 flex items-center">
                             {hasAmenity ? (
-                              <Check className="w-4 h-4 text-emerald-600" />
+                              <Check className="w-4 h-4 text-[#0f3a98]" />
                             ) : (
                               <Minus className="w-4 h-4 text-slate-300" />
                             )}
@@ -183,7 +182,7 @@ export default function CompareModal({
                     <div className="pt-3 border-t border-slate-100">
                       <button
                         onClick={() => onContactClick(hostel)}
-                        className="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm"
+                        className="w-full py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold transition shadow-sm"
                       >
                         Contact Sellers
                       </button>

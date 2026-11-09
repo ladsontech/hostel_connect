@@ -8,21 +8,19 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-poppins)', 'Poppins', 'system-ui', 'sans-serif'],
+      },
       colors: {
-        uganda: {
-          yellow: "#FFD100",
-          red: "#D90000",
-          black: "#000000"
-        },
         brand: {
-          50: "#f0fdf4",
-          100: "#dcfce7",
-          200: "#bbf7d0",
-          500: "#10b981",
-          600: "#059669",
-          700: "#047857",
-          800: "#065f46",
-          900: "#064e3b"
+          blue: "#0f3a98",
+          "blue-dark": "#0a2666",
+          "blue-light": "#e8effc",
+          "blue-muted": "#1644ad",
+          yellow: "#ffbe00",
+          "yellow-dark": "#e0a700",
+          "yellow-light": "#fff9e6",
+          "yellow-subtle": "#fef3c7"
         }
       },
     },

@@ -7,7 +7,6 @@ import {
   X, 
   Smartphone, 
   KeyRound, 
-  User, 
   Building, 
   Briefcase, 
   GraduationCap, 
@@ -95,12 +94,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
-        {/* Header */}
+        {/* Header (No gradients) */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h3 className="font-extrabold text-slate-900 text-lg">
+            <h3 className="font-extrabold text-[#0f3a98] text-lg">
               {mode === 'login' ? 'Welcome Back' : 'Create an Account'}
             </h3>
             <p className="text-xs text-slate-500">
@@ -118,15 +117,15 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         {/* Form Body */}
         <div className="p-4 sm:p-6 space-y-4">
           {error && (
-            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 shrink-0 text-emerald-600" />
+            <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-semibold flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 shrink-0 text-[#0f3a98]" />
               <span>{successMsg}</span>
             </div>
           )}
@@ -136,25 +135,25 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               {mode === 'register' && (
                 <>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Mary Atuhaire"
                       value={name}
                       onChange={e => setName(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Select Role</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Select Role</label>
                     <div className="grid grid-cols-3 gap-2">
                       <button
                         type="button"
                         onClick={() => setRole('student')}
-                        className={`p-2 rounded-lg border text-xs font-semibold flex flex-col items-center gap-1 transition ${
-                          role === 'student' ? 'border-emerald-600 bg-emerald-50 text-emerald-800' : 'border-slate-200 text-slate-600'
+                        className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition ${
+                          role === 'student' ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98]' : 'border-slate-200 text-slate-600'
                         }`}
                       >
                         <GraduationCap className="w-4 h-4" />
@@ -163,8 +162,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       <button
                         type="button"
                         onClick={() => setRole('custodian')}
-                        className={`p-2 rounded-lg border text-xs font-semibold flex flex-col items-center gap-1 transition ${
-                          role === 'custodian' ? 'border-blue-600 bg-blue-50 text-blue-800' : 'border-slate-200 text-slate-600'
+                        className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition ${
+                          role === 'custodian' ? 'border-[#0f3a98] bg-[#0f3a98] text-[#ffbe00]' : 'border-slate-200 text-slate-600'
                         }`}
                       >
                         <Building className="w-4 h-4" />
@@ -173,8 +172,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       <button
                         type="button"
                         onClick={() => setRole('broker')}
-                        className={`p-2 rounded-lg border text-xs font-semibold flex flex-col items-center gap-1 transition ${
-                          role === 'broker' ? 'border-amber-600 bg-amber-50 text-amber-800' : 'border-slate-200 text-slate-600'
+                        className={`p-2 rounded-lg border text-xs font-bold flex flex-col items-center gap-1 transition ${
+                          role === 'broker' ? 'border-[#ffbe00] bg-amber-50 text-amber-900' : 'border-slate-200 text-slate-600'
                         }`}
                       >
                         <Briefcase className="w-4 h-4" />
@@ -185,12 +184,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
                   {role === 'student' ? (
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">University & Course</label>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">University & Course</label>
                       <div className="space-y-2">
                         <select
                           value={university}
                           onChange={e => setUniversity(e.target.value)}
-                          className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                         >
                           <option>Makerere University</option>
                           <option>MUBS (Makerere Business School)</option>
@@ -203,27 +202,27 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                           placeholder="e.g. Bachelor of Commerce (Year 1)"
                           value={course}
                           onChange={e => setCourse(e.target.value)}
-                          className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                         />
                       </div>
                     </div>
                   ) : (
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Business Name & NIN / ID</label>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Business Name & NIN / ID</label>
                       <div className="space-y-2">
                         <input
                           type="text"
                           placeholder="Hostel / Agency Business Name"
                           value={businessName}
                           onChange={e => setBusinessName(e.target.value)}
-                          className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                         />
                         <input
                           type="text"
                           placeholder="National ID Number (NIN)"
                           value={idNumber}
                           onChange={e => setIdNumber(e.target.value)}
-                          className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                         />
                       </div>
                     </div>
@@ -232,7 +231,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Uganda Phone Number
                 </label>
                 <div className="relative">
@@ -243,7 +242,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     placeholder="+256 700 000 000"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-mono"
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-1">
@@ -254,16 +253,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-1.5"
               >
                 {loading ? 'Sending SMS OTP...' : 'Send 6-Digit Code'}
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 text-[#ffbe00]" />
               </button>
             </form>
           ) : (
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Enter 6-Digit SMS Code
                 </label>
                 <div className="relative">
@@ -275,10 +274,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     placeholder="123456"
                     value={otp}
                     onChange={e => setOtp(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-center tracking-widest text-lg font-bold"
+                    className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-mono text-center tracking-widest text-lg font-bold"
                   />
                 </div>
-                <p className="text-[11px] text-emerald-700 mt-1 font-semibold">
+                <p className="text-[11px] text-[#0f3a98] mt-1 font-bold">
                   Demo code: 123456
                 </p>
               </div>
@@ -286,7 +285,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition"
+                className="w-full py-2.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white font-bold text-sm shadow-sm transition"
               >
                 {loading ? 'Verifying...' : 'Verify & Continue'}
               </button>
@@ -294,7 +293,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <button
                 type="button"
                 onClick={() => setStep('phone')}
-                className="w-full text-xs text-slate-500 hover:text-slate-800"
+                className="w-full text-xs text-slate-500 hover:text-slate-800 font-semibold"
               >
                 Change Phone Number
               </button>
@@ -313,7 +312,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     setStep('phone');
                     setError('');
                   }}
-                  className="font-bold text-emerald-700 hover:underline"
+                  className="font-bold text-[#0f3a98] hover:underline"
                 >
                   Create an account
                 </button>
@@ -328,7 +327,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     setStep('phone');
                     setError('');
                   }}
-                  className="font-bold text-emerald-700 hover:underline"
+                  className="font-bold text-[#0f3a98] hover:underline"
                 >
                   Sign in
                 </button>

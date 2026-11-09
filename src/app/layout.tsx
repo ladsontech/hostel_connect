@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
+import { Poppins } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
+
+const poppins = Poppins({
+  weight: ['300', '400', '500', '600', '700', '800'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-poppins',
+});
 
 export const metadata: Metadata = {
   title: 'Hostel Connect Uganda | University Hostel Marketplace',
@@ -13,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-slate-50 flex flex-col antialiased text-slate-900">
+    <html lang="en" className={poppins.variable}>
+      <body className="min-h-screen bg-slate-50 flex flex-col antialiased text-slate-900 font-sans">
         <AuthProvider>
           {children}
         </AuthProvider>

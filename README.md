@@ -104,3 +104,4 @@ The top notification bar includes an instant **Role Switcher** allowing you to p
 ## 📄 License
 
 MIT License. Designed and developed for university student housing in Uganda.
+

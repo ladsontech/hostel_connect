@@ -11,19 +11,15 @@ import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
 import { 
   Building2, 
-  Search, 
-  MapPin, 
   ShieldCheck, 
   Layers, 
   Sparkles, 
   PhoneCall, 
-  CheckCircle2,
-  TrendingUp,
-  ArrowRight
+  CheckCircle2
 } from 'lucide-react';
 
 export default function HomePage() {
-  const { currentUser, isAuthenticated } = useAuth();
+  const { currentUser } = useAuth();
   
   // Data states
   const [hostels, setHostels] = useState<Hostel[]>([]);
@@ -52,7 +48,6 @@ export default function HomePage() {
     sort: 'relevance'
   });
 
-  // Load hostels
   const loadHostels = async () => {
     setLoading(true);
     try {
@@ -70,7 +65,6 @@ export default function HomePage() {
 
   useEffect(() => {
     loadHostels();
-    // Load local shortlist
     const saved = localStorage.getItem('hostel_connect_shortlist');
     if (saved) {
       try {
@@ -85,7 +79,6 @@ export default function HomePage() {
       const next = exists ? prev.filter(id => id !== hostel.id) : [...prev, hostel.id];
       localStorage.setItem('hostel_connect_shortlist', JSON.stringify(next));
       
-      // If saving and logged in, log lead event (FR-3.3)
       if (!exists && currentUser) {
         fetch('/api/v1/leads', {
           method: 'POST',
@@ -128,7 +121,6 @@ export default function HomePage() {
     }
   };
 
-  // Client-side filtering
   const filteredHostels = useMemo(() => {
     return hostels.filter(h => {
       if (filters.q) {
@@ -178,7 +170,7 @@ export default function HomePage() {
       if (filters.sort === 'rating') {
         return b.ratingAvg - a.ratingAvg;
       }
-      return 0; // relevance
+      return 0;
     });
   }, [hostels, filters]);
 
@@ -187,7 +179,7 @@ export default function HomePage() {
   }, [hostels, compareList]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col font-sans">
       <Navbar
         onOpenAuth={() => setIsAuthOpen(true)}
         shortlistCount={compareList.length}
@@ -196,12 +188,10 @@ export default function HomePage() {
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
-        {/* Hero Section */}
-        <div className="relative rounded-3xl bg-gradient-to-br from-emerald-900 via-slate-900 to-slate-950 p-6 sm:p-10 text-white overflow-hidden shadow-xl border border-slate-800">
-          <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-400 via-transparent to-transparent"></div>
-          
-          <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-semibold backdrop-blur-sm">
+        {/* Hero Section (Solid #0f3a98 background, NO gradients) */}
+        <div className="rounded-3xl bg-[#0f3a98] p-6 sm:p-10 text-white shadow-xl border border-blue-900">
+          <div className="max-w-2xl space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0a2666] border border-blue-800 text-[#ffbe00] text-xs font-bold">
               <Sparkles className="w-3.5 h-3.5" />
               Semester Intake 2026/2027 Accommodations
             </div>
@@ -210,21 +200,21 @@ export default function HomePage() {
               Find Verified University Hostels in Uganda.
             </h1>
 
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+            <p className="text-blue-100 text-sm sm:text-base leading-relaxed">
               Explore hostels around Makerere, MUBS, Kyambogo and more. Connect directly with authoritative hostel custodians and verified student scouts without hidden middleman markups.
             </p>
 
-            <div className="pt-2 flex flex-wrap gap-4 text-xs font-medium text-slate-300">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <div className="pt-2 flex flex-wrap gap-4 text-xs font-bold text-white">
+              <div className="flex items-center gap-1.5 bg-[#0a2666] px-3 py-1.5 rounded-lg border border-blue-800">
+                <CheckCircle2 className="w-4 h-4 text-[#ffbe00]" />
                 <span>Zero Student Booking Fees</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <div className="flex items-center gap-1.5 bg-[#0a2666] px-3 py-1.5 rounded-lg border border-blue-800">
+                <ShieldCheck className="w-4 h-4 text-[#ffbe00]" />
                 <span>Verified Owner Listings</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <PhoneCall className="w-4 h-4 text-emerald-400" />
+              <div className="flex items-center gap-1.5 bg-[#0a2666] px-3 py-1.5 rounded-lg border border-blue-800">
+                <PhoneCall className="w-4 h-4 text-[#ffbe00]" />
                 <span>Direct WhatsApp & Call Contact</span>
               </div>
             </div>
@@ -253,10 +243,10 @@ export default function HomePage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-lg font-extrabold text-[#0f3a98]">
                 {filters.campus || 'All Ugandan Campuses'}
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 font-medium">
                 {filteredHostels.length} hostels matching your criteria
               </p>
             </div>
@@ -264,9 +254,9 @@ export default function HomePage() {
             {compareList.length > 0 && (
               <button
                 onClick={() => setIsCompareOpen(true)}
-                className="px-3.5 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5 transition"
+                className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-bold flex items-center gap-1.5 border border-[#0f3a98] transition"
               >
-                <Layers className="w-4 h-4" />
+                <Layers className="w-4 h-4 text-[#ffbe00]" />
                 Compare ({compareList.length}/3)
               </button>
             )}
@@ -297,7 +287,7 @@ export default function HomePage() {
                   amenities: [],
                   sort: 'relevance'
                 })}
-                className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold"
+                className="px-4 py-2 rounded-lg bg-[#0f3a98] text-white text-xs font-bold"
               >
                 Clear all filters
               </button>
@@ -320,22 +310,22 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Floating Compare Pill (Sticky on bottom when items selected) */}
+      {/* Floating Compare Pill */}
       {compareList.length > 0 && (
-        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-4 border border-slate-700 animate-in slide-in-from-bottom-5">
-          <div className="flex items-center gap-2 text-xs font-semibold">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 bg-[#0f3a98] text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-4 border border-blue-900">
+          <div className="flex items-center gap-2 text-xs font-bold text-white">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#ffbe00]"></span>
             <span>{compareList.length} of 3 hostels selected</span>
           </div>
           <button
             onClick={() => setIsCompareOpen(true)}
-            className="px-4 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm"
+            className="px-4 py-1.5 rounded-full bg-[#ffbe00] hover:bg-[#e0a700] text-[#0f3a98] text-xs font-extrabold transition shadow-sm"
           >
             Compare Now
           </button>
           <button
             onClick={() => setCompareList([])}
-            className="text-xs text-slate-400 hover:text-white"
+            className="text-xs text-blue-200 hover:text-white font-medium"
           >
             Clear
           </button>
@@ -375,11 +365,11 @@ export default function HomePage() {
       <footer className="mt-16 bg-white border-t border-slate-200 py-8 px-4 sm:px-6 text-slate-500 text-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-emerald-600" />
-            <span className="font-bold text-slate-800">Hostel Connect Uganda</span>
+            <Building2 className="w-4 h-4 text-[#0f3a98]" />
+            <span className="font-bold text-[#0f3a98]">Hostel Connect Uganda</span>
             <span>• Compliant with Uganda Data Protection and Privacy Act, 2019</span>
           </div>
-          <div>
+          <div className="font-medium text-slate-600">
             Built strictly adhering to the Hostel Marketplace App SRS (Draft 1.0)
           </div>
         </div>

@@ -13,7 +13,6 @@ import {
   MapPin, 
   Star, 
   ShieldCheck, 
-  Award, 
   PhoneCall, 
   Wifi, 
   Zap, 
@@ -21,10 +20,7 @@ import {
   Bus, 
   CheckCircle, 
   AlertTriangle, 
-  MessageSquare, 
-  Lock,
-  Share2,
-  Heart
+  Lock
 } from 'lucide-react';
 
 export default function HostelDetailPage() {
@@ -94,7 +90,6 @@ export default function HostelDetailPage() {
     setReviewSubmitting(true);
     setReviewMsg('');
 
-    // Simulate review creation and approval
     const newRev: Review = {
       id: `rev_${Date.now()}`,
       hostelId,
@@ -126,7 +121,7 @@ export default function HostelDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
         <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
         <div className="max-w-6xl mx-auto w-full p-6 animate-pulse space-y-4">
           <div className="h-8 w-48 bg-slate-200 rounded"></div>
@@ -138,13 +133,13 @@ export default function HostelDetailPage() {
 
   if (!hostel) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
         <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
         <div className="max-w-xl mx-auto my-16 p-8 bg-white rounded-2xl border text-center space-y-4">
           <h2 className="text-xl font-bold">Hostel not found</h2>
           <button
             onClick={() => router.push('/')}
-            className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold"
+            className="px-4 py-2 bg-[#0f3a98] text-white rounded-lg text-sm font-bold"
           >
             Back to Home
           </button>
@@ -158,7 +153,7 @@ export default function HostelDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6">
@@ -167,21 +162,19 @@ export default function HostelDetailPage() {
         <div className="flex items-center justify-between">
           <button
             onClick={() => router.push('/')}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-lg transition"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-[#0f3a98] bg-white border border-slate-200 px-3.5 py-1.5 rounded-lg transition"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 text-[#0f3a98]" />
             Back to Hostels
           </button>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsReportOpen(true)}
-              className="text-xs text-slate-500 hover:text-rose-600 flex items-center gap-1 bg-white border border-slate-200 px-3 py-1.5 rounded-lg transition"
-            >
-              <AlertTriangle className="w-3.5 h-3.5" />
-              Report Listing
-            </button>
-          </div>
+          <button
+            onClick={() => setIsReportOpen(true)}
+            className="text-xs text-slate-600 hover:text-rose-600 flex items-center gap-1 bg-white border border-slate-200 px-3 py-1.5 rounded-lg transition font-semibold"
+          >
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+            Report Listing
+          </button>
         </div>
 
         {/* Gallery */}
@@ -196,23 +189,22 @@ export default function HostelDetailPage() {
             {/* Badges on main image */}
             <div className="absolute top-4 left-4 flex flex-wrap gap-2">
               {hostel.status === 'claimed' ? (
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-md">
-                  <ShieldCheck className="w-4 h-4" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-extrabold bg-[#0f3a98] text-white shadow-md">
+                  <ShieldCheck className="w-4 h-4 text-[#ffbe00]" />
                   Custodian Verified
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500 text-white shadow-md">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-extrabold bg-[#ffbe00] text-[#0f3a98] shadow-md">
                   Agent Listed
                 </span>
               )}
             </div>
 
-            <div className="absolute bottom-4 right-4 px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-xs rounded-lg font-medium">
+            <div className="absolute bottom-4 right-4 px-3 py-1 bg-black/80 text-white text-xs rounded-lg font-semibold">
               Photo {selectedPhotoIndex + 1} of {photos.length}
             </div>
           </div>
 
-          {/* Thumbnails row */}
           {photos.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1">
               {photos.map((p, idx) => (
@@ -220,7 +212,7 @@ export default function HostelDetailPage() {
                   key={p.id}
                   onClick={() => setSelectedPhotoIndex(idx)}
                   className={`relative w-20 h-14 rounded-lg overflow-hidden border-2 shrink-0 transition ${
-                    selectedPhotoIndex === idx ? 'border-emerald-600 ring-2 ring-emerald-400' : 'border-transparent opacity-70 hover:opacity-100'
+                    selectedPhotoIndex === idx ? 'border-[#0f3a98] ring-2 ring-[#ffbe00]' : 'border-transparent opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={p.url} alt="thumb" className="w-full h-full object-cover" />
@@ -234,12 +226,12 @@ export default function HostelDetailPage() {
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md w-fit mb-2">
-                <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="flex items-center gap-2 text-xs font-bold text-[#0f3a98] bg-[#e8effc] px-2.5 py-1 rounded-md w-fit mb-2">
+                <MapPin className="w-3.5 h-3.5 text-[#0f3a98]" />
                 <span>{hostel.campus} • {hostel.area}</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{hostel.name}</h1>
-              <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0f3a98]">{hostel.name}</h1>
+              <p className="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
                 <span>{hostel.distanceCampusApprox}</span>
                 <span>•</span>
                 <span>Landmark: {hostel.landmark}</span>
@@ -247,36 +239,36 @@ export default function HostelDetailPage() {
             </div>
 
             {/* Quick Contact CTA */}
-            <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 bg-[#e8effc] p-4 rounded-xl border border-blue-200">
               <div className="text-right">
-                <div className="text-[11px] text-slate-400 font-bold uppercase">Direct Inquiry</div>
-                <div className="text-emerald-700 font-extrabold text-sm sm:text-base">
+                <div className="text-[10px] text-[#0f3a98] font-extrabold uppercase tracking-wider">Direct Inquiry</div>
+                <div className="text-[#0f3a98] font-extrabold text-sm sm:text-base">
                   {offers.length} Active Contact{offers.length === 1 ? '' : 's'}
                 </div>
               </div>
               <button
                 onClick={handleOpenContact}
-                className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-500/20 flex items-center gap-1.5 transition"
+                className="px-5 py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold shadow-sm flex items-center gap-1.5 transition"
               >
-                <PhoneCall className="w-4 h-4" />
+                <PhoneCall className="w-4 h-4 text-[#ffbe00]" />
                 Reveal Phone & WhatsApp
               </button>
             </div>
           </div>
 
-          <p className="text-sm text-slate-700 leading-relaxed pt-2 border-t border-slate-100">
+          <p className="text-sm text-slate-700 leading-relaxed pt-2 border-t border-slate-100 font-normal">
             {hostel.description}
           </p>
         </div>
 
-        {/* Room Types & Live Availability (BR-1: Owned by Custodian) */}
+        {/* Room Types & Live Availability */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Room Types & Semester Rates</h3>
-              <p className="text-xs text-slate-500">Official rents set directly by hostel management</p>
+              <h3 className="text-base font-extrabold text-[#0f3a98]">Room Types & Semester Rates</h3>
+              <p className="text-xs text-slate-500 font-medium">Official rents set directly by hostel management</p>
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-slate-400 font-medium">
               Updated: {formatDateEAT(hostel.lastAvailabilityConfirmedAt)}
             </div>
           </div>
@@ -285,13 +277,13 @@ export default function HostelDetailPage() {
             {hostel.rooms.map(room => (
               <div
                 key={room.id}
-                className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between"
+                className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-slate-900 text-sm">{room.name}</h4>
+                    <h4 className="font-extrabold text-slate-900 text-sm">{room.name}</h4>
                     {room.roomsAvailable > 0 ? (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
                         {room.roomsAvailable} Left
                       </span>
                     ) : (
@@ -300,14 +292,14 @@ export default function HostelDetailPage() {
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-slate-500 mt-1 capitalize">
+                  <div className="text-xs text-slate-500 mt-1 capitalize font-medium">
                     {room.type.replace(/_/g, ' ')}
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-baseline justify-between">
-                  <span className="text-xs text-slate-400">Per Semester</span>
-                  <span className="font-extrabold text-emerald-700 text-lg">
+                <div className="mt-4 pt-3 border-t border-slate-200 flex items-baseline justify-between">
+                  <span className="text-xs text-slate-400 font-medium">Per Semester</span>
+                  <span className="font-extrabold text-[#0f3a98] text-lg">
                     {formatUGX(room.rentUgx)}
                   </span>
                 </div>
@@ -318,7 +310,7 @@ export default function HostelDetailPage() {
 
         {/* Amenities Checklist */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-3 shadow-sm">
-          <h3 className="text-base font-bold text-slate-900">Amenities & Facilities</h3>
+          <h3 className="text-base font-extrabold text-[#0f3a98]">Amenities & Facilities</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             {[
               { id: 'water', label: 'Constant Water Supply', icon: Droplet },
@@ -335,11 +327,11 @@ export default function HostelDetailPage() {
                   key={item.id}
                   className={`p-3 rounded-xl border flex items-center gap-2 ${
                     present
-                      ? 'border-emerald-200 bg-emerald-50/40 text-emerald-900 font-semibold'
+                      ? 'border-blue-200 bg-[#e8effc] text-[#0f3a98] font-bold'
                       : 'border-slate-100 bg-slate-50 text-slate-400 opacity-60'
                   }`}
                 >
-                  <CheckCircle className={`w-4 h-4 ${present ? 'text-emerald-600' : 'text-slate-300'}`} />
+                  <CheckCircle className={`w-4 h-4 ${present ? 'text-[#0f3a98]' : 'text-slate-300'}`} />
                   <span>{item.label}</span>
                 </div>
               );
@@ -347,22 +339,22 @@ export default function HostelDetailPage() {
           </div>
         </div>
 
-        {/* Exact Location & Privacy Protection Notice (FR-2.6) */}
+        {/* Exact Location & Privacy Protection Notice */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-3 shadow-sm">
-          <h3 className="text-base font-bold text-slate-900">Hostel Address & Directions</h3>
+          <h3 className="text-base font-extrabold text-[#0f3a98]">Hostel Address & Directions</h3>
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-            <Lock className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+            <Lock className="w-5 h-5 text-[#0f3a98] shrink-0 mt-0.5" />
             <div>
               <h4 className="font-bold text-xs text-slate-800">
                 Privacy Protection Active (FR-2.6)
               </h4>
-              <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+              <p className="text-xs text-slate-600 mt-0.5 leading-relaxed font-medium">
                 Approximate location: <strong>{hostel.distanceCampusApprox}</strong>.
                 Exact building gate pin and direct manager phone numbers are revealed once you tap Contact and are signed in with your phone.
               </p>
               <button
                 onClick={handleOpenContact}
-                className="mt-2 text-xs font-bold text-emerald-700 hover:underline inline-flex items-center gap-1"
+                className="mt-2 text-xs font-bold text-[#0f3a98] hover:underline inline-flex items-center gap-1"
               >
                 Tap to reveal contact offers →
               </button>
@@ -370,14 +362,14 @@ export default function HostelDetailPage() {
           </div>
         </div>
 
-        {/* Student Reviews & Ratings (FR-7.1) */}
+        {/* Student Reviews & Ratings */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Student Reviews & Ratings</h3>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
-                <span className="flex items-center text-amber-600 font-bold">
-                  <Star className="w-4 h-4 fill-current mr-1" />
+              <h3 className="text-base font-extrabold text-[#0f3a98]">Student Reviews & Ratings</h3>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5 font-semibold">
+                <span className="flex items-center text-[#0f3a98] font-bold">
+                  <Star className="w-4 h-4 fill-[#ffbe00] text-[#ffbe00] mr-1" />
                   {hostel.ratingAvg.toFixed(1)} / 5.0
                 </span>
                 <span>•</span>
@@ -386,16 +378,15 @@ export default function HostelDetailPage() {
             </div>
           </div>
 
-          {/* Reviews list */}
           <div className="space-y-3">
             {reviews.length === 0 ? (
-              <p className="text-xs text-slate-500">No reviews yet for this hostel.</p>
+              <p className="text-xs text-slate-500 font-medium">No reviews yet for this hostel.</p>
             ) : (
               reviews.map(rev => (
-                <div key={rev.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-2">
+                <div key={rev.id} className="p-4 rounded-xl border border-slate-100 bg-slate-50 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs text-slate-900">{rev.studentName}</span>
-                    <div className="flex items-center text-amber-500">
+                    <div className="flex items-center text-[#ffbe00]">
                       {[1, 2, 3, 4, 5].map(star => (
                         <Star
                           key={star}
@@ -404,10 +395,10 @@ export default function HostelDetailPage() {
                       ))}
                     </div>
                   </div>
-                  <p className="text-xs text-slate-700">{rev.text}</p>
+                  <p className="text-xs text-slate-700 font-medium">{rev.text}</p>
                   {rev.sellerReply && (
-                    <div className="mt-2 pl-3 border-l-2 border-emerald-500 text-xs text-slate-600 bg-white p-2 rounded">
-                      <span className="font-bold text-emerald-800">Hostel Response: </span>
+                    <div className="mt-2 pl-3 border-l-2 border-[#0f3a98] text-xs text-slate-600 bg-white p-2 rounded">
+                      <span className="font-bold text-[#0f3a98]">Hostel Response: </span>
                       {rev.sellerReply}
                     </div>
                   )}
@@ -420,19 +411,19 @@ export default function HostelDetailPage() {
           <form onSubmit={handleSubmitReview} className="mt-4 pt-4 border-t border-slate-100 space-y-3">
             <h4 className="text-xs font-bold text-slate-800">Leave a Review (Students Only - BR-7)</h4>
             {reviewMsg && (
-              <div className="p-2.5 rounded bg-emerald-50 text-emerald-800 text-xs font-medium">
+              <div className="p-2.5 rounded bg-blue-50 text-[#0f3a98] text-xs font-bold">
                 {reviewMsg}
               </div>
             )}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500">Your Rating:</span>
+              <span className="text-xs text-slate-500 font-medium">Your Rating:</span>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map(s => (
                   <button
                     type="button"
                     key={s}
                     onClick={() => setNewRating(s)}
-                    className="p-1 text-amber-400 hover:scale-110 transition"
+                    className="p-1 text-[#ffbe00] hover:scale-110 transition"
                   >
                     <Star className={`w-4 h-4 ${s <= newRating ? 'fill-current' : 'text-slate-300'}`} />
                   </button>
@@ -445,12 +436,12 @@ export default function HostelDetailPage() {
               placeholder="Share your experience (power, water, distance, custodian responsiveness...)"
               value={newReviewText}
               onChange={e => setNewReviewText(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
             />
             <button
               type="submit"
               disabled={reviewSubmitting}
-              className="px-4 py-2 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-sm transition"
+              className="px-4 py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold shadow-sm transition"
             >
               {reviewSubmitting ? 'Posting...' : 'Post Student Review'}
             </button>
@@ -459,7 +450,6 @@ export default function HostelDetailPage() {
 
       </main>
 
-      {/* Contact Drawer Modal */}
       <ContactModal
         hostel={hostel}
         offers={offers}
@@ -468,29 +458,27 @@ export default function HostelDetailPage() {
         onRequireAuth={() => setIsAuthOpen(true)}
       />
 
-      {/* Auth Modal */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
       />
 
-      {/* Report Modal (FR-7.3) */}
       {isReportOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 border shadow-xl">
-            <h3 className="font-bold text-slate-900 text-base">Report Listing (FR-7.3)</h3>
+            <h3 className="font-extrabold text-[#0f3a98] text-base">Report Listing (FR-7.3)</h3>
             {reportSuccess ? (
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-semibold">
+              <div className="p-3 bg-blue-50 text-[#0f3a98] rounded-lg text-xs font-bold">
                 Thank you. Report submitted to the admin moderation queue.
               </div>
             ) : (
               <form onSubmit={handleReport} className="space-y-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Reason</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Reason</label>
                   <select
                     value={reportReason}
                     onChange={e => setReportReason(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border text-xs"
+                    className="w-full px-3 py-2 rounded-lg border text-xs font-medium"
                   >
                     <option value="fake_listing">Fake or non-existent listing</option>
                     <option value="wrong_price">Wrong price or misleading rent</option>
@@ -501,7 +489,7 @@ export default function HostelDetailPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Details</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Details</label>
                   <textarea
                     rows={3}
                     placeholder="Provide details for our verification team..."
