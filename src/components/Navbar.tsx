@@ -146,9 +146,9 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
               </button>
               <button
                 onClick={() => onOpenAuth?.('register')}
-                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs sm:text-sm font-normal shadow-sm transition flex items-center gap-1.5"
+                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs sm:text-sm font-normal shadow-sm transition flex items-center gap-1.5"
               >
-                <FaIcon icon="fa-solid fa-user-plus" className="text-xs text-[#ffbe00]" />
+                <FaIcon icon="fa-solid fa-user-plus" className="text-xs text-white" />
                 Register
               </button>
             </div>

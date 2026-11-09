@@ -263,10 +263,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-md transition flex items-center justify-center gap-2 mt-2"
+                className="w-full py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white font-medium text-sm shadow-md transition flex items-center justify-center gap-2 mt-2"
               >
                 <span>{loading ? 'Signing in...' : 'Sign In'}</span>
-                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs text-[#ffbe00]" />
+                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs text-white" />
               </button>
             </form>
           ) : (
@@ -414,10 +414,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-medium text-sm shadow-md transition flex items-center justify-center gap-2 mt-2"
+                className="w-full py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white font-medium text-sm shadow-md transition flex items-center justify-center gap-2 mt-2"
               >
                 <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
-                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs text-[#ffbe00]" />
+                <FaIcon icon="fa-solid fa-arrow-right" className="text-xs text-white" />
               </button>
             </form>
           )}

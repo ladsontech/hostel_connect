@@ -194,7 +194,7 @@ export default function HostelCard({
                 onClick={() => onContactClick(hostel)}
                 className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
               >
-                <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
+                <FaIcon icon="fa-solid fa-phone" className="text-xs text-white" />
                 Contact
               </button>
             ) : (
