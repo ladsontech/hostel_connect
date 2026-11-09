@@ -191,11 +191,6 @@ export default function HomePage() {
         {/* Hero Section (Solid #0f3a98 background, NO gradients) */}
         <div className="rounded-3xl bg-[#0f3a98] p-6 sm:p-10 text-white shadow-xl border border-blue-900">
           <div className="max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0a2666] border border-blue-800 text-[#ffbe00] text-xs font-bold">
-              <Sparkles className="w-3.5 h-3.5" />
-              Semester Intake 2026/2027 Accommodations
-            </div>
-
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
               Find Verified University Hostels in Uganda.
             </h1>
