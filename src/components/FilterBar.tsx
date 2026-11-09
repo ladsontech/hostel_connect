@@ -1,17 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Search, 
-  SlidersHorizontal, 
-  X, 
-  Droplet, 
-  Zap, 
-  Wifi, 
-  Bus, 
-  Check 
-} from 'lucide-react';
 import { formatUGX } from '@/lib/utils';
+import FaIcon from './FaIcon';
 
 export interface FilterState {
   q: string;
@@ -65,25 +56,27 @@ export default function FilterBar({
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4 font-sans">
       {/* Top Search & Primary Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
         {/* Main Search Input */}
         <div className="sm:col-span-6 relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+          <span className="absolute left-3.5 top-3 text-slate-400">
+            <FaIcon icon="fa-solid fa-magnifying-glass" className="text-xs" />
+          </span>
           <input
             type="text"
             placeholder="Search hostel name, area (Kikoni, Banda...) or landmark"
             value={filters.q}
             onChange={e => onChange({ ...filters, q: e.target.value })}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+            className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
           />
           {filters.q && (
             <button
               onClick={() => onChange({ ...filters, q: '' })}
               className="absolute right-3 top-3 text-slate-400 hover:text-slate-600"
             >
-              <X className="w-4 h-4" />
+              <FaIcon icon="fa-solid fa-xmark" className="text-xs" />
             </button>
           )}
         </div>
@@ -107,13 +100,13 @@ export default function FilterBar({
         <div className="sm:col-span-3 flex items-center gap-2 justify-end">
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`px-3 py-2.5 rounded-xl border text-sm font-bold flex items-center gap-1.5 transition ${
+            className={`px-3 py-2.5 rounded-xl border text-sm font-bold flex items-center gap-2 transition ${
               showAdvanced || filters.roomType || filters.amenities.length > 0
                 ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98]'
                 : 'border-slate-200 hover:border-slate-300 text-slate-700'
             }`}
           >
-            <SlidersHorizontal className="w-4 h-4" />
+            <FaIcon icon="fa-solid fa-sliders" className="text-xs" />
             <span>Filters</span>
             {filters.amenities.length > 0 && (
               <span className="w-5 h-5 rounded-full bg-[#ffbe00] text-[#0f3a98] text-[11px] flex items-center justify-center font-extrabold">
@@ -145,7 +138,7 @@ export default function FilterBar({
               <select
                 value={filters.roomType}
                 onChange={e => onChange({ ...filters, roomType: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-medium"
               >
                 {roomTypes.map(rt => (
                   <option key={rt.id} value={rt.id}>
@@ -182,7 +175,7 @@ export default function FilterBar({
               <select
                 value={filters.gender}
                 onChange={e => onChange({ ...filters, gender: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-medium"
               >
                 <option value="">All (Mixed & Single Gender)</option>
                 <option value="mixed">Mixed Hostel</option>
@@ -192,31 +185,31 @@ export default function FilterBar({
             </div>
           </div>
 
-          {/* Amenities Checklist */}
+          {/* Amenities Checklist with FontAwesome Icons */}
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-2">Must-Have Amenities</label>
             <div className="flex flex-wrap gap-2">
               {[
-                { id: 'water', label: 'Constant Water', icon: Droplet },
-                { id: 'power_backup', label: 'Standby Generator', icon: Zap },
-                { id: 'wifi', label: 'Fast WiFi', icon: Wifi },
-                { id: 'shuttle', label: 'Campus Shuttle', icon: Bus },
-                { id: 'meals', label: 'Meals / Dining' },
-                { id: 'security', label: 'CCTV & Guards' },
-                { id: 'gym', label: 'Gym Facility' }
+                { id: 'water', label: 'Constant Water', icon: 'fa-solid fa-droplet' },
+                { id: 'power_backup', label: 'Standby Generator', icon: 'fa-solid fa-bolt' },
+                { id: 'wifi', label: 'Fast WiFi', icon: 'fa-solid fa-wifi' },
+                { id: 'shuttle', label: 'Campus Shuttle', icon: 'fa-solid fa-van-shuttle' },
+                { id: 'meals', label: 'Meals / Dining', icon: 'fa-solid fa-utensils' },
+                { id: 'security', label: 'CCTV & Guards', icon: 'fa-solid fa-shield-halved' },
+                { id: 'gym', label: 'Gym Facility', icon: 'fa-solid fa-dumbbell' }
               ].map(amenity => {
                 const active = filters.amenities.includes(amenity.id);
                 return (
                   <button
                     key={amenity.id}
                     onClick={() => toggleAmenity(amenity.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 border transition ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 border transition ${
                       active
                         ? 'border-[#0f3a98] bg-[#0f3a98] text-[#ffbe00] shadow-sm'
                         : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300'
                     }`}
                   >
-                    {active && <Check className="w-3.5 h-3.5 text-[#ffbe00]" />}
+                    <FaIcon icon={active ? 'fa-solid fa-check' : amenity.icon} className="text-xs" />
                     <span>{amenity.label}</span>
                   </button>
                 );

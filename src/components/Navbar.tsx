@@ -3,17 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { UserRole } from '@/types';
-import { 
-  Building2, 
-  Search, 
-  Layers, 
-  ShieldCheck, 
-  UserCheck, 
-  LogOut, 
-  Menu, 
-  X
-} from 'lucide-react';
+import FaIcon from './FaIcon';
 
 interface NavbarProps {
   onOpenAuth?: (mode: 'login' | 'register') => void;
@@ -32,15 +22,15 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 font-bold text-[#ffbe00]">
-              <span className="w-2 h-2 rounded-full bg-[#ffbe00]"></span>
+              <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#ffbe00]" />
               Uganda University Hostel Marketplace
             </span>
-            <span className="hidden md:inline text-blue-100">• Makerere, MUBS, Kyambogo & more</span>
+            <span className="hidden md:inline text-blue-100 font-medium">• Makerere, MUBS, Kyambogo & more</span>
           </div>
 
           {/* Quick Role Switcher for testing all 4 roles */}
           <div className="flex items-center gap-1 bg-[#0a2666] p-1 rounded-lg border border-blue-900 text-xs">
-            <span className="text-[11px] text-blue-200 px-1.5 hidden sm:inline">Role View:</span>
+            <span className="text-[11px] text-blue-200 px-1.5 hidden sm:inline font-semibold">Role View:</span>
             <button
               onClick={() => switchRole('student')}
               className={`px-2 py-0.5 rounded text-[11px] font-semibold transition ${
@@ -90,44 +80,44 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
 
         {/* Desktop Nav Items */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
-          <Link href="/" className="hover:text-[#0f3a98] transition flex items-center gap-1.5">
-            <Search className="w-4 h-4 text-[#0f3a98]" />
+          <Link href="/" className="hover:text-[#0f3a98] transition flex items-center gap-2">
+            <FaIcon icon="fa-solid fa-magnifying-glass" className="text-xs text-[#0f3a98]" />
             Find Hostels
           </Link>
 
           {shortlistCount > 0 && onOpenCompare && (
             <button
               onClick={onOpenCompare}
-              className="text-[#0f3a98] bg-[#e8effc] px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 font-bold"
+              className="text-[#0f3a98] bg-[#e8effc] px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-bold"
             >
-              <Layers className="w-4 h-4 text-[#ffbe00]" />
+              <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
               Compare ({shortlistCount})
             </button>
           )}
 
-          <Link href="/seller" className="hover:text-[#0f3a98] transition flex items-center gap-1.5">
-            <Building2 className="w-4 h-4 text-[#0f3a98]" />
+          <Link href="/seller" className="hover:text-[#0f3a98] transition flex items-center gap-2">
+            <FaIcon icon="fa-solid fa-building-user" className="text-xs text-[#0f3a98]" />
             Seller Portal
             {currentUser?.role === 'custodian' || currentUser?.role === 'broker' ? (
               <span className="w-2 h-2 rounded-full bg-[#ffbe00]"></span>
             ) : null}
           </Link>
 
-          <Link href="/admin" className="hover:text-[#0f3a98] transition flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-[#0f3a98]" />
+          <Link href="/admin" className="hover:text-[#0f3a98] transition flex items-center gap-2">
+            <FaIcon icon="fa-solid fa-user-shield" className="text-xs text-[#0f3a98]" />
             Admin Panel
           </Link>
         </nav>
 
-        {/* User Account / Login Action */}
+        {/* User Account / Login & Register Action */}
         <div className="flex items-center gap-3">
           {currentUser ? (
             <div className="flex items-center gap-2.5">
               <div className="text-right hidden sm:block">
-                <div className="text-xs font-bold text-slate-900 flex items-center justify-end gap-1">
+                <div className="text-xs font-bold text-slate-900 flex items-center justify-end gap-1.5">
                   {currentUser.name}
                   {currentUser.isVerified && (
-                    <UserCheck className="w-3.5 h-3.5 text-[#0f3a98]" />
+                    <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98]" />
                   )}
                 </div>
                 <div className="text-[11px] text-slate-500 capitalize flex items-center justify-end gap-1 font-medium">
@@ -142,21 +132,23 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
                 title="Log out"
                 className="w-9 h-9 rounded-lg border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-200 flex items-center justify-center transition"
               >
-                <LogOut className="w-4 h-4" />
+                <FaIcon icon="fa-solid fa-right-from-bracket" className="text-xs" />
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onOpenAuth?.('login')}
-                className="px-3.5 py-1.5 rounded-lg border border-slate-200 hover:border-[#0f3a98] text-[#0f3a98] hover:bg-[#e8effc] text-xs sm:text-sm font-bold transition"
+                className="px-3.5 py-1.5 rounded-lg border border-slate-300 hover:border-[#0f3a98] text-[#0f3a98] hover:bg-[#e8effc] text-xs sm:text-sm font-bold transition flex items-center gap-1.5"
               >
+                <FaIcon icon="fa-solid fa-arrow-right-to-bracket" className="text-xs text-[#0f3a98]" />
                 Login
               </button>
               <button
                 onClick={() => onOpenAuth?.('register')}
-                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs sm:text-sm font-bold shadow-sm transition"
+                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs sm:text-sm font-bold shadow-sm transition flex items-center gap-1.5"
               >
+                <FaIcon icon="fa-solid fa-user-plus" className="text-xs text-[#ffbe00]" />
                 Register
               </button>
             </div>
@@ -167,7 +159,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-700"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <FaIcon icon={mobileMenuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'} className="text-sm" />
           </button>
         </div>
       </div>
@@ -180,7 +172,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 py-2 text-sm font-semibold text-slate-800"
           >
-            <Search className="w-4 h-4 text-[#0f3a98]" />
+            <FaIcon icon="fa-solid fa-magnifying-glass" className="text-sm text-[#0f3a98]" />
             Explore Hostels
           </Link>
           <Link
@@ -188,7 +180,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 py-2 text-sm font-semibold text-slate-800"
           >
-            <Building2 className="w-4 h-4 text-[#0f3a98]" />
+            <FaIcon icon="fa-solid fa-building-user" className="text-sm text-[#0f3a98]" />
             Seller Portal (Custodians & Brokers)
           </Link>
           <Link
@@ -196,7 +188,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 py-2 text-sm font-semibold text-slate-800"
           >
-            <ShieldCheck className="w-4 h-4 text-[#0f3a98]" />
+            <FaIcon icon="fa-solid fa-user-shield" className="text-sm text-[#0f3a98]" />
             Admin Panel (Verification & Merge Tool)
           </Link>
         </div>

@@ -9,14 +9,7 @@ import CompareModal from '@/components/CompareModal';
 import AuthModal from '@/components/AuthModal';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
-import { 
-  Building2, 
-  ShieldCheck, 
-  Layers, 
-  Sparkles, 
-  PhoneCall, 
-  CheckCircle2
-} from 'lucide-react';
+import FaIcon from '@/components/FaIcon';
 
 export default function HomePage() {
   const { currentUser } = useAuth();
@@ -192,28 +185,28 @@ export default function HomePage() {
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
-        {/* Hero Section (Solid #0f3a98 background, NO gradients) */}
+        {/* Hero Section */}
         <div className="rounded-3xl bg-[#0f3a98] p-6 sm:p-10 text-white shadow-xl border border-blue-900">
           <div className="max-w-2xl space-y-4">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
               Find Verified University Hostels in Uganda.
             </h1>
 
-            <p className="text-blue-100 text-sm sm:text-base leading-relaxed">
+            <p className="text-blue-100 text-sm sm:text-base leading-relaxed font-normal">
               Explore hostels around Makerere, MUBS, Kyambogo and more. Connect directly with authoritative hostel custodians and verified student scouts without hidden middleman markups.
             </p>
 
             <div className="pt-2 flex flex-wrap gap-4 text-xs font-bold text-white">
-              <div className="flex items-center gap-1.5 bg-[#0a2666] px-3 py-1.5 rounded-lg border border-blue-800">
-                <CheckCircle2 className="w-4 h-4 text-[#ffbe00]" />
+              <div className="flex items-center gap-2 bg-[#0a2666] px-3.5 py-2 rounded-lg border border-blue-800">
+                <FaIcon icon="fa-solid fa-hand-holding-dollar" className="text-sm text-[#ffbe00]" />
                 <span>Zero Student Booking Fees</span>
               </div>
-              <div className="flex items-center gap-1.5 bg-[#0a2666] px-3 py-1.5 rounded-lg border border-blue-800">
-                <ShieldCheck className="w-4 h-4 text-[#ffbe00]" />
+              <div className="flex items-center gap-2 bg-[#0a2666] px-3.5 py-2 rounded-lg border border-blue-800">
+                <FaIcon icon="fa-solid fa-shield-halved" className="text-sm text-[#ffbe00]" />
                 <span>Verified Owner Listings</span>
               </div>
-              <div className="flex items-center gap-1.5 bg-[#0a2666] px-3 py-1.5 rounded-lg border border-blue-800">
-                <PhoneCall className="w-4 h-4 text-[#ffbe00]" />
+              <div className="flex items-center gap-2 bg-[#0a2666] px-3.5 py-2 rounded-lg border border-blue-800">
+                <FaIcon icon="fa-brands fa-whatsapp" className="text-base text-[#ffbe00]" />
                 <span>Direct WhatsApp & Call Contact</span>
               </div>
             </div>
@@ -253,9 +246,9 @@ export default function HomePage() {
             {compareList.length > 0 && (
               <button
                 onClick={() => setIsCompareOpen(true)}
-                className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-bold flex items-center gap-1.5 border border-[#0f3a98] transition"
+                className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-bold flex items-center gap-2 border border-[#0f3a98] transition"
               >
-                <Layers className="w-4 h-4 text-[#ffbe00]" />
+                <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
                 Compare ({compareList.length}/3)
               </button>
             )}
@@ -269,9 +262,9 @@ export default function HomePage() {
             </div>
           ) : filteredHostels.length === 0 ? (
             <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
-              <Building2 className="w-12 h-12 text-slate-300 mx-auto" />
+              <FaIcon icon="fa-solid fa-hotel" className="text-4xl text-slate-300 mx-auto" />
               <h3 className="font-bold text-slate-800 text-base">No hostels found</h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
                 Try widening your price range or clearing some amenity filters to see more results.
               </p>
               <button
@@ -286,8 +279,9 @@ export default function HomePage() {
                   amenities: [],
                   sort: 'relevance'
                 })}
-                className="px-4 py-2 rounded-lg bg-[#0f3a98] text-white text-xs font-bold"
+                className="px-4 py-2 rounded-lg bg-[#0f3a98] text-white text-xs font-bold flex items-center gap-1.5 mx-auto"
               >
+                <FaIcon icon="fa-solid fa-rotate-left" className="text-xs" />
                 Clear all filters
               </button>
             </div>
@@ -364,7 +358,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="mt-16 bg-white border-t border-slate-200 py-8 px-4 sm:px-6 text-slate-500 text-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="Hostel Connect" className="h-6 w-auto object-contain" />
             <span className="font-bold text-[#0f3a98]">Hostel Connect Uganda</span>
             <span>• Compliant with Uganda Data Protection and Privacy Act, 2019</span>

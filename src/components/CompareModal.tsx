@@ -3,15 +3,7 @@
 import React from 'react';
 import { Hostel } from '@/types';
 import { formatUGX } from '@/lib/utils';
-import { 
-  X, 
-  Check, 
-  Minus, 
-  Star, 
-  ShieldCheck, 
-  MapPin, 
-  Trash2 
-} from 'lucide-react';
+import FaIcon from './FaIcon';
 
 interface CompareModalProps {
   hostels: Hostel[];
@@ -31,17 +23,17 @@ export default function CompareModal({
   if (!isOpen) return null;
 
   const AMENITY_KEYS = [
-    { id: 'water', label: '24/7 Running Water' },
-    { id: 'power_backup', label: 'Standby Generator / Solar' },
-    { id: 'wifi', label: 'High Speed WiFi' },
-    { id: 'security', label: 'CCTV & Security Guards' },
-    { id: 'shuttle', label: 'Free Campus Shuttle' },
-    { id: 'meals', label: 'Cafeteria / Dining Hall' },
-    { id: 'gym', label: 'Gym / Fitness Facility' }
+    { id: 'water', label: '24/7 Running Water', icon: 'fa-solid fa-droplet' },
+    { id: 'power_backup', label: 'Standby Generator / Solar', icon: 'fa-solid fa-bolt' },
+    { id: 'wifi', label: 'High Speed WiFi', icon: 'fa-solid fa-wifi' },
+    { id: 'security', label: 'CCTV & Security Guards', icon: 'fa-solid fa-shield-halved' },
+    { id: 'shuttle', label: 'Free Campus Shuttle', icon: 'fa-solid fa-van-shuttle' },
+    { id: 'meals', label: 'Cafeteria / Dining Hall', icon: 'fa-solid fa-utensils' },
+    { id: 'gym', label: 'Gym / Fitness Facility', icon: 'fa-solid fa-dumbbell' }
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/70 backdrop-blur-sm font-sans">
       <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col overflow-hidden">
         
         {/* Header */}
@@ -61,14 +53,14 @@ export default function CompareModal({
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition"
           >
-            <X className="w-4 h-4" />
+            <FaIcon icon="fa-solid fa-xmark" className="text-sm" />
           </button>
         </div>
 
         {/* Content Table */}
         <div className="p-4 sm:p-6 overflow-x-auto flex-1">
           {hostels.length === 0 ? (
-            <div className="text-center py-12 text-slate-500 text-sm">
+            <div className="text-center py-12 text-slate-500 text-sm font-medium">
               No hostels selected for comparison. Tap the layers icon on any hostel card to add it!
             </div>
           ) : (
@@ -82,8 +74,9 @@ export default function CompareModal({
                 <div className="h-9 flex items-center">Semester Rent Range</div>
                 <div className="h-9 flex items-center">Available Rooms</div>
                 {AMENITY_KEYS.map(a => (
-                  <div key={a.id} className="h-7 flex items-center text-slate-600 font-semibold">
-                    {a.label}
+                  <div key={a.id} className="h-7 flex items-center text-slate-600 font-semibold gap-1.5">
+                    <FaIcon icon={a.icon} className="text-[10px] text-slate-400" />
+                    <span>{a.label}</span>
                   </div>
                 ))}
               </div>
@@ -112,7 +105,7 @@ export default function CompareModal({
                           onClick={() => onRemoveHostel(hostel.id)}
                           className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-rose-600 transition"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <FaIcon icon="fa-solid fa-trash-can" className="text-[10px]" />
                         </button>
                       </div>
 
@@ -120,26 +113,26 @@ export default function CompareModal({
 
                       {/* Row 1: Area & Campus */}
                       <div className="h-9 flex items-center text-xs font-semibold text-slate-700">
-                        <MapPin className="w-3.5 h-3.5 text-[#0f3a98] mr-1 shrink-0" />
+                        <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98] mr-1.5 shrink-0" />
                         <span className="truncate">{hostel.area}, {hostel.campus}</span>
                       </div>
 
                       {/* Row 2: Status */}
                       <div className="h-9 flex items-center">
                         {hostel.status === 'claimed' ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0f3a98] bg-[#e8effc] px-2 py-0.5 rounded">
-                            <ShieldCheck className="w-3.5 h-3.5 text-[#ffbe00]" /> Verified Owner
+                          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#0f3a98] bg-[#e8effc] px-2 py-0.5 rounded">
+                            <FaIcon icon="fa-solid fa-shield-halved" className="text-[10px] text-[#ffbe00]" /> Verified Owner
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded">
-                            Agent Listed
+                          <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded">
+                            <FaIcon icon="fa-solid fa-tag" className="text-[10px]" /> Agent Listed
                           </span>
                         )}
                       </div>
 
                       {/* Row 3: Rating */}
                       <div className="h-9 flex items-center text-xs font-bold text-slate-800">
-                        <Star className="w-3.5 h-3.5 text-[#ffbe00] fill-[#ffbe00] mr-1" />
+                        <FaIcon icon="fa-solid fa-star" className="text-xs text-[#ffbe00] mr-1.5" />
                         {hostel.ratingAvg.toFixed(1)} ({hostel.ratingCount})
                       </div>
 
@@ -170,9 +163,9 @@ export default function CompareModal({
                         return (
                           <div key={a.id} className="h-7 flex items-center">
                             {hasAmenity ? (
-                              <Check className="w-4 h-4 text-[#0f3a98]" />
+                              <FaIcon icon="fa-solid fa-check" className="text-xs text-[#0f3a98]" />
                             ) : (
-                              <Minus className="w-4 h-4 text-slate-300" />
+                              <FaIcon icon="fa-solid fa-minus" className="text-xs text-slate-300" />
                             )}
                           </div>
                         );

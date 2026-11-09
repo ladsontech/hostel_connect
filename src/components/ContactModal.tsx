@@ -4,14 +4,7 @@ import React, { useState } from 'react';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
 import { formatUGX, getPhoneDialerLink, getWhatsAppDeepLink } from '@/lib/utils';
-import { 
-  X, 
-  ShieldCheck, 
-  Award, 
-  Phone, 
-  MessageSquare, 
-  AlertTriangle 
-} from 'lucide-react';
+import FaIcon from './FaIcon';
 
 interface ContactModalProps {
   hostel: Hostel;
@@ -84,10 +77,10 @@ export default function ContactModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm font-sans">
       <div className="bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col overflow-hidden">
         
-        {/* Header (No gradients) */}
+        {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-start justify-between bg-slate-50">
           <div>
             <div className="flex items-center gap-2">
@@ -97,7 +90,7 @@ export default function ContactModal({
               <span className="text-xs text-slate-500 font-medium">{hostel.campus}</span>
             </div>
             <h3 className="font-extrabold text-[#0f3a98] text-lg mt-1">{hostel.name}</h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 font-medium">
               Select who you would like to reach. Rent is paid directly to hostel management.
             </p>
           </div>
@@ -105,7 +98,7 @@ export default function ContactModal({
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition"
           >
-            <X className="w-4 h-4" />
+            <FaIcon icon="fa-solid fa-xmark" className="text-sm" />
           </button>
         </div>
 
@@ -114,7 +107,7 @@ export default function ContactModal({
           {brokerNoticePending && (
             <div className="p-4 rounded-xl bg-amber-50 border-2 border-[#ffbe00] text-slate-800 space-y-3">
               <div className="flex items-start gap-2.5">
-                <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+                <FaIcon icon="fa-solid fa-triangle-exclamation" className="text-amber-700 text-lg shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-sm text-slate-900">Important Broker Notice</h4>
                   <p className="text-xs text-slate-700 mt-1 leading-relaxed">
@@ -173,13 +166,13 @@ export default function ContactModal({
                       {/* Role Badges */}
                       <div className="flex flex-wrap items-center gap-1.5 mb-1">
                         {isCustodian ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-[#0f3a98] text-[#ffbe00]">
-                            <ShieldCheck className="w-3 h-3 text-[#ffbe00]" />
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold bg-[#0f3a98] text-[#ffbe00]">
+                            <FaIcon icon="fa-solid fa-shield-halved" className="text-[10px] text-[#ffbe00]" />
                             Official Custodian / Owner
                           </span>
                         ) : offer.isAuthorised ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-[#ffbe00] text-[#0f3a98]">
-                            <Award className="w-3 h-3" />
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold bg-[#ffbe00] text-[#0f3a98]">
+                            <FaIcon icon="fa-solid fa-award" className="text-[10px]" />
                             Authorised Agent
                           </span>
                         ) : (
@@ -198,7 +191,7 @@ export default function ContactModal({
                       <h4 className="font-bold text-slate-900 text-sm">{offer.userName}</h4>
 
                       {/* Access Fee Disclosure */}
-                      <div className="mt-1 flex items-center gap-2 text-xs">
+                      <div className="mt-1 flex items-center gap-2 text-xs font-medium">
                         <span className="text-slate-500">Access Fee:</span>
                         {offer.accessFeeUgx > 0 ? (
                           <span className="font-bold text-amber-900 bg-amber-100 px-1.5 py-0.5 rounded text-[11px]">
@@ -228,7 +221,7 @@ export default function ContactModal({
                         onClick={() => handleInitiateAction(offer, 'call')}
                         className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
                       >
-                        <Phone className="w-3.5 h-3.5 text-[#ffbe00]" />
+                        <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
                         Call
                       </button>
 
@@ -236,7 +229,7 @@ export default function ContactModal({
                         onClick={() => handleInitiateAction(offer, 'whatsapp')}
                         className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
                       >
-                        <MessageSquare className="w-3.5 h-3.5 text-[#ffbe00]" />
+                        <FaIcon icon="fa-brands fa-whatsapp" className="text-xs text-[#ffbe00]" />
                         WhatsApp
                       </button>
                     </div>
@@ -249,7 +242,8 @@ export default function ContactModal({
 
         {/* Footer info note */}
         <div className="p-3 bg-slate-50 border-t border-slate-100 text-center text-[11px] text-slate-500 font-medium">
-          ⚠️ Hostel Connect is an informational listing service. We never collect rent or hold deposits.
+          <FaIcon icon="fa-solid fa-circle-info" className="text-xs mr-1 text-[#0f3a98]" />
+          Hostel Connect is an informational listing service. We never collect rent or hold deposits.
         </div>
       </div>
     </div>

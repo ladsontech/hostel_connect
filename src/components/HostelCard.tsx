@@ -4,20 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Hostel } from '@/types';
 import { formatUGX } from '@/lib/utils';
-import { 
-  MapPin, 
-  Star, 
-  ShieldCheck, 
-  Award, 
-  Heart, 
-  Layers, 
-  Wifi, 
-  Zap, 
-  Droplet, 
-  Bus, 
-  ChevronRight,
-  PhoneCall
-} from 'lucide-react';
+import FaIcon from './FaIcon';
 
 interface HostelCardProps {
   hostel: Hostel;
@@ -36,19 +23,14 @@ export default function HostelCard({
   onToggleCompare,
   onContactClick
 }: HostelCardProps) {
-  // Compute price range
   const rents = hostel.rooms.map(r => r.rentUgx);
   const minRent = rents.length ? Math.min(...rents) : 0;
   const maxRent = rents.length ? Math.max(...rents) : 0;
-
-  // Compute total available rooms
   const totalAvailable = hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
-
-  // Cover photo
   const coverPhoto = hostel.photos.find(p => p.isCover) || hostel.photos[0];
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col">
+    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans">
       {/* Image Container */}
       <div className="relative aspect-[16/10] w-full bg-slate-100 overflow-hidden">
         {coverPhoto ? (
@@ -67,19 +49,20 @@ export default function HostelCard({
         {/* Status badges overlay */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 items-center">
           {hostel.status === 'claimed' ? (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-[#0f3a98] text-white shadow-sm">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#ffbe00]" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-[#0f3a98] text-white shadow-sm">
+              <FaIcon icon="fa-solid fa-shield-halved" className="text-xs text-[#ffbe00]" />
               Verified Owner
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-[#ffbe00] text-[#0f3a98] shadow-sm">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-[#ffbe00] text-[#0f3a98] shadow-sm">
+              <FaIcon icon="fa-solid fa-tag" className="text-xs" />
               Agent Listed
             </span>
           )}
 
           {hostel.scoutUserId && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#0a2666] text-[#ffbe00]">
-              <Award className="w-3 h-3 text-[#ffbe00]" />
+              <FaIcon icon="fa-solid fa-award" className="text-xs text-[#ffbe00]" />
               Scout Boost
             </span>
           )}
@@ -100,7 +83,7 @@ export default function HostelCard({
                   : 'bg-white hover:bg-slate-50 text-slate-700'
               }`}
             >
-              <Layers className="w-4 h-4" />
+              <FaIcon icon="fa-solid fa-layer-group" className="text-xs" />
             </button>
           )}
 
@@ -117,17 +100,20 @@ export default function HostelCard({
                   : 'bg-white hover:bg-slate-50 text-slate-700'
               }`}
             >
-              <Heart className={`w-4 h-4 ${isShortlisted ? 'fill-current' : ''}`} />
+              <FaIcon
+                icon={isShortlisted ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}
+                className="text-xs"
+              />
             </button>
           )}
         </div>
 
-        {/* Live availability banner at bottom of image (Solid background, no gradient) */}
+        {/* Live availability banner at bottom of image */}
         <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#0a2666] text-white text-xs">
           <span className="font-semibold">
             {totalAvailable > 0 ? (
               <span className="text-[#ffbe00] flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#ffbe00]"></span>
+                <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#ffbe00]" />
                 {totalAvailable} rooms vacant
               </span>
             ) : (
@@ -144,14 +130,14 @@ export default function HostelCard({
           {/* Rating and Area */}
           <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
             <div className="flex items-center gap-1 font-semibold text-slate-700">
-              <MapPin className="w-3.5 h-3.5 text-[#0f3a98]" />
+              <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98]" />
               <span>{hostel.area}</span>
               <span className="text-slate-300">•</span>
               <span className="text-slate-500">{hostel.campus}</span>
             </div>
 
             <div className="flex items-center gap-1 text-[#0f3a98] font-bold">
-              <Star className="w-3.5 h-3.5 fill-[#ffbe00] text-[#ffbe00]" />
+              <FaIcon icon="fa-solid fa-star" className="text-xs text-[#ffbe00]" />
               <span>{hostel.ratingAvg.toFixed(1)}</span>
               <span className="text-[11px] text-slate-400 font-normal">({hostel.ratingCount})</span>
             </div>
@@ -168,22 +154,22 @@ export default function HostelCard({
           <div className="flex items-center gap-2 mt-2.5 text-slate-600 text-xs font-medium">
             {hostel.amenities.includes('wifi') && (
               <span className="inline-flex items-center gap-1 bg-[#e8effc] text-[#0f3a98] px-2 py-0.5 rounded text-[11px] font-semibold">
-                <Wifi className="w-3 h-3 text-[#0f3a98]" /> WiFi
+                <FaIcon icon="fa-solid fa-wifi" className="text-[10px] text-[#0f3a98]" /> WiFi
               </span>
             )}
             {hostel.amenities.includes('power_backup') && (
               <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 px-2 py-0.5 rounded text-[11px] font-semibold">
-                <Zap className="w-3 h-3 text-[#ffbe00]" /> Generator
+                <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-[#ffbe00]" /> Generator
               </span>
             )}
             {hostel.amenities.includes('water') && (
               <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-900 px-2 py-0.5 rounded text-[11px] font-semibold">
-                <Droplet className="w-3 h-3 text-[#0f3a98]" /> Water
+                <FaIcon icon="fa-solid fa-droplet" className="text-[10px] text-[#0f3a98]" /> Water
               </span>
             )}
             {hostel.amenities.includes('shuttle') && (
               <span className="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold">
-                <Bus className="w-3 h-3 text-[#0f3a98]" /> Shuttle
+                <FaIcon icon="fa-solid fa-van-shuttle" className="text-[10px] text-[#0f3a98]" /> Shuttle
               </span>
             )}
           </div>
@@ -206,9 +192,9 @@ export default function HostelCard({
             {onContactClick ? (
               <button
                 onClick={() => onContactClick(hostel)}
-                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold flex items-center gap-1 shadow-sm transition"
+                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition"
               >
-                <PhoneCall className="w-3.5 h-3.5 text-[#ffbe00]" />
+                <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
                 Contact
               </button>
             ) : (
@@ -217,7 +203,7 @@ export default function HostelCard({
                 className="px-3 py-1.5 rounded-lg bg-[#e8effc] hover:bg-[#0f3a98] text-[#0f3a98] hover:text-white text-xs font-bold flex items-center gap-1 transition"
               >
                 View
-                <ChevronRight className="w-3.5 h-3.5" />
+                <FaIcon icon="fa-solid fa-chevron-right" className="text-[10px]" />
               </Link>
             )}
           </div>

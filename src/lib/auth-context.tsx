@@ -8,10 +8,12 @@ interface AuthContextType {
   currentUser: User | null;
   setCurrentUser: (user: User | null) => void;
   switchRole: (role: UserRole) => void;
-  loginWithPhone: (phone: string, otp: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithCredentials: (identifier: string, password?: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   registerUser: (data: {
     name: string;
-    phone: string;
+    phoneOrEmail: string;
+    password?: string;
     role: UserRole;
     university?: string;
     course?: string;
@@ -25,17 +27,15 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  // Default to Mary (Student) for instant student browsing, or null
-  const [currentUser, setCurrentUser] = useState<User | null>(INITIAL_USERS[4]); // Mary Atuhaire
+  // Default to Mary (Student)
+  const [currentUser, setCurrentUser] = useState<User | null>(INITIAL_USERS[4]);
 
   useEffect(() => {
     const saved = localStorage.getItem('hostel_connect_user');
     if (saved) {
       try {
         setCurrentUser(JSON.parse(saved));
-      } catch (e) {
-        // use default
-      }
+      } catch (e) {}
     }
   }, []);
 
@@ -55,24 +55,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const loginWithPhone = async (phone: string, otp: string): Promise<{ success: boolean; error?: string }> => {
-    if (otp !== '123456' && otp.length !== 6) {
-      return { success: false, error: 'Invalid 6-digit OTP code. (Demo code: 123456)' };
+  const loginWithCredentials = async (
+    identifier: string,
+    password?: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    if (!identifier || identifier.trim().length === 0) {
+      return { success: false, error: 'Please enter your phone number or email address' };
     }
 
-    const cleanPhone = phone.replace(/\s+/g, '');
-    const user = INITIAL_USERS.find(u => u.phone.includes(cleanPhone.slice(-9)));
+    const cleanInput = identifier.trim().toLowerCase();
+    
+    // Check if matching an existing seed user by email or phone digits
+    const user = INITIAL_USERS.find(u => {
+      const matchEmail = u.email && u.email.toLowerCase() === cleanInput;
+      const matchPhone = u.phone && cleanInput.includes(u.phone.replace(/\D/g, '').slice(-9));
+      return matchEmail || matchPhone;
+    });
 
     if (user) {
       saveUser(user);
       return { success: true };
     }
 
-    // Auto-create simple student user if not found
+    // Auto-create or login seamlessly without OTP
+    const isEmail = cleanInput.includes('@');
     const newUser: User = {
       id: `usr_${Date.now()}`,
-      phone,
-      name: 'Hostel Seeker',
+      phone: isEmail ? '+256700000000' : identifier,
+      email: isEmail ? identifier : undefined,
+      name: isEmail ? identifier.split('@')[0] : 'Campus Student',
       role: 'student',
       status: 'active',
       isVerified: true,
@@ -82,22 +93,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { success: true };
   };
 
+  const loginWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
+    // Instant Google OAuth simulation
+    const googleUser: User = {
+      id: `usr_google_${Date.now()}`,
+      name: 'Google Student Account',
+      email: 'student@gmail.com',
+      phone: '+256770123456',
+      role: 'student',
+      status: 'active',
+      isVerified: true,
+      university: 'Makerere University',
+      createdAt: new Date().toISOString()
+    };
+    saveUser(googleUser);
+    return { success: true };
+  };
+
   const registerUser = async (data: {
     name: string;
-    phone: string;
+    phoneOrEmail: string;
+    password?: string;
     role: UserRole;
     university?: string;
     course?: string;
     businessName?: string;
     idNumber?: string;
   }): Promise<{ success: boolean; error?: string }> => {
+    const isEmail = data.phoneOrEmail.includes('@');
     const newUser: User = {
       id: `usr_${Date.now()}`,
-      phone: data.phone,
+      phone: isEmail ? '+256700000000' : data.phoneOrEmail,
+      email: isEmail ? data.phoneOrEmail : undefined,
       name: data.name,
       role: data.role,
       status: 'active',
-      isVerified: data.role === 'student', // Students verified by phone OTP
+      isVerified: true,
       university: data.university,
       course: data.course,
       businessName: data.businessName,
@@ -119,7 +150,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         currentUser,
         setCurrentUser: saveUser,
         switchRole,
-        loginWithPhone,
+        loginWithCredentials,
+        loginWithGoogle,
         registerUser,
         logout,
         isAuthenticated: !!currentUser

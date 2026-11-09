@@ -4,20 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import AuthModal from '@/components/AuthModal';
 import { useAuth } from '@/lib/auth-context';
-import { Hostel, Offer, SubscriptionPlan, UserSubscription } from '@/types';
+import { Hostel, SubscriptionPlan, UserSubscription } from '@/types';
 import { formatUGX } from '@/lib/utils';
-import { 
-  PlusCircle, 
-  PhoneCall, 
-  MessageSquare, 
-  Heart, 
-  Eye, 
-  AlertTriangle, 
-  CheckCircle, 
-  Users, 
-  Sparkles,
-  Smartphone
-} from 'lucide-react';
+import FaIcon from '@/components/FaIcon';
 
 export default function SellerPortalPage() {
   const { currentUser, switchRole } = useAuth();
@@ -281,9 +270,9 @@ export default function SellerPortalPage() {
             </button>
             <button
               onClick={() => setActiveTab('add')}
-              className={`px-3 py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] font-extrabold transition flex items-center gap-1 shadow-sm`}
+              className={`px-3 py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] font-extrabold transition flex items-center gap-1.5 shadow-sm`}
             >
-              <PlusCircle className="w-3.5 h-3.5" />
+              <FaIcon icon="fa-solid fa-plus" className="text-xs" />
               Add Hostel
             </button>
           </div>
@@ -301,7 +290,7 @@ export default function SellerPortalPage() {
 
             {updateMsg && (
               <div className="p-3 bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-bold rounded-xl flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#0f3a98]" />
+                <FaIcon icon="fa-solid fa-circle-check" className="text-[#0f3a98]" />
                 <span>{updateMsg}</span>
               </div>
             )}
@@ -426,12 +415,12 @@ export default function SellerPortalPage() {
               </div>
             </div>
 
-            {/* Metric KPI cards */}
+            {/* Metric KPI cards with FontAwesome Icons */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between text-slate-400 mb-2">
                   <span className="text-xs font-bold text-slate-500">Listing Views</span>
-                  <Eye className="w-4 h-4 text-[#0f3a98]" />
+                  <FaIcon icon="fa-solid fa-eye" className="text-sm text-[#0f3a98]" />
                 </div>
                 <div className="text-2xl font-extrabold text-[#0f3a98]">
                   {analyticsData?.views || 1420}
@@ -442,7 +431,7 @@ export default function SellerPortalPage() {
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between text-slate-400 mb-2">
                   <span className="text-xs font-bold text-slate-500">WhatsApp Inquiries</span>
-                  <MessageSquare className="w-4 h-4 text-[#ffbe00]" />
+                  <FaIcon icon="fa-brands fa-whatsapp" className="text-base text-[#ffbe00]" />
                 </div>
                 <div className="text-2xl font-extrabold text-[#0f3a98]">
                   {analyticsData?.whatsAppTaps || 48}
@@ -453,7 +442,7 @@ export default function SellerPortalPage() {
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between text-slate-400 mb-2">
                   <span className="text-xs font-bold text-slate-500">Phone Calls</span>
-                  <PhoneCall className="w-4 h-4 text-[#0f3a98]" />
+                  <FaIcon icon="fa-solid fa-phone" className="text-sm text-[#0f3a98]" />
                 </div>
                 <div className="text-2xl font-extrabold text-[#0f3a98]">
                   {analyticsData?.calls || 26}
@@ -464,7 +453,7 @@ export default function SellerPortalPage() {
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between text-slate-400 mb-2">
                   <span className="text-xs font-bold text-slate-500">Student Saves</span>
-                  <Heart className="w-4 h-4 text-rose-500" />
+                  <FaIcon icon="fa-solid fa-heart" className="text-sm text-rose-500" />
                 </div>
                 <div className="text-2xl font-extrabold text-[#0f3a98]">
                   {analyticsData?.saves || 312}
@@ -473,9 +462,9 @@ export default function SellerPortalPage() {
               </div>
             </div>
 
-            {/* FR-9.2 Weekly Summary Banner (No gradients) */}
+            {/* FR-9.2 Weekly Summary Banner */}
             <div className="p-4 rounded-2xl bg-[#e8effc] border border-blue-200 flex items-center gap-3">
-              <Sparkles className="w-6 h-6 text-[#ffbe00] shrink-0" />
+              <FaIcon icon="fa-solid fa-wand-magic-sparkles" className="text-lg text-[#ffbe00] shrink-0" />
               <div>
                 <h4 className="font-bold text-sm text-[#0f3a98]">Weekly Performance Summary (FR-9.2)</h4>
                 <p className="text-xs text-slate-700 mt-0.5 font-medium">
@@ -491,7 +480,7 @@ export default function SellerPortalPage() {
                 <div className="space-y-2">
                   <div className="p-3 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-[#0f3a98]" />
+                      <FaIcon icon="fa-solid fa-users" className="text-xs text-[#0f3a98]" />
                       <span className="font-bold text-slate-800">Brian Kigozi (Campus Scout)</span>
                       <span className="bg-[#ffbe00] text-[#0f3a98] px-1.5 py-0.5 rounded text-[10px] font-bold">Authorised</span>
                     </div>
@@ -533,7 +522,7 @@ export default function SellerPortalPage() {
 
               {paymentSuccessMsg && (
                 <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-bold flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-[#0f3a98]" />
+                  <FaIcon icon="fa-solid fa-circle-check" className="text-[#0f3a98]" />
                   <span>{paymentSuccessMsg}</span>
                 </div>
               )}
@@ -562,8 +551,8 @@ export default function SellerPortalPage() {
 
                         <ul className="mt-4 space-y-1.5 text-xs text-slate-700 font-medium">
                           {plan.features.map((f, i) => (
-                            <li key={i} className="flex items-center gap-1.5">
-                              <CheckCircle className="w-3.5 h-3.5 text-[#0f3a98] shrink-0" />
+                            <li key={i} className="flex items-center gap-2">
+                              <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98] shrink-0" />
                               <span>{f}</span>
                             </li>
                           ))}
@@ -602,7 +591,7 @@ export default function SellerPortalPage() {
                             : 'border-slate-200 text-slate-600'
                         }`}
                       >
-                        <Smartphone className="w-3.5 h-3.5 text-[#ffbe00]" />
+                        <FaIcon icon="fa-solid fa-mobile-screen-button" className="text-xs text-[#ffbe00]" />
                         MTN MoMo
                       </button>
                       <button
@@ -614,7 +603,7 @@ export default function SellerPortalPage() {
                             : 'border-slate-200 text-slate-600'
                         }`}
                       >
-                        <Smartphone className="w-3.5 h-3.5 text-rose-600" />
+                        <FaIcon icon="fa-solid fa-mobile-screen-button" className="text-xs text-rose-600" />
                         Airtel Money
                       </button>
                     </div>
@@ -665,7 +654,7 @@ export default function SellerPortalPage() {
             {duplicateWarning && (
               <div className="p-5 rounded-2xl bg-amber-50 border-2 border-[#ffbe00] space-y-4">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-6 h-6 text-amber-700 shrink-0 mt-0.5" />
+                  <FaIcon icon="fa-solid fa-triangle-exclamation" className="text-amber-700 text-lg shrink-0 mt-0.5" />
                   <div>
                     <h3 className="text-base font-extrabold text-amber-950">
                       Duplicate Detected: Is this the same hostel? (Section 5)

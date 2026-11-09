@@ -4,13 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import { useAuth } from '@/lib/auth-context';
 import { Hostel } from '@/types';
-import { 
-  ShieldCheck, 
-  GitMerge, 
-  AlertTriangle, 
-  CheckCircle, 
-  Download
-} from 'lucide-react';
+import FaIcon from '@/components/FaIcon';
 
 export default function AdminPanelPage() {
   const { currentUser, switchRole } = useAuth();
@@ -131,7 +125,7 @@ export default function AdminPanelPage() {
               onClick={handleExportCsv}
               className="px-3.5 py-2 rounded-xl bg-[#0a2666] hover:bg-[#081e52] text-[#ffbe00] text-xs font-bold flex items-center gap-1.5 border border-blue-800 transition shadow-sm"
             >
-              <Download className="w-3.5 h-3.5" />
+              <FaIcon icon="fa-solid fa-download" className="text-xs" />
               Export CSV (FR-10.9)
             </button>
           </div>
@@ -153,7 +147,7 @@ export default function AdminPanelPage() {
               activeTab === 'merge' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'hover:bg-slate-200 text-slate-700'
             }`}
           >
-            <GitMerge className="w-3.5 h-3.5" />
+            <FaIcon icon="fa-solid fa-code-merge" className="text-xs" />
             Duplicate Merge Tool (FR-10.4)
           </button>
           <button
@@ -162,7 +156,7 @@ export default function AdminPanelPage() {
               activeTab === 'reports' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'hover:bg-slate-200 text-slate-700'
             }`}
           >
-            <AlertTriangle className="w-3.5 h-3.5" />
+            <FaIcon icon="fa-solid fa-triangle-exclamation" className="text-xs" />
             Moderation Queue (FR-10.5)
           </button>
           <button
@@ -250,7 +244,7 @@ export default function AdminPanelPage() {
 
             {mergeSuccessMsg && (
               <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-bold flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-[#0f3a98] shrink-0" />
+                <FaIcon icon="fa-solid fa-circle-check" className="text-base text-[#0f3a98] shrink-0" />
                 <span>{mergeSuccessMsg}</span>
               </div>
             )}
@@ -263,7 +257,7 @@ export default function AdminPanelPage() {
                     <span className="text-xs font-extrabold text-[#0f3a98] uppercase tracking-wider">
                       1. Master Hostel (To Keep)
                     </span>
-                    <ShieldCheck className="w-4 h-4 text-[#0f3a98]" />
+                    <FaIcon icon="fa-solid fa-shield-halved" className="text-sm text-[#0f3a98]" />
                   </div>
                   <select
                     value={primaryHostelId}
@@ -287,7 +281,7 @@ export default function AdminPanelPage() {
                     <span className="text-xs font-extrabold text-rose-800 uppercase tracking-wider">
                       2. Duplicate Entry (To Merge & Absorb)
                     </span>
-                    <AlertTriangle className="w-4 h-4 text-rose-600" />
+                    <FaIcon icon="fa-solid fa-triangle-exclamation" className="text-sm text-rose-600" />
                   </div>
                   <select
                     value={duplicateHostelId}
@@ -325,7 +319,7 @@ export default function AdminPanelPage() {
                   disabled={mergeLoading || primaryHostelId === duplicateHostelId}
                   className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] font-extrabold text-xs shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <GitMerge className="w-4 h-4 text-[#ffbe00]" />
+                  <FaIcon icon="fa-solid fa-code-merge" className="text-sm text-[#ffbe00]" />
                   {mergeLoading ? 'Executing Merge Algorithm...' : 'Execute Merge (FR-10.4)'}
                 </button>
               </div>
