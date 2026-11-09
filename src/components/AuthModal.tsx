@@ -195,10 +195,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           </button>
 
           {/* Clean Divider */}
-          <div className="relative flex items-center justify-center my-2">
+          <div className="relative flex items-center justify-center my-3">
             <div className="border-t border-slate-200 w-full"></div>
-            <span className="bg-white px-3 text-[11px] font-normal text-slate-400 uppercase tracking-wider">
-              Or with credentials
+            <span className="bg-white px-3 text-[11px] font-normal text-slate-400 uppercase tracking-normal whitespace-nowrap shrink-0">
+              or with credentials
             </span>
             <div className="border-t border-slate-200 w-full"></div>
           </div>
