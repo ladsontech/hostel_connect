@@ -117,6 +117,7 @@ export default function ContactModal({
   }, []);
 
   const isUnlocked = hostel ? unlockedHostels.includes(hostel.id) : false;
+  const hasCustodian = offers.some(o => o.userRole === 'custodian');
 
   if (!isOpen || !hostel) return null;
 
@@ -185,7 +186,9 @@ export default function ContactModal({
     if (actionType === 'call') {
       window.location.href = getPhoneDialerLink(offer.contactPhone);
     } else {
-      const msg = `Hello ${offer.userName}, I saw your listing for student rooms in ${hostel.area} near ${hostel.campus} on Hostel Connect Uganda. Is there an available room?`;
+      const msg = offer.userRole === 'custodian'
+        ? `Hello ${offer.userName}, I saw your official listing for student rooms in ${hostel.area} near ${hostel.campus} on Hostel Connect Uganda. Is there an available room?`
+        : `Hello ${offer.userName}, I saw the student rooms in ${hostel.area} near ${hostel.campus} on Hostel Connect Uganda. Can you trek with me for an in-person room viewing?`;
       window.open(getWhatsAppDeepLink(offer.whatsapp, msg), '_blank');
     }
   };
@@ -205,9 +208,14 @@ export default function ContactModal({
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-start justify-between bg-slate-50">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#0f3a98] text-white">
-                <FaIcon icon="fa-solid fa-shield-halved" className="text-[#ffbe00] text-[10px] mr-1" />
-                Verified Listing
+              <span className={`text-[11px] font-medium uppercase tracking-wider px-2.5 py-0.5 rounded ${
+                hasCustodian ? 'bg-[#0f3a98] text-white' : 'bg-[#ffbe00] text-[#0f3a98]'
+              }`}>
+                <FaIcon
+                  icon={hasCustodian ? "fa-solid fa-shield-halved" : "fa-solid fa-person-walking"}
+                  className={`text-xs mr-1 ${hasCustodian ? 'text-[#ffbe00]' : 'text-[#0f3a98]'}`}
+                />
+                {hasCustodian ? 'Official Custodian Listing' : 'Campus Scout & Broker Viewing'}
               </span>
               <span className="text-xs text-slate-500 font-medium">{hostel.campus}</span>
             </div>
@@ -215,7 +223,9 @@ export default function ContactModal({
               Verified Student Accommodation • {hostel.area}
             </h3>
             <p className="text-xs text-slate-500 font-normal">
-              Direct connection to official hostel management desk. 100% money-back guarantee.
+              {hasCustodian
+                ? 'Direct connection to official hostel management desk. 100% money-back guarantee.'
+                : 'A verified campus broker will physically trek with you to inspect rooms and introduce you to the caretaker desk.'}
             </p>
           </div>
           <button
@@ -631,14 +641,10 @@ export default function ContactModal({
                             <FaIcon icon="fa-solid fa-circle-check" className="text-[10px] text-[#ffbe00]" />
                             Official Custodian / Owner Unlocked
                           </span>
-                        ) : offer.isAuthorised ? (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-[#ffbe00] text-[#0f3a98]">
-                            <FaIcon icon="fa-solid fa-award" className="text-[10px]" />
-                            Authorised Agent
-                          </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700">
-                            Independent Broker
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-medium bg-[#ffbe00] text-[#0f3a98]">
+                            <FaIcon icon="fa-solid fa-person-walking" className="text-[11px]" />
+                            Campus Broker (Trek & Guide)
                           </span>
                         )}
 
@@ -707,10 +713,10 @@ export default function ContactModal({
 
                       <button
                         onClick={() => handleInitiateAction(offer, 'whatsapp')}
-                        className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 transition shadow-sm"
+                        className="px-3.5 py-1.5 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-medium flex items-center gap-1.5 transition shadow-sm"
                       >
-                        <FaIcon icon="fa-brands fa-whatsapp" className="text-xs text-[#ffbe00]" />
-                        WhatsApp
+                        <FaIcon icon="fa-brands fa-whatsapp" className="text-xs text-white" />
+                        {isCustodian ? 'WhatsApp' : 'WhatsApp & Trek'}
                       </button>
                     </div>
                   </div>

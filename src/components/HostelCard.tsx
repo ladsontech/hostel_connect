@@ -51,12 +51,12 @@ export default function HostelCard({
           {hostel.status === 'claimed' ? (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-[#0f3a98] text-white shadow-sm">
               <FaIcon icon="fa-solid fa-shield-halved" className="text-xs text-[#ffbe00]" />
-              Verified Owner
+              Custodian Listed
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-[#ffbe00] text-[#0f3a98] shadow-sm">
-              <FaIcon icon="fa-solid fa-tag" className="text-xs" />
-              Agent Listed
+              <FaIcon icon="fa-solid fa-person-walking" className="text-xs text-[#0f3a98]" />
+              Broker Trekking
             </span>
           )}
 

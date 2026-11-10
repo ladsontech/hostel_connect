@@ -42,6 +42,7 @@ export default function HostelDetailPage() {
   }, [isContactOpen]);
 
   const isUnlocked = hostel ? unlockedHostels.includes(hostel.id) : false;
+  const hasCustodian = offers.some(o => o.userRole === 'custodian');
 
   // Review submission
   const [newRating, setNewRating] = useState(5);
@@ -250,7 +251,13 @@ export default function HostelDetailPage() {
               <p className="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
                 <span>{hostel.distanceCampusApprox}</span>
                 <span>•</span>
-                <span>{isUnlocked ? `Landmark: ${hostel.landmark}` : 'Exact address revealed after UGX 5,000 connection fee'}</span>
+                <span>
+                  {isUnlocked
+                    ? `Landmark: ${hostel.landmark}`
+                    : hasCustodian
+                    ? 'Exact address revealed after UGX 5,000 connection fee'
+                    : 'Campus broker will trek and guide you directly to the rooms'}
+                </span>
               </p>
             </div>
 
@@ -258,18 +265,25 @@ export default function HostelDetailPage() {
             <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 bg-[#e8effc] p-4 rounded-xl border border-blue-200">
               <div className="text-right">
                 <div className="text-[10px] text-[#0f3a98] font-medium uppercase tracking-wider">
-                  {isUnlocked ? 'Direct Contact Unlocked' : 'Verified Booking'}
+                  {hasCustodian ? (isUnlocked ? 'Direct Contact Unlocked' : 'Custodian Upload') : 'Broker Trekking Guide'}
                 </div>
                 <div className="text-[#0f3a98] font-medium text-sm sm:text-base">
-                  {isUnlocked ? 'Custodian Details Ready' : 'UGX 5,000 Connection Fee'}
+                  {hasCustodian
+                    ? (isUnlocked ? 'Custodian Details Ready' : 'UGX 5,000 Connection Fee')
+                    : 'Trek to Hostel with Broker'}
                 </div>
               </div>
               <button
                 onClick={handleOpenContact}
                 className="px-5 py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium shadow-sm flex items-center gap-2 transition"
               >
-                <FaIcon icon={isUnlocked ? "fa-solid fa-phone" : "fa-solid fa-calendar-check"} className="text-xs text-[#ffbe00]" />
-                {isUnlocked ? 'View Custodian Contact' : 'Book Now'}
+                <FaIcon
+                  icon={hasCustodian ? (isUnlocked ? "fa-solid fa-phone" : "fa-solid fa-lock") : "fa-solid fa-person-walking"}
+                  className="text-xs text-[#ffbe00]"
+                />
+                {hasCustodian
+                  ? (isUnlocked ? 'View Custodian Contact' : 'Book Now (Custodian)')
+                  : 'Trek with Broker'}
               </button>
             </div>
           </div>
