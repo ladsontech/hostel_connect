@@ -264,8 +264,8 @@ export default function UniMarketCarousel() {
                   </a>
 
                   {/* Slider Count */}
-                  <div className="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-xs text-white text-[10px] sm:text-xs font-medium tracking-wide border border-white/10 shadow-xs">
-                    Flyer {index + 1} of {flyers.length}
+                  <div className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] sm:text-xs font-medium tracking-wide border border-white/10 shadow-xs">
+                    Ad {index + 1}/{flyers.length}
                   </div>
                 </div>
               </div>
