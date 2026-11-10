@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col md:flex-row items-center gap-3 sm:gap-4 text-center md:text-left">
-            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-[#ffbe00] text-xl flex-shrink-0">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#0f3a98] text-xl flex-shrink-0 shadow-sm">
               <FaIcon icon="fa-solid fa-headset" />
             </div>
             <div>
