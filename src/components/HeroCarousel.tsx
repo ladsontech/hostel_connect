@@ -74,14 +74,14 @@ export default function HeroCarousel() {
 
   return (
     <div
-      className="relative w-full rounded-3xl overflow-hidden shadow-xl border border-blue-900 bg-[#0f3a98]"
+      className="relative w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-[#0f3a98]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Uniform Aspect Ratio Container: 21:9 Widescreen Landscape Ratio on Both Web & Mobile */}
-      <div className="relative w-full aspect-[21/9] min-h-[220px] sm:min-h-[280px] md:min-h-[340px] overflow-hidden">
+      {/* Uniform Aspect Ratio Container: Exact Same 21:9 Widescreen Ratio as the Ad Section */}
+      <div className="relative w-full aspect-[21/9] min-h-[160px] sm:min-h-[220px] overflow-hidden">
         {slides.map((slide, index) => {
           const isActive = index === currentIndex;
           return (
@@ -98,27 +98,27 @@ export default function HeroCarousel() {
                 className="w-full h-full object-cover transform scale-100 transition-transform duration-7000 ease-out"
               />
 
-              {/* Solid readable dark blue overlay (allows words to read clearly now; easily removed when user supplies graphical flyers) */}
+              {/* Solid readable dark blue overlay */}
               <div className="absolute inset-0 bg-[#0a2666]/75 sm:bg-[#0a2666]/70" />
 
-              {/* Slide Content Layout */}
-              <div className="absolute inset-0 p-4 sm:p-8 md:p-10 flex flex-col justify-between text-white z-20">
-                <div className="max-w-2xl space-y-2 sm:space-y-3 my-auto">
-                  <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight leading-tight text-white">
+              {/* Slide Content Layout - Proportional to 21:9 Widescreen Ratio */}
+              <div className="absolute inset-0 p-3.5 sm:p-6 md:p-8 flex flex-col justify-between text-white z-20">
+                <div className="max-w-2xl space-y-1 sm:space-y-2 my-auto">
+                  <h1 className="text-sm sm:text-2xl md:text-3xl lg:text-4xl font-medium tracking-tight leading-snug sm:leading-tight text-white line-clamp-1 sm:line-clamp-2">
                     {slide.title}
                   </h1>
 
-                  <p className="text-blue-100 text-xs sm:text-sm md:text-base leading-relaxed font-normal line-clamp-2 sm:line-clamp-3 max-w-xl">
+                  <p className="text-blue-100 text-[10px] sm:text-xs md:text-sm leading-relaxed font-normal line-clamp-1 sm:line-clamp-2 max-w-xl">
                     {slide.description}
                   </p>
 
-                  {/* Feature Tags */}
+                  {/* Feature Tags (visible on tablets & desktops, gracefully hidden on small mobile to strictly preserve 21:9 height) */}
                   {slide.tags && slide.tags.length > 0 && (
-                    <div className="pt-1 sm:pt-2 flex flex-wrap gap-2 sm:gap-3 text-[11px] sm:text-xs font-medium text-white">
+                    <div className="hidden sm:flex pt-1 flex-wrap gap-2 text-xs font-medium text-white">
                       {slide.tags.map((tag, tIdx) => (
                         <div
                           key={tIdx}
-                          className="flex items-center gap-1.5 bg-[#0a2666]/90 backdrop-blur-xs px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-blue-400/30"
+                          className="flex items-center gap-1.5 bg-[#0a2666]/90 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-blue-400/30 text-[11px]"
                         >
                           <FaIcon
                             icon={
@@ -128,7 +128,7 @@ export default function HeroCarousel() {
                                 ? 'fa-solid fa-shield-halved'
                                 : 'fa-brands fa-whatsapp'
                             }
-                            className="text-xs sm:text-sm text-[#ffbe00]"
+                            className="text-xs text-[#ffbe00]"
                           />
                           <span>{tag}</span>
                         </div>
@@ -137,9 +137,9 @@ export default function HeroCarousel() {
                   )}
                 </div>
 
-                {/* Bottom Bar: Slide Counter & Chevrons */}
-                <div className="flex items-center justify-between gap-3 pt-1">
-                  <div className="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-xs text-white text-[10px] sm:text-xs font-medium tracking-wide border border-white/10 shadow-xs">
+                {/* Bottom Bar: Slide Counter */}
+                <div className="flex items-center justify-between gap-3 pt-0.5">
+                  <div className="px-2.5 py-0.5 sm:py-1 rounded-full bg-black/50 backdrop-blur-xs text-white text-[9px] sm:text-xs font-medium tracking-wide border border-white/10 shadow-xs">
                     Slide {index + 1} of {slides.length}
                   </div>
                 </div>
