@@ -12,6 +12,8 @@ interface AuthContextType {
   loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   registerUser: (data: {
     name: string;
+    email?: string;
+    phone?: string;
     phoneOrEmail: string;
     password?: string;
     role: UserRole;

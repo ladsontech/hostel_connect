@@ -22,7 +22,6 @@ export default function HostelDetailPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-
   // Modals
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -31,6 +30,18 @@ export default function HostelDetailPage() {
   const [reportReason, setReportReason] = useState('wrong_price');
   const [reportDetails, setReportDetails] = useState('');
   const [reportSuccess, setReportSuccess] = useState(false);
+
+  // Unlocked hostels state
+  const [unlockedHostels, setUnlockedHostels] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('hostel_connect_unlocked');
+      if (saved) setUnlockedHostels(JSON.parse(saved));
+    } catch (e) {}
+  }, [isContactOpen]);
+
+  const isUnlocked = hostel ? unlockedHostels.includes(hostel.id) : false;
 
   // Review submission
   const [newRating, setNewRating] = useState(5);
@@ -231,28 +242,34 @@ export default function HostelDetailPage() {
                 <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98]" />
                 <span>{hostel.campus} • {hostel.area}</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-medium text-[#0f3a98]">{hostel.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-medium text-[#0f3a98]">
+                {isUnlocked
+                  ? hostel.name
+                  : `Verified ${hostel.genderPolicy === 'girls_only' ? "Girls' " : hostel.genderPolicy === 'boys_only' ? "Boys' " : ''}Student Hostel • ${hostel.area}`}
+              </h1>
               <p className="text-xs text-slate-500 font-medium mt-1 flex items-center gap-1.5">
                 <span>{hostel.distanceCampusApprox}</span>
                 <span>•</span>
-                <span>Landmark: {hostel.landmark}</span>
+                <span>{isUnlocked ? `Landmark: ${hostel.landmark}` : 'Exact address revealed after UGX 5,000 connection fee'}</span>
               </p>
             </div>
 
             {/* Quick Contact CTA */}
             <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 bg-[#e8effc] p-4 rounded-xl border border-blue-200">
               <div className="text-right">
-                <div className="text-[10px] text-[#0f3a98] font-medium uppercase tracking-wider">Direct Inquiry</div>
+                <div className="text-[10px] text-[#0f3a98] font-medium uppercase tracking-wider">
+                  {isUnlocked ? 'Direct Contact Unlocked' : 'Verified Booking'}
+                </div>
                 <div className="text-[#0f3a98] font-medium text-sm sm:text-base">
-                  {offers.length} Active Contact{offers.length === 1 ? '' : 's'}
+                  {isUnlocked ? 'Custodian Details Ready' : 'UGX 5,000 Connection Fee'}
                 </div>
               </div>
               <button
                 onClick={handleOpenContact}
                 className="px-5 py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium shadow-sm flex items-center gap-2 transition"
               >
-                <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
-                Reveal Phone & WhatsApp
+                <FaIcon icon={isUnlocked ? "fa-solid fa-phone" : "fa-solid fa-calendar-check"} className="text-xs text-[#ffbe00]" />
+                {isUnlocked ? 'View Custodian Contact' : 'Book Now'}
               </button>
             </div>
           </div>

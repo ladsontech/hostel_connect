@@ -109,7 +109,9 @@ export default function CompareModal({
                         </button>
                       </div>
 
-                      <h4 className="font-medium text-slate-900 text-sm line-clamp-1">{hostel.name}</h4>
+                      <h4 className="font-medium text-slate-900 text-sm line-clamp-1">
+                        {`Verified ${hostel.genderPolicy === 'girls_only' ? "Girls' " : hostel.genderPolicy === 'boys_only' ? "Boys' " : ''}Student Hostel`}
+                      </h4>
 
                       {/* Row 1: Area & Campus */}
                       <div className="h-9 flex items-center text-xs font-medium text-slate-700">

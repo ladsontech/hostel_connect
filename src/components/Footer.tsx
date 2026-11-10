@@ -4,35 +4,35 @@ import FaIcon from './FaIcon';
 
 export default function Footer() {
   return (
-    <footer className="mt-20 bg-[#0f3a98] text-white">
-      {/* Top Assistance Banner */}
-      <div className="border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col md:flex-row items-center gap-3 sm:gap-4 text-center md:text-left">
-            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#0f3a98] text-xl flex-shrink-0 shadow-sm">
+    <div className="mt-16 sm:mt-24">
+      {/* Top Assistance Banner - Positioned slightly above the footer */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 sm:mb-10">
+        <div className="bg-[#0f3a98] rounded-2xl shadow-xl border border-blue-900/40 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-white relative overflow-hidden">
+          <div className="flex flex-col md:flex-row items-center gap-3.5 sm:gap-4 text-center md:text-left z-10">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-[#0f3a98] text-xl shrink-0 shadow-sm">
               <FaIcon icon="fa-solid fa-headset" />
             </div>
             <div>
-              <h4 className="text-base font-medium text-white">Need help finding a hostel this semester?</h4>
-              <p className="text-xs text-blue-100 font-light mt-0.5">
+              <h4 className="text-base sm:text-lg font-medium text-white">Need help finding a hostel this semester?</h4>
+              <p className="text-xs sm:text-sm text-blue-100 font-light mt-0.5">
                 Speak directly with verified campus custodians or chat with our student support team in Kampala.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 flex-wrap justify-center">
+          <div className="flex items-center gap-3 flex-wrap justify-center z-10 shrink-0">
             <a
               href="https://wa.me/256700000000?text=Hello%20Hostel%20Connect,%20I%20am%20looking%20for%20a%20hostel"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#25D366] text-white text-xs font-medium hover:brightness-110 transition shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25D366] text-white text-xs sm:text-sm font-medium hover:brightness-110 transition shadow-sm"
             >
-              <FaIcon icon="fa-brands fa-whatsapp" className="text-sm" />
+              <FaIcon icon="fa-brands fa-whatsapp" className="text-base" />
               <span>WhatsApp Support</span>
             </a>
             <a
               href="tel:+256700000000"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] text-xs font-medium hover:bg-yellow-400 transition shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#ffbe00] text-[#0f3a98] text-xs sm:text-sm font-medium hover:bg-yellow-400 transition shadow-sm"
             >
               <FaIcon icon="fa-solid fa-phone" className="text-xs" />
               <span>+256 700 000 000</span>
@@ -40,6 +40,9 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      {/* Main Footer */}
+      <footer className="bg-[#0f3a98] text-white">
 
       {/* Main Footer Navigation Columns */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -269,5 +272,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </div>
   );
 }

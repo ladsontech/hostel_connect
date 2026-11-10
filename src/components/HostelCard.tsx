@@ -30,7 +30,7 @@ export default function HostelCard({
   const coverPhoto = hostel.photos.find(p => p.isCover) || hostel.photos[0];
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[285px] max-w-[300px] shrink-0 snap-start sm:w-full mx-auto sm:mx-0">
+    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[280px] sm:w-full max-w-[285px] sm:max-w-none shrink-0 snap-start mx-auto sm:mx-0">
       {/* Image Container: 300px by 220px */}
       <div className="relative w-full h-[220px] bg-slate-100 overflow-hidden">
         {coverPhoto ? (
@@ -128,29 +128,31 @@ export default function HostelCard({
             </div>
           </div>
 
-          {/* Name */}
+          {/* Anonymized Listing Title - Protects hostel name to prevent platform bypass */}
           <Link href={`/hostels/${hostel.id}`}>
             <h3 className="font-medium text-slate-900 text-base group-hover:text-[#0f3a98] transition line-clamp-1">
-              {hostel.name}
+              {`Verified ${hostel.genderPolicy === 'girls_only' ? "Girls' " : hostel.genderPolicy === 'boys_only' ? "Boys' " : ''}Student Hostel`}
             </h3>
           </Link>
 
-          {/* Vacancy & Distance Details */}
-          <div className="flex items-center justify-between text-xs text-slate-600 mt-1.5">
+          {/* Vacancy & Distance Details - Separate stacked lines */}
+          <div className="space-y-1 text-xs text-slate-600 mt-1.5">
             <div className="flex items-center gap-1.5 font-medium">
               {totalAvailable > 0 ? (
-                <span className="inline-flex items-center gap-1 text-[#0f3a98]">
+                <span className="inline-flex items-center gap-1.5 text-[#0f3a98]">
                   <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98]" />
                   <span>{totalAvailable} rooms vacant</span>
                 </span>
               ) : (
-                <span className="text-rose-500">Fully Occupied</span>
+                <span className="text-rose-500 font-medium">Fully Occupied</span>
               )}
             </div>
+
             {hostel.distanceCampusApprox && (
-              <span className="text-[11px] text-slate-500 font-normal truncate max-w-[140px]" title={hostel.distanceCampusApprox}>
-                {hostel.distanceCampusApprox}
-              </span>
+              <div className="text-[11px] text-slate-500 font-normal flex items-center gap-1.5">
+                <FaIcon icon="fa-solid fa-person-walking" className="text-[10px] text-slate-400 shrink-0" />
+                <span className="truncate">{hostel.distanceCampusApprox}</span>
+              </div>
             )}
           </div>
 
@@ -192,18 +194,18 @@ export default function HostelCard({
             {onContactClick ? (
               <button
                 onClick={() => onContactClick(hostel)}
-                className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
+                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
               >
-                <FaIcon icon="fa-solid fa-phone" className="text-xs text-white" />
-                Contact
+                <FaIcon icon="fa-solid fa-calendar-check" className="text-xs text-[#ffbe00]" />
+                Book Now
               </button>
             ) : (
               <Link
                 href={`/hostels/${hostel.id}`}
-                className="px-3 py-1.5 rounded-lg bg-[#e8effc] hover:bg-[#0f3a98] text-[#0f3a98] hover:text-white text-xs font-medium flex items-center gap-1 transition"
+                className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
               >
-                View
-                <FaIcon icon="fa-solid fa-chevron-right" className="text-[10px]" />
+                <FaIcon icon="fa-solid fa-calendar-check" className="text-xs text-[#ffbe00]" />
+                Book Now
               </Link>
             )}
           </div>

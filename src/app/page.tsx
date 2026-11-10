@@ -32,6 +32,7 @@ export default function HomePage() {
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Filter state
   const [filters, setFilters] = useState<FilterState>({
@@ -77,6 +78,9 @@ export default function HomePage() {
       const next = exists ? prev.filter(id => id !== hostel.id) : [...prev, hostel.id];
       localStorage.setItem('hostel_connect_shortlist', JSON.stringify(next));
       
+      setToastMessage(exists ? 'Removed from your Shortlist' : 'Saved to your Shortlist! You can review your saved rooms anytime.');
+      setTimeout(() => setToastMessage(null), 3500);
+
       if (!exists && currentUser) {
         fetch('/api/v1/leads', {
           method: 'POST',
@@ -294,11 +298,11 @@ export default function HomePage() {
             </div>
 
             {/* Featured Rooms Cards Carousel on mobile, Grid on desktop */}
-            <div className="flex overflow-x-auto gap-4.5 pb-4 pt-1 px-1 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth scroll-pl-1">
+            <div className="flex overflow-x-auto gap-4 sm:gap-4 lg:gap-5 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 snap-x snap-mandatory scroll-smooth">
               {featuredRooms.map(item => (
                 <div
                   key={item.roomId}
-                  className="group bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[285px] max-w-[300px] shrink-0 snap-start sm:w-full mx-auto sm:mx-0"
+                  className="group bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[280px] sm:w-full max-w-[285px] sm:max-w-none shrink-0 snap-start mx-auto sm:mx-0"
                 >
                   {/* Image Container: 300px by 220px */}
                   <div className="relative w-full h-[220px] bg-slate-100 overflow-hidden">
@@ -321,10 +325,10 @@ export default function HomePage() {
                   {/* Card Body */}
                   <div className="p-3.5 flex-1 flex flex-col justify-between">
                     <div>
-                      {/* Hostel Name & Campus */}
+                      {/* Shielded Area & Campus (Hostel name hidden) */}
                       <div className="flex items-center gap-1 text-xs text-slate-500 mb-1">
                         <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#0f3a98] shrink-0" />
-                        <span className="truncate">{item.hostel.name}</span>
+                        <span className="truncate font-medium text-slate-700">{item.hostel.area}</span>
                         <span className="text-slate-300">•</span>
                         <span className="text-slate-400 truncate">{item.hostel.campus}</span>
                       </div>
@@ -336,15 +340,18 @@ export default function HomePage() {
                         </h3>
                       </Link>
 
-                      {/* Vacancy & Proximity Details */}
-                      <div className="flex items-center justify-between text-xs text-slate-600 mt-1.5">
-                        <span className="inline-flex items-center gap-1 text-[#0f3a98] font-medium">
+                      {/* Vacancy & Distance Details - Stacked on separate lines */}
+                      <div className="space-y-1 text-xs text-slate-600 mt-1.5">
+                        <div className="flex items-center gap-1.5 font-medium text-[#0f3a98]">
                           <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98]" />
                           <span>{item.roomsAvailable} rooms vacant</span>
-                        </span>
-                        <span className="text-[11px] text-slate-500 font-normal truncate max-w-[130px]" title={item.hostel.distanceCampusApprox || item.hostel.area}>
-                          {item.hostel.distanceCampusApprox || item.hostel.area}
-                        </span>
+                        </div>
+                        {item.hostel.distanceCampusApprox && (
+                          <div className="text-[11px] text-slate-500 font-normal flex items-center gap-1.5">
+                            <FaIcon icon="fa-solid fa-person-walking" className="text-[10px] text-slate-400 shrink-0" />
+                            <span className="truncate">{item.hostel.distanceCampusApprox}</span>
+                          </div>
+                        )}
                       </div>
 
                       {/* Key Amenities */}
@@ -378,10 +385,10 @@ export default function HomePage() {
 
                       <button
                         onClick={() => handleContactClick(item.hostel)}
-                        className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition shrink-0"
+                        className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition shrink-0"
                       >
-                        <FaIcon icon="fa-solid fa-phone" className="text-xs text-white" />
-                        Contact
+                        <FaIcon icon="fa-solid fa-calendar-check" className="text-xs text-[#ffbe00]" />
+                        Book Now
                       </button>
                     </div>
                   </div>
@@ -428,9 +435,9 @@ export default function HomePage() {
           </div>
 
           {loading ? (
-            <div className="flex overflow-x-auto gap-4.5 pb-4 pt-1 px-1 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth scroll-pl-1">
+            <div className="flex overflow-x-auto gap-4 sm:gap-4 lg:gap-5 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 snap-x snap-mandatory scroll-smooth">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-[390px] w-[285px] max-w-[300px] shrink-0 snap-start sm:w-full rounded-2xl bg-slate-200 animate-pulse mx-auto sm:mx-0" />
+                <div key={i} className="h-[390px] w-[280px] sm:w-full max-w-[285px] sm:max-w-none shrink-0 snap-start rounded-2xl bg-slate-200 animate-pulse mx-auto sm:mx-0" />
               ))}
             </div>
           ) : filteredHostels.length === 0 ? (
@@ -459,7 +466,7 @@ export default function HomePage() {
               </button>
             </div>
           ) : (
-            <div className="flex overflow-x-auto gap-4.5 pb-4 pt-1 px-1 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth scroll-pl-1">
+            <div className="flex overflow-x-auto gap-4 sm:gap-4 lg:gap-5 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 snap-x snap-mandatory scroll-smooth">
               {filteredHostels.map(hostel => (
                 <HostelCard
                   key={hostel.id}
@@ -530,6 +537,14 @@ export default function HomePage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Toast Notification for Shortlist / Like feedback */}
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0f3a98] text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-medium border border-[#ffbe00]/30 animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <FaIcon icon="fa-solid fa-heart" className="text-[#ffbe00] text-sm" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 }
