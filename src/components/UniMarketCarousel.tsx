@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import FaIcon from './FaIcon';
 
 export interface BusinessFlyer {
@@ -130,8 +131,23 @@ const DEFAULT_FLYERS: BusinessFlyer[] = [
 export default function UniMarketCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const flyers = DEFAULT_FLYERS;
+  const [flyers, setFlyers] = useState<BusinessFlyer[]>(DEFAULT_FLYERS);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Load any user-created flyers from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('uni_market_flyers');
+      if (saved) {
+        const parsed: BusinessFlyer[] = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setFlyers([...parsed, ...DEFAULT_FLYERS]);
+        }
+      }
+    } catch (e) {
+      // fallback to defaults
+    }
+  }, []);
 
   // Slow automated animation (6 seconds per slide)
   useEffect(() => {
@@ -176,15 +192,13 @@ export default function UniMarketCarousel() {
 
         {/* Advertise Button & Flyer Navigation */}
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <a
-            href="https://wa.me/256700000000?text=Hello%20Hostel%20Connect,%20I%20want%20to%20advertise%20my%20business%20flyer%20on%20Uni%20Market"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/uni-market/advertise"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0f3a98] text-white text-xs font-medium hover:bg-[#0a2666] transition shadow-xs"
           >
             <FaIcon icon="fa-solid fa-bullhorn" className="text-xs text-[#ffbe00]" />
             <span>Place Business Flyer</span>
-          </a>
+          </Link>
 
           <div className="hidden sm:flex items-center gap-1">
             <button
