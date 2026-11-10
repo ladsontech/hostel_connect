@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { formatUGX } from '@/lib/utils';
 import FaIcon from './FaIcon';
+import CustomSelect, { SelectOption } from './CustomSelect';
 
 export interface FilterState {
   q: string;
@@ -38,21 +39,35 @@ export default function FilterBar({
     onChange({ ...filters, amenities: next });
   };
 
-  const campuses = [
-    'All Universities',
-    'Makerere University',
-    'MUBS',
-    'Kyambogo University',
-    'Uganda Christian University',
-    'KIU'
+  const campusOptions: SelectOption[] = [
+    { id: '', label: 'All Universities', icon: 'fa-solid fa-building-columns' },
+    { id: 'Makerere University', label: 'Makerere University', icon: 'fa-solid fa-graduation-cap' },
+    { id: 'MUBS', label: 'MUBS (Nakawa)', icon: 'fa-solid fa-graduation-cap' },
+    { id: 'Kyambogo University', label: 'Kyambogo University', icon: 'fa-solid fa-graduation-cap' },
+    { id: 'Uganda Christian University', label: 'Uganda Christian University (UCU)', icon: 'fa-solid fa-graduation-cap' },
+    { id: 'KIU', label: 'KIU (Kansanga)', icon: 'fa-solid fa-graduation-cap' }
   ];
 
-  const roomTypes = [
-    { id: '', label: 'All Room Types' },
-    { id: 'single', label: 'Single Non-Self Contained' },
-    { id: 'double', label: 'Double Shared' },
-    { id: 'self_contained_single', label: 'Self-Contained Single' },
-    { id: 'self_contained_double', label: 'Self-Contained Double' }
+  const sortOptions: SelectOption[] = [
+    { id: 'relevance', label: 'Sort: Recommended', icon: 'fa-solid fa-wand-magic-sparkles' },
+    { id: 'price_asc', label: 'Price: Low to High', icon: 'fa-solid fa-arrow-down-1-9' },
+    { id: 'price_desc', label: 'Price: High to Low', icon: 'fa-solid fa-arrow-down-9-1' },
+    { id: 'rating', label: 'Top Rated Hostels', icon: 'fa-solid fa-star' }
+  ];
+
+  const roomTypeOptions: SelectOption[] = [
+    { id: '', label: 'All Room Types', icon: 'fa-solid fa-door-open' },
+    { id: 'single', label: 'Single Non-Self Contained', icon: 'fa-solid fa-bed' },
+    { id: 'double', label: 'Double Shared Room', icon: 'fa-solid fa-user-group' },
+    { id: 'self_contained_single', label: 'Self-Contained Single', icon: 'fa-solid fa-bath' },
+    { id: 'self_contained_double', label: 'Self-Contained Double', icon: 'fa-solid fa-bath' }
+  ];
+
+  const genderOptions: SelectOption[] = [
+    { id: '', label: 'All (Mixed & Single Gender)', icon: 'fa-solid fa-venus-mars' },
+    { id: 'mixed', label: 'Mixed Hostel', icon: 'fa-solid fa-people-roof' },
+    { id: 'girls_only', label: 'Girls Only Hostel', icon: 'fa-solid fa-person-dress' },
+    { id: 'boys_only', label: 'Boys Only Hostel', icon: 'fa-solid fa-person' }
   ];
 
   return (
@@ -83,27 +98,23 @@ export default function FilterBar({
 
         {/* Campus Dropdown */}
         <div className="sm:col-span-3">
-          <select
+          <CustomSelect
             value={filters.campus}
-            onChange={e => onChange({ ...filters, campus: e.target.value === 'All Universities' ? '' : e.target.value })}
-            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-medium text-slate-700"
-          >
-            {campuses.map(c => (
-              <option key={c} value={c === 'All Universities' ? '' : c}>
-                {c}
-              </option>
-            ))}
-          </select>
+            onChange={val => onChange({ ...filters, campus: val })}
+            options={campusOptions}
+            icon="fa-solid fa-graduation-cap"
+            menuWidthClass="w-full min-w-[260px]"
+          />
         </div>
 
         {/* Toggle Filters & Sort */}
         <div className="sm:col-span-3 flex items-center gap-2 justify-end">
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`px-3 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition ${
+            className={`px-3 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition shrink-0 ${
               showAdvanced || filters.roomType || filters.amenities.length > 0
                 ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98]'
-                : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50'
             }`}
           >
             <FaIcon icon="fa-solid fa-sliders" className="text-xs" />
@@ -115,16 +126,13 @@ export default function FilterBar({
             )}
           </button>
 
-          <select
+          <CustomSelect
             value={filters.sort}
-            onChange={e => onChange({ ...filters, sort: e.target.value })}
-            className="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
-          >
-            <option value="relevance">Sort: Recommended</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
-            <option value="rating">Top Rated</option>
-          </select>
+            onChange={val => onChange({ ...filters, sort: val })}
+            options={sortOptions}
+            menuWidthClass="w-56"
+            align="right"
+          />
         </div>
       </div>
 
@@ -135,17 +143,12 @@ export default function FilterBar({
             {/* Room Type */}
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1.5">Room Type</label>
-              <select
+              <CustomSelect
                 value={filters.roomType}
-                onChange={e => onChange({ ...filters, roomType: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-medium"
-              >
-                {roomTypes.map(rt => (
-                  <option key={rt.id} value={rt.id}>
-                    {rt.label}
-                  </option>
-                ))}
-              </select>
+                onChange={val => onChange({ ...filters, roomType: val })}
+                options={roomTypeOptions}
+                menuWidthClass="w-full min-w-[240px]"
+              />
             </div>
 
             {/* Max Budget (UGX) */}
@@ -172,16 +175,12 @@ export default function FilterBar({
             {/* Gender Policy */}
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1.5">Gender Policy</label>
-              <select
+              <CustomSelect
                 value={filters.gender}
-                onChange={e => onChange({ ...filters, gender: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-medium"
-              >
-                <option value="">All (Mixed & Single Gender)</option>
-                <option value="mixed">Mixed Hostel</option>
-                <option value="girls_only">Girls Only</option>
-                <option value="boys_only">Boys Only</option>
-              </select>
+                onChange={val => onChange({ ...filters, gender: val })}
+                options={genderOptions}
+                menuWidthClass="w-full min-w-[240px]"
+              />
             </div>
           </div>
 
