@@ -294,7 +294,7 @@ export default function HomePage() {
             </div>
 
             {/* Featured Rooms Cards Carousel on mobile, Grid on desktop */}
-            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
+            <div className="flex overflow-x-auto gap-4.5 pb-4 pt-1 px-1 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth scroll-pl-1">
               {featuredRooms.map(item => (
                 <div
                   key={item.roomId}
@@ -428,7 +428,7 @@ export default function HomePage() {
           </div>
 
           {loading ? (
-            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
+            <div className="flex overflow-x-auto gap-4.5 pb-4 pt-1 px-1 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth scroll-pl-1">
               {[1, 2, 3, 4].map(i => (
                 <div key={i} className="h-[390px] w-[285px] max-w-[300px] shrink-0 snap-start sm:w-full rounded-2xl bg-slate-200 animate-pulse mx-auto sm:mx-0" />
               ))}
@@ -459,7 +459,7 @@ export default function HomePage() {
               </button>
             </div>
           ) : (
-            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
+            <div className="flex overflow-x-auto gap-4.5 pb-4 pt-1 px-1 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth scroll-pl-1">
               {filteredHostels.map(hostel => (
                 <HostelCard
                   key={hostel.id}
