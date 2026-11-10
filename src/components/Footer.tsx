@@ -278,15 +278,6 @@ export default function Footer() {
                 <span>Tamu-tech</span>
                 <FaIcon icon="fa-solid fa-arrow-up-right-from-square" className="text-[9px]" />
               </a>
-              <span className="text-white/40">•</span>
-              <a
-                href="https://www.tamu-tech.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-100 hover:text-white underline underline-offset-2 transition"
-              >
-                www.tamu-tech.com
-              </a>
             </div>
           </div>
 
