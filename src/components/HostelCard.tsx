@@ -30,9 +30,9 @@ export default function HostelCard({
   const coverPhoto = hostel.photos.find(p => p.isCover) || hostel.photos[0];
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[280px] sm:w-full max-w-[285px] sm:max-w-none shrink-0 snap-start mx-auto sm:mx-0">
-      {/* Image Container: 300px by 220px */}
-      <div className="relative w-full h-[220px] bg-slate-100 overflow-hidden">
+    <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[285px] max-w-[295px] shrink-0 snap-start mx-auto">
+      {/* Image Container: Consistent 4:3 Aspect Ratio for Web & Mobile */}
+      <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden">
         {coverPhoto ? (
           <img
             src={coverPhoto.url}

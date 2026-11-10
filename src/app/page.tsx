@@ -298,14 +298,14 @@ export default function HomePage() {
             </div>
 
             {/* Featured Rooms Cards Carousel on mobile, Grid on desktop */}
-            <div className="flex overflow-x-auto gap-4 sm:gap-4 lg:gap-5 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 snap-x snap-mandatory scroll-smooth">
+            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
               {featuredRooms.map(item => (
                 <div
                   key={item.roomId}
-                  className="group bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[280px] sm:w-full max-w-[285px] sm:max-w-none shrink-0 snap-start mx-auto sm:mx-0"
+                  className="group bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[285px] max-w-[295px] shrink-0 snap-start mx-auto"
                 >
-                  {/* Image Container: 300px by 220px */}
-                  <div className="relative w-full h-[220px] bg-slate-100 overflow-hidden">
+                  {/* Image Container: Consistent 4:3 Aspect Ratio */}
+                  <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden">
                     <img
                       src={item.photoUrl}
                       alt={item.roomName}
@@ -435,9 +435,9 @@ export default function HomePage() {
           </div>
 
           {loading ? (
-            <div className="flex overflow-x-auto gap-4 sm:gap-4 lg:gap-5 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 snap-x snap-mandatory scroll-smooth">
+            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-[390px] w-[280px] sm:w-full max-w-[285px] sm:max-w-none shrink-0 snap-start rounded-2xl bg-slate-200 animate-pulse mx-auto sm:mx-0" />
+                <div key={i} className="h-[430px] w-[285px] max-w-[295px] shrink-0 snap-start rounded-2xl bg-slate-200 animate-pulse mx-auto" />
               ))}
             </div>
           ) : filteredHostels.length === 0 ? (
@@ -466,7 +466,7 @@ export default function HomePage() {
               </button>
             </div>
           ) : (
-            <div className="flex overflow-x-auto gap-4 sm:gap-4 lg:gap-5 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 snap-x snap-mandatory scroll-smooth">
+            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
               {filteredHostels.map(hostel => (
                 <HostelCard
                   key={hostel.id}
