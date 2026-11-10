@@ -279,19 +279,25 @@ export default function HomePage() {
                   </span>
                   <span className="text-xs text-slate-500 font-normal">Direct Custodian Verified</span>
                 </div>
-                <h2 className="text-xl font-medium text-[#0f3a98] mt-1">Featured Rooms</h2>
+                <h2 className="text-xl font-medium text-[#0f3a98] mt-1">Featured Hostels & Rooms</h2>
                 <p className="text-xs text-slate-500 font-normal">
                   Hand-picked student rooms with guaranteed amenities, verified custodians & close campus proximity
                 </p>
               </div>
+
+              {/* Mobile swipe hint */}
+              <div className="sm:hidden flex items-center gap-1 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0">
+                <span>Swipe</span>
+                <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px]" />
+              </div>
             </div>
 
-            {/* Featured Rooms Cards Grid (300px width by 220px image height) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+            {/* Featured Rooms Cards Carousel on mobile, Grid on desktop */}
+            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
               {featuredRooms.map(item => (
                 <div
                   key={item.roomId}
-                  className="group bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-full max-w-[300px] mx-auto"
+                  className="group bg-white rounded-2xl border border-blue-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[285px] max-w-[300px] shrink-0 snap-start sm:w-full mx-auto sm:mx-0"
                 >
                   {/* Image Container: 300px by 220px */}
                   <div className="relative w-full h-[220px] bg-slate-100 overflow-hidden">
@@ -396,21 +402,29 @@ export default function HomePage() {
               </p>
             </div>
 
-            {compareList.length > 0 && (
-              <button
-                onClick={() => setIsCompareOpen(true)}
-                className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center gap-2 border border-[#0f3a98] transition"
-              >
-                <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
-                Compare ({compareList.length}/3)
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              {/* Mobile swipe hint */}
+              <div className="sm:hidden flex items-center gap-1 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0">
+                <span>Swipe</span>
+                <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px]" />
+              </div>
+
+              {compareList.length > 0 && (
+                <button
+                  onClick={() => setIsCompareOpen(true)}
+                  className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center gap-2 border border-[#0f3a98] transition"
+                >
+                  <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
+                  Compare ({compareList.length}/3)
+                </button>
+              )}
+            </div>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-[390px] w-full max-w-[300px] rounded-2xl bg-slate-200 animate-pulse mx-auto" />
+                <div key={i} className="h-[390px] w-[285px] max-w-[300px] shrink-0 snap-start sm:w-full rounded-2xl bg-slate-200 animate-pulse mx-auto sm:mx-0" />
               ))}
             </div>
           ) : filteredHostels.length === 0 ? (
@@ -439,7 +453,7 @@ export default function HomePage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
               {filteredHostels.map(hostel => (
                 <HostelCard
                   key={hostel.id}
