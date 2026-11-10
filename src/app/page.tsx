@@ -9,6 +9,7 @@ import ContactModal from '@/components/ContactModal';
 import CompareModal from '@/components/CompareModal';
 import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
+import UniMarketCarousel from '@/components/UniMarketCarousel';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
 import { formatUGX } from '@/lib/utils';
@@ -388,6 +389,11 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        )}
+
+        {/* Uni Market Business Flyers Showcase (Slow Automated Landscape Flyers) */}
+        {!filters.q && (
+          <UniMarketCarousel />
         )}
 
         {/* Hostel List */}
