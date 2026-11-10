@@ -10,6 +10,7 @@ import CompareModal from '@/components/CompareModal';
 import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
 import UniMarketCarousel from '@/components/UniMarketCarousel';
+import HeroCarousel from '@/components/HeroCarousel';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
 import { formatUGX } from '@/lib/utils';
@@ -226,33 +227,8 @@ export default function HomePage() {
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
-        {/* Hero Section */}
-        <div className="rounded-3xl bg-[#0f3a98] p-6 sm:p-10 text-white shadow-xl border border-blue-900">
-          <div className="max-w-2xl space-y-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight leading-tight">
-              Find Verified University Hostels in Uganda.
-            </h1>
-
-            <p className="text-blue-100 text-sm sm:text-base leading-relaxed font-normal">
-              Explore hostels around Makerere, MUBS, Kyambogo and more. Connect directly with authoritative hostel custodians and verified student scouts without hidden middleman markups.
-            </p>
-
-            <div className="pt-2 flex flex-wrap gap-4 text-xs font-medium text-white">
-              <div className="flex items-center gap-2 bg-[#0a2666] px-3.5 py-2 rounded-lg border border-blue-800">
-                <FaIcon icon="fa-solid fa-hand-holding-dollar" className="text-sm text-[#ffbe00]" />
-                <span>Zero Student Booking Fees</span>
-              </div>
-              <div className="flex items-center gap-2 bg-[#0a2666] px-3.5 py-2 rounded-lg border border-blue-800">
-                <FaIcon icon="fa-solid fa-shield-halved" className="text-sm text-[#ffbe00]" />
-                <span>Verified Owner Listings</span>
-              </div>
-              <div className="flex items-center gap-2 bg-[#0a2666] px-3.5 py-2 rounded-lg border border-blue-800">
-                <FaIcon icon="fa-brands fa-whatsapp" className="text-base text-[#ffbe00]" />
-                <span>Direct WhatsApp & Call Contact</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Hero Section (3-Slider Carousel with identical landscape aspect ratio, ready for custom flyers) */}
+        <HeroCarousel />
 
         {/* Filter & Search Bar */}
         <FilterBar
