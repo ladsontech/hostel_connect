@@ -256,17 +256,41 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar: Copyright & SRS Compliance */}
+      {/* Bottom Bar: Copyright, Tamu-tech Attribution & Compliance */}
       <div className="border-t border-white/10 py-6 px-4 sm:px-6 text-xs text-blue-200">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
-            <span className="font-medium text-white">© 2026 Hostel Connect Uganda.</span>
-            <span>All rights reserved.</span>
-            <span className="hidden sm:inline">•</span>
-            <span className="text-blue-100">National Data Protection Office Compliant</span>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
+              <span className="font-medium text-white">© 2026 Hostel Connect Uganda.</span>
+              <span>All rights reserved.</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-blue-100">National Data Protection Office Compliant</span>
+            </div>
+
+            <div className="text-[11px] text-blue-200 flex items-center justify-center md:justify-start gap-1.5 flex-wrap">
+              <span>A digital product of</span>
+              <a
+                href="https://www.tamu-tech.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-[#ffbe00] hover:underline inline-flex items-center gap-1"
+              >
+                <span>Tamu-tech</span>
+                <FaIcon icon="fa-solid fa-arrow-up-right-from-square" className="text-[9px]" />
+              </a>
+              <span className="text-white/40">•</span>
+              <a
+                href="https://www.tamu-tech.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-100 hover:text-white underline underline-offset-2 transition"
+              >
+                www.tamu-tech.com
+              </a>
+            </div>
           </div>
 
-          <div className="text-[11px] text-blue-100 font-light">
+          <div className="text-[11px] text-blue-100 font-light text-center md:text-right">
             Built adhering to the Hostel Marketplace SRS (Draft 1.0) • Makerere • MUBS • Kyambogo
           </div>
         </div>
