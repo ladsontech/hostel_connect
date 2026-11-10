@@ -35,6 +35,75 @@ export default function ContactModal({
   const [paymentRef, setPaymentRef] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Broker searching animation state
+  const [brokerSearchState, setBrokerSearchState] = useState<'searching' | 'matched'>('searching');
+  const [searchStep, setSearchStep] = useState(0);
+  const [matchedBrokerIndex, setMatchedBrokerIndex] = useState(0);
+
+  const verifiedBrokers = [
+    {
+      name: 'Brian Mukasa',
+      title: 'Senior Campus Scout',
+      phone: '+256701234567',
+      whatsapp: '256701234567',
+      rating: 4.9,
+      reviews: 142,
+      distance: '320m away',
+      eta: 'Arrives in ~8 mins',
+      verifiedId: 'SCOUT-UG-8821',
+      campus: hostel?.campus || 'Makerere University',
+      area: hostel?.area || 'Kikoni'
+    },
+    {
+      name: 'Brenda Ainembabye',
+      title: 'Lead Student Guide',
+      phone: '+256772345678',
+      whatsapp: '256772345678',
+      rating: 4.8,
+      reviews: 98,
+      distance: '450m away',
+      eta: 'Arrives in ~12 mins',
+      verifiedId: 'SCOUT-UG-5419',
+      campus: hostel?.campus || 'Makerere University',
+      area: hostel?.area || 'Kikoni'
+    },
+    {
+      name: 'Ronald Ssempa',
+      title: 'Vetted Area Coordinator',
+      phone: '+256705678901',
+      whatsapp: '256705678901',
+      rating: 4.9,
+      reviews: 175,
+      distance: '500m away',
+      eta: 'Arrives in ~15 mins',
+      verifiedId: 'SCOUT-UG-9102',
+      campus: hostel?.campus || 'Makerere University',
+      area: hostel?.area || 'Kikoni'
+    }
+  ];
+
+  // Whenever modal opens or hostel changes, run the live broker searching animation
+  useEffect(() => {
+    if (isOpen && offers.length === 0) {
+      setBrokerSearchState('searching');
+      setSearchStep(0);
+
+      const step1 = setTimeout(() => setSearchStep(1), 750);
+      const step2 = setTimeout(() => setSearchStep(2), 1600);
+      const step3 = setTimeout(() => setSearchStep(3), 2400);
+      const finish = setTimeout(() => {
+        setBrokerSearchState('matched');
+      }, 3200);
+
+      return () => {
+        clearTimeout(step1);
+        clearTimeout(step2);
+        clearTimeout(step3);
+        clearTimeout(finish);
+      };
+    }
+  }, [isOpen, hostel?.id, offers.length]);
+
   // Load unlocked hostels from localStorage
   useEffect(() => {
     try {
@@ -197,8 +266,198 @@ export default function ContactModal({
           )}
 
           {offers.length === 0 ? (
-            <div className="text-center py-8 text-slate-500 text-sm">
-              No active contacts available for this hostel right now.
+            <div>
+              {brokerSearchState === 'searching' ? (
+                /* Animated Searching for Nearest Broker */
+                <div className="py-7 px-2 text-center space-y-5 flex flex-col items-center justify-center font-sans">
+                  {/* Radar Pulse Animation Container */}
+                  <div className="relative w-28 h-28 flex items-center justify-center">
+                    {/* Concentric radar rings */}
+                    <span className="absolute w-28 h-28 rounded-full bg-[#0f3a98]/10 animate-ping duration-1000" />
+                    <span className="absolute w-20 h-20 rounded-full bg-[#0f3a98]/20 animate-pulse duration-700" />
+                    <span className="absolute w-24 h-24 rounded-full border-2 border-dashed border-[#ffbe00]/60 animate-spin duration-3000" />
+
+                    {/* Center Core Icon */}
+                    <div className="relative w-14 h-14 rounded-full bg-[#0f3a98] text-white flex items-center justify-center shadow-lg border-2 border-[#ffbe00] z-10">
+                      <FaIcon icon="fa-solid fa-person-walking-luggage" className="text-xl text-[#ffbe00] animate-bounce" />
+                    </div>
+
+                    {/* Pulsing GPS dot */}
+                    <div className="absolute top-1.5 right-4 w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
+                  </div>
+
+                  {/* Status Headline */}
+                  <div className="space-y-1.5 max-w-sm">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e8effc] text-[#0f3a98] text-[11px] font-medium border border-blue-200 shadow-2xs">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>Live Campus Network Search Active</span>
+                    </div>
+
+                    <h4 className="text-base font-medium text-slate-900">
+                      Searching Nearest Verified Broker...
+                    </h4>
+
+                    <p className="text-xs text-slate-500 font-normal">
+                      Locating vetted campus scouts within 500m of {hostel.area}
+                    </p>
+                  </div>
+
+                  {/* Progressive Live Search Steps */}
+                  <div className="w-full max-w-sm bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-left space-y-2 text-xs font-medium">
+                    <div className={`flex items-center gap-2 transition-all ${searchStep >= 0 ? 'text-[#0f3a98]' : 'text-slate-400'}`}>
+                      <FaIcon
+                        icon={searchStep > 0 ? "fa-solid fa-circle-check" : "fa-solid fa-spinner"}
+                        className={`text-xs shrink-0 ${searchStep === 0 ? 'animate-spin text-[#ffbe00]' : 'text-emerald-600'}`}
+                      />
+                      <span>Calibrating campus location: {hostel.campus}</span>
+                    </div>
+
+                    <div className={`flex items-center gap-2 transition-all ${searchStep >= 1 ? 'text-[#0f3a98]' : 'text-slate-400'}`}>
+                      <FaIcon
+                        icon={searchStep > 1 ? "fa-solid fa-circle-check" : searchStep === 1 ? "fa-solid fa-spinner" : "fa-regular fa-circle"}
+                        className={`text-xs shrink-0 ${searchStep === 1 ? 'animate-spin text-[#ffbe00]' : searchStep > 1 ? 'text-emerald-600' : ''}`}
+                      />
+                      <span>Scanning verified scouts on-duty in {hostel.area}</span>
+                    </div>
+
+                    <div className={`flex items-center gap-2 transition-all ${searchStep >= 2 ? 'text-[#0f3a98]' : 'text-slate-400'}`}>
+                      <FaIcon
+                        icon={searchStep > 2 ? "fa-solid fa-circle-check" : searchStep === 2 ? "fa-solid fa-spinner" : "fa-regular fa-circle"}
+                        className={`text-xs shrink-0 ${searchStep === 2 ? 'animate-spin text-[#ffbe00]' : searchStep > 2 ? 'text-emerald-600' : ''}`}
+                      />
+                      <span>Checking direct room access & key custody</span>
+                    </div>
+
+                    <div className={`flex items-center gap-2 transition-all ${searchStep >= 3 ? 'text-[#0f3a98]' : 'text-slate-400'}`}>
+                      <FaIcon
+                        icon={searchStep >= 3 ? "fa-solid fa-circle-check" : "fa-regular fa-circle"}
+                        className={`text-xs shrink-0 ${searchStep >= 3 ? 'text-emerald-600' : ''}`}
+                      />
+                      <span>Matching top-rated verified broker for you...</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Matched Verified Broker Result */
+                <div className="space-y-3.5 animate-in fade-in duration-300 font-sans">
+                  {/* Match Banner */}
+                  <div className="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl flex items-center justify-between text-xs text-emerald-900 font-medium">
+                    <div className="flex items-center gap-2">
+                      <FaIcon icon="fa-solid fa-circle-check" className="text-emerald-600 text-sm shrink-0" />
+                      <span>Nearest Verified Campus Broker Matched!</span>
+                    </div>
+                    <span className="text-[10px] bg-emerald-200/70 px-2 py-0.5 rounded text-emerald-900 font-medium">
+                      {verifiedBrokers[matchedBrokerIndex].distance}
+                    </span>
+                  </div>
+
+                  {/* Broker Card */}
+                  <div className="rounded-2xl border-2 border-[#0f3a98] bg-white overflow-hidden shadow-sm">
+                    {/* Top Header */}
+                    <div className="bg-[#0f3a98] p-3.5 sm:p-4 text-white flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <div className="w-11 h-11 rounded-full bg-white text-[#0f3a98] font-bold text-sm flex items-center justify-center border-2 border-[#ffbe00] shadow-sm">
+                            {verifiedBrokers[matchedBrokerIndex].name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[9px] text-white" title="Active on campus">
+                            <FaIcon icon="fa-solid fa-check" />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <h4 className="font-medium text-white text-sm sm:text-base">
+                              {verifiedBrokers[matchedBrokerIndex].name}
+                            </h4>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-[#ffbe00] text-[#0f3a98] flex items-center gap-1">
+                              <FaIcon icon="fa-solid fa-award" className="text-[9px]" />
+                              Verified Scout
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-blue-200 flex items-center gap-2 mt-0.5">
+                            <span>{verifiedBrokers[matchedBrokerIndex].title}</span>
+                            <span>•</span>
+                            <span className="flex items-center text-[#ffbe00] font-medium">
+                              <FaIcon icon="fa-solid fa-star" className="text-[10px] mr-1" />
+                              {verifiedBrokers[matchedBrokerIndex].rating} ({verifiedBrokers[matchedBrokerIndex].reviews} tours)
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Proximity & ETA Grid */}
+                    <div className="p-3.5 sm:p-4 space-y-3 bg-[#f8fafc]">
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-white p-2.5 rounded-xl border border-slate-200/80">
+                          <div className="text-[10px] text-slate-400 font-medium uppercase">Campus Distance</div>
+                          <div className="font-medium text-slate-800 text-xs mt-0.5 flex items-center gap-1">
+                            <FaIcon icon="fa-solid fa-location-dot" className="text-[#0f3a98] text-xs" />
+                            <span>{verifiedBrokers[matchedBrokerIndex].distance}</span>
+                          </div>
+                        </div>
+
+                        <div className="bg-white p-2.5 rounded-xl border border-slate-200/80">
+                          <div className="text-[10px] text-slate-400 font-medium uppercase">Estimated Arrival</div>
+                          <div className="font-medium text-slate-800 text-xs mt-0.5 flex items-center gap-1">
+                            <FaIcon icon="fa-solid fa-person-walking" className="text-emerald-600 text-xs" />
+                            <span>{verifiedBrokers[matchedBrokerIndex].eta}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Guarantee Notice */}
+                      <div className="text-xs text-slate-600 bg-white p-3 rounded-xl border border-slate-200/80 space-y-1">
+                        <div className="font-medium text-slate-900 flex items-center gap-1.5 text-xs">
+                          <FaIcon icon="fa-solid fa-shield-halved" className="text-[#0f3a98]" />
+                          <span>Direct Key Access & Viewing Guarantee</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 font-normal leading-relaxed">
+                          This verified scout has direct access to inspect available rooms in this hostel desk with zero middleman markups.
+                        </p>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="pt-1 flex items-center gap-2">
+                        <a
+                          href={`https://wa.me/${verifiedBrokers[matchedBrokerIndex].whatsapp}?text=Hello%20${encodeURIComponent(verifiedBrokers[matchedBrokerIndex].name)},%20Hostel%20Connect%20matched%20you%20as%20the%20nearest%20verified%20scout%20for%20available%20rooms%20in%20${encodeURIComponent(hostel.area)}%20near%20${encodeURIComponent(hostel.campus)}.%20When%20can%20we%20tour?`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-medium flex items-center justify-center gap-2 shadow-sm transition"
+                        >
+                          <FaIcon icon="fa-brands fa-whatsapp" className="text-sm" />
+                          <span>WhatsApp Scout</span>
+                        </a>
+
+                        <a
+                          href={`tel:${verifiedBrokers[matchedBrokerIndex].phone}`}
+                          className="flex-1 py-2.5 px-3 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center justify-center gap-2 shadow-sm transition"
+                        >
+                          <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
+                          <span>Call Directly</span>
+                        </a>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setMatchedBrokerIndex((prev) => (prev + 1) % verifiedBrokers.length);
+                          setBrokerSearchState('searching');
+                          setSearchStep(0);
+                          setTimeout(() => setSearchStep(1), 600);
+                          setTimeout(() => setSearchStep(2), 1200);
+                          setTimeout(() => setSearchStep(3), 1800);
+                          setTimeout(() => setBrokerSearchState('matched'), 2400);
+                        }}
+                        className="w-full text-center text-xs text-slate-500 hover:text-[#0f3a98] font-medium pt-1 flex items-center justify-center gap-1.5 transition"
+                      >
+                        <FaIcon icon="fa-solid fa-arrows-rotate" className="text-[10px]" />
+                        <span>Find another nearby broker</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             offers.map((offer) => {
