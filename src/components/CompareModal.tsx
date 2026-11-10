@@ -71,7 +71,7 @@ export default function CompareModal({
                 <div className="h-9 flex items-center">Verified Status</div>
                 <div className="h-9 flex items-center">Rating & Reviews</div>
                 <div className="h-9 flex items-center">Distance to Campus</div>
-                <div className="h-9 flex items-center">Semester Rent Range</div>
+                <div className="h-9 flex items-center">Per Semester</div>
                 <div className="h-9 flex items-center">Available Rooms</div>
                 {AMENITY_KEYS.map(a => (
                   <div key={a.id} className="h-7 flex items-center text-slate-600 font-medium gap-1.5">
@@ -143,9 +143,7 @@ export default function CompareModal({
 
                       {/* Row 5: Price */}
                       <div className="h-9 flex items-center font-medium text-xs text-[#0f3a98]">
-                        {minRent === maxRent
-                          ? formatUGX(minRent)
-                          : `${formatUGX(minRent)} - ${formatUGX(maxRent)}`}
+                        {formatUGX(minRent)}
                       </div>
 
                       {/* Row 6: Availability */}

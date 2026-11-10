@@ -363,7 +363,7 @@ export default function HomePage() {
                     {/* Price & Contact */}
                     <div className="mt-3.5 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
                       <div className="min-w-0">
-                        <div className="text-[10px] text-slate-400 uppercase font-medium tracking-wider">Semester Rent</div>
+                        <div className="text-xs text-black font-medium tracking-normal">Per Semester</div>
                         <div className="text-[#0f3a98] font-medium text-xs sm:text-sm truncate">
                           {formatUGX(item.rentUgx)}
                         </div>
