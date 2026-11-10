@@ -431,23 +431,6 @@ export const INITIAL_OFFERS: Offer[] = [
     createdAt: '2026-01-10T10:00:00Z',
     responseRatePct: 98
   },
-  // Olympia Broker Brian (Authorised)
-  {
-    id: 'off_oly_broker_brian',
-    hostelId: 'hst_olympia',
-    userId: 'usr_broker_brian',
-    userName: 'Brian Kigozi (Authorised Student Broker)',
-    userRole: 'broker',
-    isVerified: true,
-    isAuthorised: true, // Approved by custodian!
-    accessFeeUgx: 20000, // Disclosed 20k UGX access fee
-    contactPhone: '+256755888999',
-    whatsapp: '+256755888999',
-    status: 'active',
-    notes: 'Campus Scout on ground. I can walk you through the rooms anytime between classes.',
-    createdAt: '2026-01-15T14:30:00Z',
-    responseRatePct: 92
-  },
   // Douglas Villa Custodian
   {
     id: 'off_doug_custodian',

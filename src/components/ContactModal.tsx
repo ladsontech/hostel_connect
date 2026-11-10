@@ -84,7 +84,7 @@ export default function ContactModal({
 
   // Whenever modal opens or hostel changes, run the live broker searching animation
   useEffect(() => {
-    if (isOpen && offers.length === 0) {
+    if (isOpen && !hasCustodian && effectiveOffers.length === 0) {
       setBrokerSearchState('searching');
       setSearchStep(0);
 
@@ -117,7 +117,31 @@ export default function ContactModal({
   }, []);
 
   const isUnlocked = hostel ? unlockedHostels.includes(hostel.id) : false;
-  const hasCustodian = offers.some(o => o.userRole === 'custodian');
+  const hasCustodian = offers.some(o => o.userRole === 'custodian') || (hostel ? hostel.status === 'claimed' : false);
+
+  // If uploaded by custodian, strictly NO brokers are shown since the student approaches the hostel themselves directly!
+  const effectiveOffers = (hostel && hasCustodian)
+    ? (offers.filter(o => o.userRole === 'custodian').length > 0
+        ? offers.filter(o => o.userRole === 'custodian')
+        : [
+            {
+              id: `off_${hostel.id}_custodian`,
+              hostelId: hostel.id,
+              userId: hostel.verifiedOwnerId || 'usr_custodian',
+              userName: 'Official Hostel Warden / Custodian',
+              userRole: 'custodian',
+              isVerified: true,
+              isAuthorised: true,
+              accessFeeUgx: 0,
+              contactPhone: '+256701333444',
+              whatsapp: '+256701333444',
+              status: 'active',
+              notes: 'Official Management Desk. Approach desk directly for physical room allocation.',
+              createdAt: new Date().toISOString(),
+              responseRatePct: 98
+            }
+          ])
+    : offers.filter(o => o.userRole === 'broker');
 
   if (!isOpen || !hostel) return null;
 
@@ -275,7 +299,7 @@ export default function ContactModal({
             </div>
           )}
 
-          {offers.length === 0 ? (
+          {effectiveOffers.length === 0 ? (
             <div>
               {brokerSearchState === 'searching' ? (
                 /* Animated Searching for Nearest Broker */
@@ -470,7 +494,7 @@ export default function ContactModal({
               )}
             </div>
           ) : (
-            offers.map((offer) => {
+            effectiveOffers.map((offer) => {
               const isCustodian = offer.userRole === 'custodian';
 
               // If it's a custodian listing and NOT yet unlocked
@@ -659,11 +683,21 @@ export default function ContactModal({
                         {offer.userName}
                       </h4>
 
-                      {/* Revealed Hostel Name once unlocked */}
+                      {/* Revealed Hostel Name and Direct Self-Approach Directions once unlocked */}
                       {isCustodian && isUnlocked && (
-                        <div className="text-xs text-[#0f3a98] font-medium mt-0.5 flex items-center gap-1">
-                          <FaIcon icon="fa-solid fa-building" className="text-[11px] text-[#0f3a98]" />
-                          <span>Official Name: <strong>{hostel.name}</strong></span>
+                        <div className="space-y-1.5 mt-2 p-2.5 rounded-xl bg-blue-50/80 border border-blue-200">
+                          <div className="text-xs text-[#0f3a98] font-medium flex items-center gap-1.5">
+                            <FaIcon icon="fa-solid fa-building" className="text-xs text-[#0f3a98]" />
+                            <span>Official Hostel Name: <strong>{hostel.name}</strong></span>
+                          </div>
+                          <div className="text-xs text-slate-700 flex items-center gap-1.5">
+                            <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#ffbe00]" />
+                            <span>Direct Address: <strong>{hostel.landmark} ({hostel.area})</strong></span>
+                          </div>
+                          <div className="text-[11px] text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded font-medium flex items-center gap-1 mt-1">
+                            <FaIcon icon="fa-solid fa-circle-check" className="text-[10px]" />
+                            <span>Direct approach: You can now walk directly to the hostel desk yourself or call/WhatsApp below.</span>
+                          </div>
                         </div>
                       )}
 
