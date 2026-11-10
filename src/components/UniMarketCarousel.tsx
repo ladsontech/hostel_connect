@@ -219,14 +219,14 @@ export default function UniMarketCarousel() {
         </div>
       </div>
 
-      {/* Landscape Flyer Showcase with Slow Smooth Animation */}
+      {/* Landscape Flyer Showcase with Slow Smooth Animation (Uniform 21:9 Aspect Ratio) */}
       <div
         className="relative w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-[#0f3a98]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Landscape Banner Height (Responsive 220px on mobile to 280px on desktop) */}
-        <div className="relative w-full h-[220px] sm:h-[260px] md:h-[280px] overflow-hidden">
+        {/* Uniform Aspect Ratio Container: 21:9 Widescreen Landscape Ratio on Both Web & Mobile */}
+        <div className="relative w-full aspect-[21/9] min-h-[160px] sm:min-h-[220px] overflow-hidden">
           {flyers.map((flyer, index) => {
             const isActive = index === currentIndex;
             return (
@@ -246,60 +246,60 @@ export default function UniMarketCarousel() {
                 {/* Solid Dark Contrast Scrim (no color gradients) */}
                 <div className="absolute inset-0 bg-[#0a2666]/85" />
 
-                {/* Landscape Content Layout */}
-                <div className="absolute inset-0 p-5 sm:p-7 md:p-9 flex flex-col justify-between text-white z-20">
+                {/* Landscape Content Layout - Perfectly Proportional on Both Web & Mobile */}
+                <div className="absolute inset-0 p-3.5 sm:p-6 md:p-8 lg:p-9 flex flex-col justify-between text-white z-20">
                   {/* Top Bar: Category, Target Campus, and Discount Badge */}
-                  <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#ffbe00] text-[#0f3a98] uppercase tracking-wider">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                      <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium bg-[#ffbe00] text-[#0f3a98] uppercase tracking-wider shrink-0">
                         {flyer.category}
                       </span>
-                      <span className="text-xs text-blue-200 font-light hidden sm:inline-flex items-center gap-1">
-                        <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#ffbe00]" />
-                        {flyer.campusTarget}
+                      <span className="text-[10px] sm:text-xs text-blue-200 font-light flex items-center gap-1 truncate max-w-[130px] sm:max-w-none">
+                        <FaIcon icon="fa-solid fa-location-dot" className="text-[10px] text-[#ffbe00] shrink-0" />
+                        <span className="truncate">{flyer.campusTarget}</span>
                       </span>
                     </div>
 
                     {flyer.discountBadge && (
-                      <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-white text-[#0f3a98] shadow-xs">
-                        <FaIcon icon="fa-solid fa-tag" className="text-xs text-[#0f3a98] mr-1.5" />
+                      <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium bg-white text-[#0f3a98] shadow-xs shrink-0">
+                        <FaIcon icon="fa-solid fa-tag" className="text-[9px] text-[#0f3a98] mr-1" />
                         {flyer.discountBadge}
                       </span>
                     )}
                   </div>
 
                   {/* Middle: Headline, Business Name & Tagline */}
-                  <div className="max-w-2xl space-y-1.5 my-auto">
-                    <div className="text-xs text-[#ffbe00] font-medium uppercase tracking-wide">
+                  <div className="max-w-2xl space-y-0.5 sm:space-y-1.5 my-auto">
+                    <div className="text-[10px] sm:text-xs text-[#ffbe00] font-medium uppercase tracking-wide">
                       {flyer.businessName}
                     </div>
-                    <h3 className="text-lg sm:text-2xl md:text-3xl font-medium text-white leading-tight">
+                    <h3 className="text-sm sm:text-xl md:text-2xl lg:text-3xl font-medium text-white leading-snug sm:leading-tight line-clamp-1 sm:line-clamp-2">
                       {flyer.headline}
                     </h3>
-                    <p className="text-xs sm:text-sm text-blue-100 font-light line-clamp-2 max-w-xl">
+                    <p className="text-[10px] sm:text-xs md:text-sm text-blue-100 font-light line-clamp-1 sm:line-clamp-2 max-w-xl">
                       {flyer.tagline}
                     </p>
                   </div>
 
                   {/* Bottom: Action CTA and Flyer Counter */}
-                  <div className="flex items-center justify-between gap-4 pt-2">
+                  <div className="flex items-center justify-between gap-3 pt-1">
                     <a
                       href={flyer.contactAction.value}
                       target={flyer.contactAction.type === 'call' ? '_self' : '_blank'}
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] text-xs font-medium hover:bg-yellow-400 transition shadow-sm"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] text-[10px] sm:text-xs font-medium hover:bg-yellow-400 transition shadow-sm shrink-0"
                     >
                       {flyer.contactAction.type === 'whatsapp' ? (
-                        <FaIcon icon="fa-brands fa-whatsapp" className="text-sm" />
+                        <FaIcon icon="fa-brands fa-whatsapp" className="text-xs sm:text-sm" />
                       ) : flyer.contactAction.type === 'call' ? (
-                        <FaIcon icon="fa-solid fa-phone" className="text-xs" />
+                        <FaIcon icon="fa-solid fa-phone" className="text-[10px] sm:text-xs" />
                       ) : (
-                        <FaIcon icon="fa-solid fa-arrow-up-right-from-square" className="text-xs" />
+                        <FaIcon icon="fa-solid fa-arrow-up-right-from-square" className="text-[10px] sm:text-xs" />
                       )}
                       <span>{flyer.contactAction.label}</span>
                     </a>
 
-                    <div className="text-[11px] text-blue-200 font-light">
+                    <div className="text-[10px] sm:text-xs text-blue-200 font-light">
                       Flyer {index + 1} of {flyers.length}
                     </div>
                   </div>
@@ -310,16 +310,16 @@ export default function UniMarketCarousel() {
         </div>
 
         {/* Carousel Indicators / Dots at bottom */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 bg-[#0a2666]/60 backdrop-blur-xs px-3 py-1 rounded-full">
+        <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 sm:gap-1.5 bg-[#0a2666]/60 backdrop-blur-xs px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full">
           {flyers.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}
               title={`View Flyer ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all ${
+              className={`h-1 sm:h-1.5 rounded-full transition-all ${
                 i === currentIndex
-                  ? 'w-6 bg-[#ffbe00]'
-                  : 'w-1.5 bg-white/50 hover:bg-white'
+                  ? 'w-4 sm:w-6 bg-[#ffbe00]'
+                  : 'w-1 sm:w-1.5 bg-white/50 hover:bg-white'
               }`}
             />
           ))}

@@ -640,9 +640,9 @@ export default function AdvertisePage() {
                 <span className="text-[11px] text-slate-400 font-light">Updates automatically</span>
               </div>
 
-              {/* Preview Container: Exactly mimics the landscape flyer */}
+              {/* Preview Container: Exactly mimics the landscape flyer (Uniform 21:9 Aspect Ratio) */}
               <div className="relative w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-[#0f3a98]">
-                <div className="relative w-full h-[220px] sm:h-[240px] overflow-hidden">
+                <div className="relative w-full aspect-[21/9] min-h-[160px] sm:min-h-[200px] overflow-hidden">
                   {flyerImage ? (
                     <img
                       src={flyerImage}
@@ -827,3 +827,4 @@ export default function AdvertisePage() {
     </div>
   );
 }
+
