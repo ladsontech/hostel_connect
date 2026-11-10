@@ -229,6 +229,10 @@ export default function UniMarketCarousel() {
         <div className="relative w-full aspect-[21/9] min-h-[160px] sm:min-h-[220px] overflow-hidden">
           {flyers.map((flyer, index) => {
             const isActive = index === currentIndex;
+            const whatsappUrl = flyer.contactAction.type === 'whatsapp'
+              ? flyer.contactAction.value
+              : `https://wa.me/256700000000?text=Hello%20${encodeURIComponent(flyer.businessName)},%20I%20saw%20your%20flyer%20on%20Hostel%20Connect`;
+
             return (
               <div
                 key={flyer.id}
@@ -236,72 +240,32 @@ export default function UniMarketCarousel() {
                   isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
                 }`}
               >
-                {/* Background Landscape Flyer Image with Dark Readability Overlay */}
+                {/* Full Landscape Flyer Graphic - Completely Visible Without Text Obstructions */}
                 <img
                   src={flyer.imageUrl}
                   alt={flyer.businessName}
                   className="w-full h-full object-cover transform scale-100 transition-transform duration-7000 ease-out"
                 />
 
-                {/* Solid Dark Contrast Scrim (no color gradients) */}
-                <div className="absolute inset-0 bg-[#0a2666]/85" />
+                {/* Subtle bottom shadow vignette only to ensure WhatsApp button and slider count stand out */}
+                <div className="absolute inset-x-0 bottom-0 h-20 sm:h-24 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
 
-                {/* Landscape Content Layout - Perfectly Proportional on Both Web & Mobile */}
-                <div className="absolute inset-0 p-3.5 sm:p-6 md:p-8 lg:p-9 flex flex-col justify-between text-white z-20">
-                  {/* Top Bar: Category, Target Campus, and Discount Badge */}
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                      <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium bg-[#ffbe00] text-[#0f3a98] uppercase tracking-wider shrink-0">
-                        {flyer.category}
-                      </span>
-                      <span className="text-[10px] sm:text-xs text-blue-200 font-light flex items-center gap-1 truncate max-w-[130px] sm:max-w-none">
-                        <FaIcon icon="fa-solid fa-location-dot" className="text-[10px] text-[#ffbe00] shrink-0" />
-                        <span className="truncate">{flyer.campusTarget}</span>
-                      </span>
-                    </div>
+                {/* Bottom Overlay Bar: Only WhatsApp Button & Slider Count */}
+                <div className="absolute inset-x-0 bottom-0 p-3 sm:p-5 flex items-center justify-between z-20">
+                  {/* WhatsApp Button */}
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs sm:text-sm font-medium transition shadow-md shrink-0 hover:scale-105 active:scale-95"
+                  >
+                    <FaIcon icon="fa-brands fa-whatsapp" className="text-sm sm:text-base text-white" />
+                    <span>WhatsApp</span>
+                  </a>
 
-                    {flyer.discountBadge && (
-                      <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium bg-white text-[#0f3a98] shadow-xs shrink-0">
-                        <FaIcon icon="fa-solid fa-tag" className="text-[9px] text-[#0f3a98] mr-1" />
-                        {flyer.discountBadge}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Middle: Headline, Business Name & Tagline */}
-                  <div className="max-w-2xl space-y-0.5 sm:space-y-1.5 my-auto">
-                    <div className="text-[10px] sm:text-xs text-[#ffbe00] font-medium uppercase tracking-wide">
-                      {flyer.businessName}
-                    </div>
-                    <h3 className="text-sm sm:text-xl md:text-2xl lg:text-3xl font-medium text-white leading-snug sm:leading-tight line-clamp-1 sm:line-clamp-2">
-                      {flyer.headline}
-                    </h3>
-                    <p className="text-[10px] sm:text-xs md:text-sm text-blue-100 font-light line-clamp-1 sm:line-clamp-2 max-w-xl">
-                      {flyer.tagline}
-                    </p>
-                  </div>
-
-                  {/* Bottom: Action CTA and Flyer Counter */}
-                  <div className="flex items-center justify-between gap-3 pt-1">
-                    <a
-                      href={flyer.contactAction.value}
-                      target={flyer.contactAction.type === 'call' ? '_self' : '_blank'}
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] text-[10px] sm:text-xs font-medium hover:bg-yellow-400 transition shadow-sm shrink-0"
-                    >
-                      {flyer.contactAction.type === 'whatsapp' ? (
-                        <FaIcon icon="fa-brands fa-whatsapp" className="text-xs sm:text-sm" />
-                      ) : flyer.contactAction.type === 'call' ? (
-                        <FaIcon icon="fa-solid fa-phone" className="text-[10px] sm:text-xs" />
-                      ) : (
-                        <FaIcon icon="fa-solid fa-arrow-up-right-from-square" className="text-[10px] sm:text-xs" />
-                      )}
-                      <span>{flyer.contactAction.label}</span>
-                    </a>
-
-                    <div className="text-[10px] sm:text-xs text-blue-200 font-light">
-                      Flyer {index + 1} of {flyers.length}
-                    </div>
+                  {/* Slider Count */}
+                  <div className="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-xs text-white text-[10px] sm:text-xs font-medium tracking-wide border border-white/10 shadow-xs">
+                    Flyer {index + 1} of {flyers.length}
                   </div>
                 </div>
               </div>
