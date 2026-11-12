@@ -250,26 +250,30 @@ export default function HomePage() {
 
         {/* Featured Rooms Section */}
         {featuredRooms.length > 0 && !filters.q && (
-          <div id="featured-rooms" className="space-y-4 pt-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98] border border-blue-200">
-                    <FaIcon icon="fa-solid fa-fire" className="text-xs text-[#ffbe00] mr-1" />
-                    Prime Vacancies
+          <div id="featured-rooms" className="space-y-3 pt-2">
+            {/* Modern Section Header */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs whitespace-nowrap">
+                    <FaIcon icon="fa-solid fa-fire" className="text-[11px] text-[#ffbe00]" />
+                    <span>Prime Vacancies</span>
                   </span>
-                  <span className="text-xs text-slate-500 font-normal">Direct Custodian Verified</span>
+                  <span className="hidden sm:inline text-xs text-slate-300">•</span>
+                  <span className="hidden sm:inline text-xs text-slate-500 font-normal">Direct Custodian Verified</span>
                 </div>
-                <h2 className="text-xl font-medium text-[#0f3a98] mt-1">Featured Hostels & Rooms</h2>
-                <p className="text-xs text-slate-500 font-normal">
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
+                  Featured Hostels & Rooms
+                </h2>
+                <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-xl">
                   Hand-picked student rooms with guaranteed amenities, verified custodians & close campus proximity
                 </p>
               </div>
 
               {/* Mobile swipe hint */}
-              <div className="sm:hidden flex items-center gap-1 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0">
+              <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0 border border-blue-200/60 shadow-2xs whitespace-nowrap">
                 <span>Swipe</span>
-                <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px]" />
+                <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
               </div>
             </div>
 
@@ -383,25 +387,25 @@ export default function HomePage() {
         <div id="explore">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-medium text-[#0f3a98]">
+              <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
                 {filters.campus || 'All Ugandan Campuses'}
               </h2>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 font-normal mt-0.5">
                 {filteredHostels.length} hostels matching your criteria
               </p>
             </div>
 
             <div className="flex items-center gap-2">
               {/* Mobile swipe hint */}
-              <div className="sm:hidden flex items-center gap-1 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0">
+              <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0 border border-blue-200/60 shadow-2xs whitespace-nowrap">
                 <span>Swipe</span>
-                <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px]" />
+                <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
               </div>
 
               {compareList.length > 0 && (
                 <button
                   onClick={() => setIsCompareOpen(true)}
-                  className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center gap-2 border border-[#0f3a98] transition"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center gap-2 border border-[#0f3a98] transition shadow-2xs hover:bg-blue-100"
                 >
                   <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
                   Compare ({compareList.length}/3)

@@ -175,10 +175,10 @@ export default function UniMarketCarousel() {
   return (
     <section className="space-y-3 pt-2 font-sans">
       {/* Modern Section Header */}
-      <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs">
+      <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-3">
+        <div className="min-w-0 flex flex-col items-center sm:items-start">
+          <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs whitespace-nowrap">
               <FaIcon icon="fa-solid fa-store" className="text-[11px] text-[#0f3a98]" />
               <span>Campus Deals</span>
             </span>
@@ -186,20 +186,20 @@ export default function UniMarketCarousel() {
             <span className="hidden sm:inline text-xs text-slate-500 font-normal">Student Services & Businesses</span>
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight text-center sm:text-left">
             Uni Market
           </h2>
 
-          <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-xl">
+          <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-xl text-center sm:text-left">
             Special student offers on laundry, meals, tech repair & essentials near campus
           </p>
         </div>
 
         {/* Action Button & Slider Controls */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center justify-center sm:justify-end gap-2 shrink-0 w-full sm:w-auto">
           <Link
             href="/uni-market/advertise"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium transition shadow-sm hover:shadow active:scale-95"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium transition shadow-sm hover:shadow active:scale-95"
           >
             <FaIcon icon="fa-solid fa-bullhorn" className="text-xs text-[#ffbe00]" />
             <span>Place Business Flyer</span>
