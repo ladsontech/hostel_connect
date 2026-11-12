@@ -173,45 +173,50 @@ export default function UniMarketCarousel() {
   const currentFlyer = flyers[currentIndex];
 
   return (
-    <section className="space-y-3 pt-2">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
-              <FaIcon icon="fa-solid fa-store" className="text-xs mr-1" />
-              Campus Deals
+    <section className="space-y-3 pt-2 font-sans">
+      {/* Modern Section Header */}
+      <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs">
+              <FaIcon icon="fa-solid fa-store" className="text-[11px] text-[#0f3a98]" />
+              <span>Campus Deals</span>
             </span>
-            <span className="text-xs text-slate-500 font-normal">Verified University Services & Businesses</span>
+            <span className="hidden sm:inline text-xs text-slate-300">•</span>
+            <span className="hidden sm:inline text-xs text-slate-500 font-normal">Student Services & Businesses</span>
           </div>
-          <h2 className="text-xl font-medium text-[#0f3a98] mt-1">Uni Market</h2>
-          <p className="text-xs text-slate-500 font-normal">
-            Special student offers, laundry, food, stationery & tech essentials near your campus
+
+          <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
+            Uni Market
+          </h2>
+
+          <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-xl">
+            Special student offers on laundry, meals, tech repair & essentials near campus
           </p>
         </div>
 
-        {/* Advertise Button & Flyer Navigation */}
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        {/* Action Button & Slider Controls */}
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             href="/uni-market/advertise"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0f3a98] text-white text-xs font-medium hover:bg-[#0a2666] transition shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium transition shadow-sm hover:shadow active:scale-95"
           >
             <FaIcon icon="fa-solid fa-bullhorn" className="text-xs text-[#ffbe00]" />
             <span>Place Business Flyer</span>
           </Link>
 
-          <div className="hidden sm:flex items-center gap-1">
+          <div className="hidden sm:flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
             <button
               onClick={handlePrev}
               title="Previous Flyer"
-              className="w-7 h-7 rounded-lg bg-white border border-slate-200 hover:border-[#0f3a98] text-slate-700 hover:text-[#0f3a98] flex items-center justify-center text-xs transition"
+              className="w-7 h-7 rounded-md bg-white hover:bg-[#0f3a98] hover:text-white text-slate-700 flex items-center justify-center text-xs transition shadow-2xs"
             >
               <FaIcon icon="fa-solid fa-chevron-left" />
             </button>
             <button
               onClick={handleNext}
               title="Next Flyer"
-              className="w-7 h-7 rounded-lg bg-white border border-slate-200 hover:border-[#0f3a98] text-slate-700 hover:text-[#0f3a98] flex items-center justify-center text-xs transition"
+              className="w-7 h-7 rounded-md bg-white hover:bg-[#0f3a98] hover:text-white text-slate-700 flex items-center justify-center text-xs transition shadow-2xs"
             >
               <FaIcon icon="fa-solid fa-chevron-right" />
             </button>
