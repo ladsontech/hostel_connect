@@ -79,13 +79,8 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
         </Link>
 
         {/* Desktop Nav Items */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-normal text-slate-700">
-          <Link href="/" className="hover:text-[#0f3a98] transition flex items-center gap-2">
-            <FaIcon icon="fa-solid fa-magnifying-glass" className="text-xs text-[#0f3a98]" />
-            Find Hostels
-          </Link>
-
-          {shortlistCount > 0 && onOpenCompare && (
+        {shortlistCount > 0 && onOpenCompare && (
+          <nav className="hidden md:flex items-center gap-6 text-sm font-normal text-slate-700">
             <button
               onClick={onOpenCompare}
               className="text-[#0f3a98] bg-[#e8effc] px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-normal"
@@ -93,8 +88,8 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
               <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
               Compare ({shortlistCount})
             </button>
-          )}
-        </nav>
+          </nav>
+        )}
 
         {/* User Account / Login & Register Action */}
         <div className="flex items-center gap-3">
