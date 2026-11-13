@@ -589,17 +589,17 @@ export default function ContactModal({
 
                       {/* Price Breakdown + Locked Details */}
                       <div className="p-4 space-y-3.5 bg-[#f8fafc]">
-                        {/* Transparent Price Strip Revealed After Search */}
-                        <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs">
-                          <div>
+                        {/* 2 Independent Price Buttons Revealed After Search */}
+                        <div className="grid grid-cols-2 gap-2.5">
+                          <div className="p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex flex-col items-center justify-center text-center">
                             <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Semester Rent</div>
                             <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
                               {roomPriceLabel}
                             </div>
                           </div>
-                          <div className="border-l border-white/25 pl-3">
+                          <div className="p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex flex-col items-center justify-center text-center">
                             <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Direct Unlock Fee</div>
-                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5 flex items-center gap-1.5">
+                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5 flex items-center justify-center gap-1.5 flex-wrap">
                               <span>UGX {CONNECTION_FEE_UGX.toLocaleString()}</span>
                               <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Once</span>
                             </div>
@@ -761,15 +761,15 @@ export default function ContactModal({
                           {offer.userName}
                         </h4>
 
-                        {/* Price Breakdown Box (Room Rate & Fee) */}
-                        <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs mt-2.5">
-                          <div>
+                        {/* 2 Independent Price Buttons (Room Rate & Fee) */}
+                        <div className="grid grid-cols-2 gap-2.5 mt-2.5">
+                          <div className="p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex flex-col items-center justify-center text-center">
                             <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Semester Rent</div>
                             <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
                               {roomPriceLabel}
                             </div>
                           </div>
-                          <div className="border-l border-white/25 pl-3">
+                          <div className="p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex flex-col items-center justify-center text-center">
                             <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">
                               {isCustodian ? 'Connection Status' : 'Broker Access Fee'}
                             </div>
