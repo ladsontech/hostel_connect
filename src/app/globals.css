@@ -111,6 +111,15 @@ b, strong {
   }
 }
 
+@keyframes map-scout-drift {
+  0%, 100% {
+    transform: translate(0px, 0px);
+  }
+  50% {
+    transform: translate(5px, -4px);
+  }
+}
+
 /* Hide Next.js floating dev indicator overlay so bottom modal footers remain unobstructed */
 nextjs-portal {
   display: none !important;

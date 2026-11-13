@@ -950,40 +950,113 @@ export default function ContactModal({
 
           {/* STEP 1: Live Broker / Connection Search Animation (Shown for EVERY hostel before displaying price) */}
           {brokerSearchState === 'searching' ? (
-            <div className="py-3 px-2 text-center space-y-4 flex flex-col items-center justify-center font-sans">
-              {/* Concentric Solid-Blue Light Wave Circles (no gradients or mixed colors) */}
-              <div className="relative w-36 h-36 flex items-center justify-center">
-                {/* Outward monochrome blue ripple waves */}
-                <span
-                  className="absolute inset-0 rounded-full bg-[#0f3a98]/15"
-                  style={{ animation: 'radar-ripple 2.4s ease-out infinite' }}
-                />
-                <span
-                  className="absolute inset-0 rounded-full bg-[#0f3a98]/12"
-                  style={{ animation: 'radar-ripple 2.4s ease-out 1.2s infinite' }}
-                />
+            <div className="py-2 px-1 text-center space-y-3.5 flex flex-col items-center justify-center font-sans">
+              {/* Ride-Hailing Style Campus Map Backdrop + Monochrome Blue Concentric Waves */}
+              <div className="relative w-full max-w-sm h-40 rounded-2xl border border-blue-200/80 bg-[#edf2fc] overflow-hidden flex items-center justify-center shadow-inner">
+                {/* Clean Vector Campus Street Map (Theme Blue & White only, no gradients) */}
+                <svg
+                  viewBox="0 0 360 160"
+                  preserveAspectRatio="xMidYMid slice"
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  aria-hidden="true"
+                >
+                  {/* Soft campus map blocks */}
+                  <rect width="360" height="160" fill="#edf2fc" />
+                  <polygon points="18,16 96,12 106,58 24,64" fill="#e2ebfb" rx="4" />
+                  <polygon points="122,10 218,14 210,56 126,52" fill="#e2ebfb" rx="4" />
+                  <polygon points="240,12 342,18 334,68 232,58" fill="#e2ebfb" rx="4" />
+                  <polygon points="16,80 104,74 114,142 22,148" fill="#e2ebfb" rx="4" />
+                  <polygon points="246,84 344,88 338,146 236,140" fill="#e2ebfb" rx="4" />
+                  <polygon points="128,74 224,78 218,144 132,140" fill="#e6eefc" rx="4" />
 
-                {/* Stepped-opacity concentric theme-blue circles */}
-                <span
-                  className="absolute w-36 h-36 rounded-full bg-[#0f3a98]/[0.07]"
-                  style={{ animation: 'concentric-wave 2.4s ease-in-out 0s infinite' }}
-                />
-                <span
-                  className="absolute w-[116px] h-[116px] rounded-full bg-[#0f3a98]/[0.14]"
-                  style={{ animation: 'concentric-wave 2.4s ease-in-out 0.25s infinite' }}
-                />
-                <span
-                  className="absolute w-[90px] h-[90px] rounded-full bg-[#0f3a98]/[0.24]"
-                  style={{ animation: 'concentric-wave 2.4s ease-in-out 0.5s infinite' }}
-                />
-                <span
-                  className="absolute w-[66px] h-[66px] rounded-full bg-[#0f3a98]/[0.42]"
-                  style={{ animation: 'concentric-wave 2.4s ease-in-out 0.75s infinite' }}
-                />
+                  {/* Main & secondary white roads */}
+                  <path d="M-10 38 Q 95 28, 185 44 T 370 34" fill="none" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" />
+                  <path d="M-10 108 Q 100 120, 190 98 T 370 112" fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" />
+                  <path d="M68 -10 Q 82 72, 62 170" fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" />
+                  <path d="M182 -10 Q 170 76, 194 170" fill="none" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" />
+                  <path d="M292 -10 Q 278 82, 304 170" fill="none" stroke="#ffffff" strokeWidth="6" strokeLinecap="round" />
 
-                {/* Crisp solid theme-blue center circle */}
-                <div className="relative w-11 h-11 rounded-full bg-[#0f3a98] text-white flex items-center justify-center z-10">
-                  <FaIcon icon="fa-solid fa-magnifying-glass" className="text-sm text-white" />
+                  {/* Fine neighborhood streets */}
+                  <path d="M12 68 L348 74" fill="none" stroke="#ffffff" strokeWidth="3.5" />
+                  <path d="M126 12 L134 148" fill="none" stroke="#ffffff" strokeWidth="3.5" />
+                  <path d="M236 8 L226 152" fill="none" stroke="#ffffff" strokeWidth="3.5" />
+                </svg>
+
+                {/* Area tag pill on map corner */}
+                <div className="absolute top-2 left-2.5 z-20 px-2 py-0.5 rounded-full bg-white/95 border border-blue-200/80 text-[10px] font-semibold text-[#0f3a98] flex items-center gap-1 shadow-2xs">
+                  <FaIcon icon="fa-solid fa-location-dot" className="text-[9px] text-[#0f3a98]" />
+                  <span>{hostel.area}</span>
+                </div>
+
+                {/* Nearby Moving Campus Broker Markers along Map Roads (Solid Theme Blue) */}
+                <div
+                  className={`absolute top-5 right-9 w-7 h-7 rounded-full bg-[#0f3a98] text-white border-2 border-white shadow-sm flex items-center justify-center z-20 transition-all duration-500 ${
+                    searchStep >= 0 ? 'opacity-100 scale-100' : 'opacity-60 scale-90'
+                  }`}
+                  style={{ animation: 'map-scout-drift 3.4s ease-in-out infinite' }}
+                >
+                  <FaIcon icon="fa-solid fa-person-walking" className="text-[11px] text-white" />
+                </div>
+
+                <div
+                  className={`absolute top-12 left-7 w-7 h-7 rounded-full bg-[#0f3a98] text-white border-2 border-white shadow-sm flex items-center justify-center z-20 transition-all duration-500 ${
+                    searchStep >= 1 ? 'opacity-100 scale-105' : 'opacity-70 scale-95'
+                  }`}
+                  style={{ animation: 'map-scout-drift 3.8s ease-in-out 0.6s infinite reverse' }}
+                >
+                  <FaIcon icon="fa-solid fa-person-walking" className="text-[11px] text-white" />
+                </div>
+
+                <div
+                  className={`absolute bottom-4 left-12 w-6 h-6 rounded-full bg-[#0f3a98] text-white border-2 border-white shadow-sm flex items-center justify-center z-20 transition-all duration-500 ${
+                    searchStep >= 2 ? 'opacity-100 scale-105' : 'opacity-65 scale-90'
+                  }`}
+                  style={{ animation: 'map-scout-drift 4.1s ease-in-out 0.3s infinite' }}
+                >
+                  <FaIcon icon="fa-solid fa-person-walking" className="text-[10px] text-white" />
+                </div>
+
+                <div
+                  className={`absolute bottom-5 right-10 w-7 h-7 rounded-full bg-[#0f3a98] text-white border-2 border-white shadow-sm flex items-center justify-center z-20 transition-all duration-500 ${
+                    searchStep >= 3 ? 'opacity-100 scale-110' : 'opacity-70 scale-95'
+                  }`}
+                  style={{ animation: 'map-scout-drift 3.2s ease-in-out 1s infinite reverse' }}
+                >
+                  <FaIcon icon="fa-solid fa-person-walking" className="text-[11px] text-white" />
+                </div>
+
+                {/* Concentric Solid-Blue Light Wave Circles centered on Map */}
+                <div className="relative w-32 h-32 flex items-center justify-center z-10">
+                  <span
+                    className="absolute inset-0 rounded-full bg-[#0f3a98]/15"
+                    style={{ animation: 'radar-ripple 2.4s ease-out infinite' }}
+                  />
+                  <span
+                    className="absolute inset-0 rounded-full bg-[#0f3a98]/12"
+                    style={{ animation: 'radar-ripple 2.4s ease-out 1.2s infinite' }}
+                  />
+
+                  <span
+                    className="absolute w-32 h-32 rounded-full bg-[#0f3a98]/[0.08]"
+                    style={{ animation: 'concentric-wave 2.4s ease-in-out 0s infinite' }}
+                  />
+                  <span
+                    className="absolute w-[104px] h-[104px] rounded-full bg-[#0f3a98]/[0.15]"
+                    style={{ animation: 'concentric-wave 2.4s ease-in-out 0.25s infinite' }}
+                  />
+                  <span
+                    className="absolute w-[80px] h-[80px] rounded-full bg-[#0f3a98]/[0.25]"
+                    style={{ animation: 'concentric-wave 2.4s ease-in-out 0.5s infinite' }}
+                  />
+                  <span
+                    className="absolute w-[56px] h-[56px] rounded-full bg-[#0f3a98]/[0.42]"
+                    style={{ animation: 'concentric-wave 2.4s ease-in-out 0.75s infinite' }}
+                  />
+
+                  {/* Crisp solid theme-blue center target */}
+                  <div className="relative w-10 h-10 rounded-full bg-[#0f3a98] text-white border-2 border-white flex items-center justify-center shadow-sm z-10">
+                    <FaIcon icon="fa-solid fa-magnifying-glass" className="text-xs text-white" />
+                  </div>
                 </div>
               </div>
 
