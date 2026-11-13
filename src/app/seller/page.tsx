@@ -275,9 +275,9 @@ export default function SellerPortalPage() {
         ) : (
         <>
         {/* Top Seller Banner */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 shadow-sm">
           <div>
-            <h1 className="text-2xl font-medium text-[#0f3a98]">
+            <h1 className="text-xl sm:text-2xl font-medium text-[#0f3a98]">
               {currentUser?.businessName || currentUser?.name || 'Seller Hub'}
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-0.5">
@@ -287,11 +287,11 @@ export default function SellerPortalPage() {
             </p>
           </div>
 
-          {/* Quick tab switcher */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-medium">
+          {/* Quick tab switcher (2x2 clean grid on mobile, inline bar on desktop) */}
+          <div className="w-full lg:w-auto grid grid-cols-2 sm:inline-flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl text-xs font-medium shrink-0">
             <button
               onClick={() => setActiveTab('listings')}
-              className={`px-3 py-2 rounded-lg transition ${
+              className={`px-3 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
                 activeTab === 'listings' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -299,7 +299,7 @@ export default function SellerPortalPage() {
             </button>
             <button
               onClick={() => setActiveTab('analytics')}
-              className={`px-3 py-2 rounded-lg transition ${
+              className={`px-3 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
                 activeTab === 'analytics' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -307,18 +307,18 @@ export default function SellerPortalPage() {
             </button>
             <button
               onClick={() => setActiveTab('subscription')}
-              className={`px-3 py-2 rounded-lg transition ${
+              className={`px-3 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
                 activeTab === 'subscription' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Subscription & MoMo
+              Subscription &amp; MoMo
             </button>
             <button
               onClick={() => setActiveTab('add')}
-              className={`px-3 py-2 rounded-lg bg-[#ffbe00] text-[#0f3a98] font-medium transition flex items-center gap-1.5 shadow-sm`}
+              className="px-3 py-2.5 sm:py-2 rounded-lg bg-[#ffbe00] hover:bg-[#e5aa00] text-[#0f3a98] font-semibold transition flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap"
             >
               <FaIcon icon="fa-solid fa-plus" className="text-xs" />
-              Add Hostel
+              <span>Add Hostel</span>
             </button>
           </div>
         </div>
