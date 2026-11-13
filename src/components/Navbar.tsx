@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import FaIcon from './FaIcon';
@@ -13,7 +13,6 @@ interface NavbarProps {
 
 export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }: NavbarProps) {
   const { currentUser, switchRole, logout } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
@@ -135,30 +134,8 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
               </button>
             </div>
           )}
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-700"
-          >
-            <FaIcon icon={mobileMenuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'} className="text-sm" />
-          </button>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3">
-          <Link
-            href="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 py-2 text-sm font-medium text-slate-800"
-          >
-            <FaIcon icon="fa-solid fa-magnifying-glass" className="text-sm text-[#0f3a98]" />
-            Explore Hostels
-          </Link>
-        </div>
-      )}
     </header>
   );
 }
