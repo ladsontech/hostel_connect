@@ -1061,11 +1061,10 @@ export default function ContactModal({
                 <div className="space-y-1">
                   <div className="w-full h-2.5 rounded-full bg-[#e8effc] overflow-hidden border border-blue-200/80 p-0.5">
                     <div
-                      className="h-full rounded-full transition-[width] duration-100 ease-linear"
+                      className="h-full rounded-full bg-[#0f3a98] transition-[width] duration-100 ease-linear"
                       style={{
                         width: `${searchProgress}%`,
-                        background: 'linear-gradient(90deg, #0f3a98 0%, #1d54c8 60%, #ffbe00 100%)',
-                        boxShadow: '0 0 8px rgba(15, 58, 152, 0.35)',
+                        backgroundColor: '#0f3a98',
                       }}
                     />
                   </div>
