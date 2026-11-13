@@ -586,7 +586,7 @@ export default function SellerPortalPage() {
                       <button
                         type="button"
                         onClick={() => setMomoProvider('mtn_momo')}
-                        className={`p-2 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition ${
+                        className={`p-2 rounded-lg border text-[11px] sm:text-xs font-medium whitespace-nowrap flex items-center justify-center gap-1.5 transition ${
                           momoProvider === 'mtn_momo'
                             ? 'border-[#ffbe00] bg-[#fff9e6] text-[#0f3a98] ring-2 ring-[#ffbe00]'
                             : 'border-slate-200 text-slate-600'
@@ -595,14 +595,14 @@ export default function SellerPortalPage() {
                         <img
                           src="/MTN%20mobile%20money.png"
                           alt="MTN MoMo"
-                          className="h-5 w-auto object-contain rounded-sm shrink-0"
+                          className="h-4 sm:h-5 w-auto object-contain rounded-sm shrink-0"
                         />
-                        MTN MoMo
+                        <span className="whitespace-nowrap">MTN MoMo</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setMomoProvider('airtel_money')}
-                        className={`p-2 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition ${
+                        className={`p-2 rounded-lg border text-[11px] sm:text-xs font-medium whitespace-nowrap flex items-center justify-center gap-1.5 transition ${
                           momoProvider === 'airtel_money'
                             ? 'border-rose-400 bg-rose-50 text-rose-900 ring-2 ring-rose-400'
                             : 'border-slate-200 text-slate-600'
@@ -611,9 +611,9 @@ export default function SellerPortalPage() {
                         <img
                           src="/Airtel%20mobile%20money.jpg"
                           alt="Airtel Money"
-                          className="w-5 h-5 object-cover rounded-sm shrink-0"
+                          className="w-4 h-4 sm:w-5 sm:h-5 object-cover rounded-sm shrink-0"
                         />
-                        Airtel Money
+                        <span className="whitespace-nowrap">Airtel Money</span>
                       </button>
                     </div>
                   </div>

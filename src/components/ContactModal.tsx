@@ -648,7 +648,7 @@ export default function ContactModal({
                                 <button
                                   type="button"
                                   onClick={() => setMomoProvider('mtn')}
-                                  className={`py-1.5 px-3 rounded-lg border flex items-center justify-center gap-2 font-medium transition ${
+                                  className={`py-2 px-2 sm:px-3 rounded-lg border flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium whitespace-nowrap transition ${
                                     momoProvider === 'mtn'
                                       ? 'border-[#ffbe00] bg-[#ffbe00]/15 text-[#0f3a98]'
                                       : 'border-slate-200 bg-white text-slate-600'
@@ -657,15 +657,15 @@ export default function ContactModal({
                                   <img
                                     src="/MTN%20mobile%20money.png"
                                     alt="MTN MoMo"
-                                    className="h-5 w-auto object-contain rounded-sm shrink-0"
+                                    className="h-4 sm:h-5 w-auto object-contain rounded-sm shrink-0"
                                   />
-                                  <span>MTN MoMo</span>
+                                  <span className="whitespace-nowrap">MTN MoMo</span>
                                 </button>
 
                                 <button
                                   type="button"
                                   onClick={() => setMomoProvider('airtel')}
-                                  className={`py-1.5 px-3 rounded-lg border flex items-center justify-center gap-2 font-medium transition ${
+                                  className={`py-2 px-2 sm:px-3 rounded-lg border flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium whitespace-nowrap transition ${
                                     momoProvider === 'airtel'
                                       ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98]'
                                       : 'border-slate-200 bg-white text-slate-600'
@@ -674,9 +674,9 @@ export default function ContactModal({
                                   <img
                                     src="/Airtel%20mobile%20money.jpg"
                                     alt="Airtel Money"
-                                    className="w-5 h-5 object-cover rounded-sm shrink-0"
+                                    className="w-4 h-4 sm:w-5 sm:h-5 object-cover rounded-sm shrink-0"
                                   />
-                                  <span>Airtel Money</span>
+                                  <span className="whitespace-nowrap">Airtel Money</span>
                                 </button>
                               </div>
 
