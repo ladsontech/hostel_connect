@@ -155,16 +155,39 @@ function BrokerProfileHeader({
   );
 }
 
-/** Horizontal theme-blue pill button displaying a pricing label and amount on one line. */
-function PriceBarButton({ label, children }: { label: string; children: React.ReactNode }) {
+/** Spacious theme-blue pricing card row with icon, title, subtitle, and prominent amount. */
+function PriceBarButton({
+  label,
+  subtitle,
+  icon = 'fa-solid fa-tag',
+  children,
+}: {
+  label: string;
+  subtitle?: string;
+  icon?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="w-full px-4 py-2.5 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex items-center justify-between gap-3">
-      <span className="text-[11px] text-white/85 font-medium uppercase tracking-wide whitespace-nowrap">
-        {label}
-      </span>
-      <span className="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5 whitespace-nowrap">
+    <div className="w-full min-h-[74px] px-4 py-3.5 rounded-2xl bg-[#0f3a98] text-white border border-[#0a2666] shadow-sm flex items-center justify-between gap-3">
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+          <FaIcon icon={icon} className="text-sm text-[#ffbe00]" />
+        </div>
+        <div className="min-w-0 text-left">
+          <div className="text-xs sm:text-[13px] text-white font-semibold uppercase tracking-wide truncate">
+            {label}
+          </div>
+          {subtitle && (
+            <div className="text-[11px] text-blue-100 font-normal truncate mt-0.5">
+              {subtitle}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="text-sm sm:text-base font-bold text-white flex items-center gap-1.5 whitespace-nowrap shrink-0">
         {children}
-      </span>
+      </div>
     </div>
   );
 }
@@ -1179,13 +1202,21 @@ export default function ContactModal({
                 {/* Card Body */}
                 <div className="p-4 space-y-3 bg-[#f8fafc]">
                   {/* 2 Independent Horizontal Price Buttons */}
-                  <div className="flex flex-col gap-2">
-                    <PriceBarButton label="Semester Rent">
+                  <div className="flex flex-col gap-2.5">
+                    <PriceBarButton
+                      label="Semester Rent"
+                      subtitle="Paid directly at hostel desk"
+                      icon="fa-solid fa-bed"
+                    >
                       {roomPriceLabel}
                     </PriceBarButton>
-                    <PriceBarButton label="Broker Viewing Fee">
+                    <PriceBarButton
+                      label="Broker Viewing Fee"
+                      subtitle="Physical room tour & escort"
+                      icon="fa-solid fa-person-walking"
+                    >
                       <span>{formatUGX(activeScout.accessFeeUgx)}</span>
-                      <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Inspection</span>
+                      <span className="px-2 py-0.5 rounded-md bg-[#ffbe00] text-[#0f3a98] text-[10px] font-semibold">Inspection</span>
                     </PriceBarButton>
                   </div>
 
@@ -1279,13 +1310,21 @@ export default function ContactModal({
                       {/* Price Breakdown + Locked Details */}
                       <div className="p-4 space-y-3.5 bg-[#f8fafc]">
                         {/* 2 Independent Horizontal Price Buttons on 2 Stacked Rows */}
-                        <div className="flex flex-col gap-2">
-                          <PriceBarButton label="Semester Rent">
+                        <div className="flex flex-col gap-2.5">
+                          <PriceBarButton
+                            label="Semester Rent"
+                            subtitle="Paid directly at hostel desk"
+                            icon="fa-solid fa-bed"
+                          >
                             {roomPriceLabel}
                           </PriceBarButton>
-                          <PriceBarButton label="Direct Unlock Fee">
+                          <PriceBarButton
+                            label="Direct Unlock Fee"
+                            subtitle="One-time warden contact access"
+                            icon="fa-solid fa-lock-open"
+                          >
                             <span>UGX {CONNECTION_FEE_UGX.toLocaleString()}</span>
-                            <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Once</span>
+                            <span className="px-2 py-0.5 rounded-md bg-[#ffbe00] text-[#0f3a98] text-[10px] font-semibold">Once</span>
                           </PriceBarButton>
                         </div>
 
@@ -1396,11 +1435,19 @@ export default function ContactModal({
                     {/* Card Body */}
                     <div className="p-4 space-y-3 bg-[#f8fafc]">
                       {/* 2 Independent Horizontal Price Buttons on 2 Stacked Rows */}
-                      <div className="flex flex-col gap-2">
-                        <PriceBarButton label="Semester Rent">
+                      <div className="flex flex-col gap-2.5">
+                        <PriceBarButton
+                          label="Semester Rent"
+                          subtitle="Paid directly at hostel desk"
+                          icon="fa-solid fa-bed"
+                        >
                           {roomPriceLabel}
                         </PriceBarButton>
-                        <PriceBarButton label={isCustodian ? 'Connection Status' : 'Broker Access Fee'}>
+                        <PriceBarButton
+                          label={isCustodian ? 'Connection Status' : 'Broker Access Fee'}
+                          subtitle={isCustodian ? 'Direct custodian access unlocked' : 'Physical room tour & escort'}
+                          icon={isCustodian ? 'fa-solid fa-shield-halved' : 'fa-solid fa-person-walking'}
+                        >
                           {isCustodian
                             ? `Paid (UGX ${CONNECTION_FEE_UGX.toLocaleString()})`
                             : (offer.accessFeeUgx > 0 ? formatUGX(offer.accessFeeUgx) : 'Free (No fee)')}
