@@ -1455,7 +1455,7 @@ export default function ContactModal({
         </div>
 
         {/* Footer info note */}
-        <div className="p-3 bg-[#e8effc]/50 border-t border-blue-100 text-center text-[11px] text-[#0f3a98] font-medium">
+        <div className="p-3 bg-[#0f3a98] border-t border-[#0a2666] text-center text-[11px] text-white font-medium">
           <FaIcon icon="fa-solid fa-circle-info" className="text-xs mr-1 text-[#ffbe00]" />
           Hostel Connect guarantees transparent booking. Semester rent is paid at the hostel desk.
         </div>
