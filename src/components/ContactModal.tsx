@@ -691,24 +691,26 @@ export default function ContactModal({
                                 </button>
                               </div>
 
-                              {/* Phone Input */}
-                              <div className="flex gap-2">
-                                <div className="relative flex-1">
-                                  <span className="absolute left-3 top-2 text-xs text-slate-400 font-medium">+256</span>
+                              {/* Phone Input & Pay Button (2 stacked lines) */}
+                              <div className="flex flex-col gap-2">
+                                <div className="flex items-center rounded-lg border border-blue-200 focus-within:border-[#0f3a98] bg-white overflow-hidden">
+                                  <span className="pl-3 pr-2 py-2 text-xs text-slate-400 font-medium select-none shrink-0 border-r border-blue-100">
+                                    +256
+                                  </span>
                                   <input
                                     type="tel"
                                     required
                                     placeholder="770 000 000"
                                     value={momoPhone}
                                     onChange={(e) => setMomoPhone(e.target.value)}
-                                    className="w-full pl-13 pr-3 py-1.5 rounded-lg border border-blue-200 focus:outline-hidden focus:border-[#0f3a98] text-xs text-slate-800 bg-white"
+                                    className="w-full px-3 py-2 focus:outline-hidden text-xs text-slate-800 bg-transparent"
                                   />
                                 </div>
 
                                 <button
                                   type="submit"
                                   disabled={isPayingFee}
-                                  className="px-4 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition shrink-0"
+                                  className="w-full px-4 py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center justify-center gap-1.5 shadow-sm transition"
                                 >
                                   <FaIcon icon="fa-solid fa-lock-open" className="text-xs text-[#ffbe00]" />
                                   <span>Pay UGX 5,000</span>
