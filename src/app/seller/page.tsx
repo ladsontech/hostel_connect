@@ -277,18 +277,10 @@ export default function SellerPortalPage() {
         {/* Top Seller Banner */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
           <div>
-            <div className="flex items-center gap-2">
-              <span className={`text-[11px] font-medium uppercase tracking-wider px-2.5 py-0.5 rounded ${
-                currentUser?.role === 'custodian' ? 'bg-[#e8effc] text-[#0f3a98]' : 'bg-amber-100 text-amber-900'
-              }`}>
-                {currentUser?.role === 'custodian' ? 'Custodian Dashboard' : 'Campus Scout / Broker Dashboard'}
-              </span>
-              <span className="text-xs text-slate-400 font-medium">• Semester Intake Management</span>
-            </div>
-            <h1 className="text-2xl font-medium text-[#0f3a98] mt-1">
+            <h1 className="text-2xl font-medium text-[#0f3a98]">
               {currentUser?.businessName || currentUser?.name || 'Seller Hub'}
             </h1>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 font-medium mt-0.5">
               {currentUser?.role === 'custodian'
                 ? 'Authoritative owner portal: control room vacancy, approve brokers, and view direct inquiries.'
                 : 'Campus scout portal: attach verified offers, disclose viewing fees, and track student leads.'}
@@ -551,10 +543,7 @@ export default function SellerPortalPage() {
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
-                    FR-6.1 to FR-6.6 Specifications
-                  </span>
-                  <h2 className="text-xl font-medium text-[#0f3a98] mt-1">Per-Semester Subscription</h2>
+                  <h2 className="text-xl font-medium text-[#0f3a98]">Per-Semester Subscription</h2>
                   <p className="text-xs text-slate-500 font-medium">
                     Hostel Connect collects semester subscriptions from sellers. Students are never charged.
                   </p>
@@ -700,13 +689,7 @@ export default function SellerPortalPage() {
         {activeTab === 'add' && (
           <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm max-w-3xl mx-auto space-y-6">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
-                  Section 5 Specification
-                </span>
-                <span className="text-xs text-slate-500 font-medium">Duplicate Prevention Protected</span>
-              </div>
-              <h2 className="text-xl font-medium text-[#0f3a98] mt-1">List a New Campus Hostel</h2>
+              <h2 className="text-xl font-medium text-[#0f3a98]">List a New Campus Hostel</h2>
               <p className="text-xs text-slate-500 font-medium">
                 A hostel exists once per physical building. If an existing building matches your submission, you will attach as an offer.
               </p>
