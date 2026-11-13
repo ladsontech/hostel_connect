@@ -99,7 +99,8 @@ export default function ContactModal({
 
   const isUnlocked = hostel ? unlockedHostels.includes(hostel.id) : false;
   const hostelOffers = hostel ? offers.filter(o => o.hostelId === hostel.id) : [];
-  const hasCustodian = hostelOffers.some(o => o.userRole === 'custodian') || (hostel ? hostel.status === 'claimed' : false);
+  // Strictly ONLY hostels added/claimed by custodians get the Official Custodian Listing screen
+  const hasCustodian = hostel ? hostel.status === 'claimed' : false;
 
   // Room pricing summary for this hostel
   const minRentUgx = hostel?.rooms?.length ? Math.min(...hostel.rooms.map(r => r.rentUgx)) : 0;

@@ -112,6 +112,7 @@ export default function HomePage() {
   };
 
   const handleContactClick = async (hostel: Hostel) => {
+    setActiveOffers([]);
     setActiveHostelForContact(hostel);
     try {
       const res = await fetch(`/api/v1/hostels/${hostel.id}`);
@@ -176,6 +177,15 @@ export default function HomePage() {
       return 0;
     });
   }, [hostels, filters]);
+
+  // Split into broker-guided hostels (All Ugandan Campuses) & custodian-added hostels
+  const campusBrokerHostels = useMemo(() => {
+    return filteredHostels.filter(h => h.status !== 'claimed');
+  }, [filteredHostels]);
+
+  const custodianAddedHostels = useMemo(() => {
+    return filteredHostels.filter(h => h.status === 'claimed');
+  }, [filteredHostels]);
 
   const compareHostels = useMemo(() => {
     return hostels.filter(h => compareList.includes(h.id));
@@ -383,84 +393,140 @@ export default function HomePage() {
           <UniMarketCarousel />
         )}
 
-        {/* Hostel List */}
-        <div id="explore">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
-                {filters.campus || 'All Ugandan Campuses'}
-              </h2>
-              <p className="text-xs text-slate-500 font-normal mt-0.5">
-                {filteredHostels.length} hostels matching your criteria
-              </p>
+        {/* Hostel List: All Ugandan Campuses (Broker-Guided Hostels) */}
+        {(loading || campusBrokerHostels.length > 0 || filteredHostels.length === 0) && (
+          <div id="explore">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
+                  {filters.campus || 'All Ugandan Campuses'}
+                </h2>
+                <p className="text-xs text-slate-500 font-normal mt-0.5">
+                  {campusBrokerHostels.length} broker-guided hostels matching your criteria
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Mobile swipe hint */}
+                {campusBrokerHostels.length > 0 && (
+                  <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0 border border-blue-200/60 shadow-2xs whitespace-nowrap">
+                    <span>Swipe</span>
+                    <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
+                  </div>
+                )}
+
+                {compareList.length > 0 && (
+                  <button
+                    onClick={() => setIsCompareOpen(true)}
+                    className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center gap-2 border border-[#0f3a98] transition shadow-2xs hover:bg-blue-100"
+                  >
+                    <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
+                    Compare ({compareList.length}/3)
+                  </button>
+                )}
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            {loading ? (
+              <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="h-[430px] w-[285px] max-w-[295px] shrink-0 snap-start rounded-2xl bg-slate-200 animate-pulse mx-auto" />
+                ))}
+              </div>
+            ) : filteredHostels.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+                <FaIcon icon="fa-solid fa-hotel" className="text-4xl text-slate-300 mx-auto" />
+                <h3 className="font-medium text-slate-800 text-base">No hostels found</h3>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
+                  Try widening your price range or clearing some amenity filters to see more results.
+                </p>
+                <button
+                  onClick={() => setFilters({
+                    q: '',
+                    campus: '',
+                    area: '',
+                    roomType: '',
+                    minPrice: 0,
+                    maxPrice: 3000000,
+                    gender: '',
+                    amenities: [],
+                    sort: 'relevance'
+                  })}
+                  className="px-4 py-2 rounded-lg bg-[#0f3a98] text-white text-xs font-medium flex items-center gap-1.5 mx-auto"
+                >
+                  <FaIcon icon="fa-solid fa-rotate-left" className="text-xs" />
+                  Clear all filters
+                </button>
+              </div>
+            ) : (
+              <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
+                {campusBrokerHostels.map(hostel => (
+                  <HostelCard
+                    key={hostel.id}
+                    hostel={hostel}
+                    isShortlisted={shortlist.includes(hostel.id)}
+                    onToggleShortlist={handleToggleShortlist}
+                    isComparing={compareList.includes(hostel.id)}
+                    onToggleCompare={handleToggleCompare}
+                    onContactClick={handleContactClick}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Hostels Added by Custodians (Below All Ugandan Campuses) */}
+        {(loading || custodianAddedHostels.length > 0) && (
+          <div id="custodian-hostels" className="pt-2">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs whitespace-nowrap">
+                    <FaIcon icon="fa-solid fa-shield-halved" className="text-[11px] text-[#ffbe00]" />
+                    <span>Direct Custodian Verified</span>
+                  </span>
+                  <span className="hidden sm:inline text-xs text-slate-300">•</span>
+                  <span className="hidden sm:inline text-xs text-slate-500 font-normal">Self-Approach • Zero Brokers</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
+                  Hostels Added by Custodians
+                </h2>
+                <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-2xl">
+                  {custodianAddedHostels.length} official hostel management listings — unlock direct custodian phone, WhatsApp & walk-in address with no broker
+                </p>
+              </div>
+
               {/* Mobile swipe hint */}
               <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0 border border-blue-200/60 shadow-2xs whitespace-nowrap">
                 <span>Swipe</span>
                 <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
               </div>
-
-              {compareList.length > 0 && (
-                <button
-                  onClick={() => setIsCompareOpen(true)}
-                  className="px-3.5 py-1.5 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center gap-2 border border-[#0f3a98] transition shadow-2xs hover:bg-blue-100"
-                >
-                  <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
-                  Compare ({compareList.length}/3)
-                </button>
-              )}
             </div>
+
+            {loading ? (
+              <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="h-[430px] w-[285px] max-w-[295px] shrink-0 snap-start rounded-2xl bg-slate-200 animate-pulse mx-auto" />
+                ))}
+              </div>
+            ) : (
+              <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
+                {custodianAddedHostels.map(hostel => (
+                  <HostelCard
+                    key={hostel.id}
+                    hostel={hostel}
+                    isShortlisted={shortlist.includes(hostel.id)}
+                    onToggleShortlist={handleToggleShortlist}
+                    isComparing={compareList.includes(hostel.id)}
+                    onToggleCompare={handleToggleCompare}
+                    onContactClick={handleContactClick}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-
-          {loading ? (
-            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-[430px] w-[285px] max-w-[295px] shrink-0 snap-start rounded-2xl bg-slate-200 animate-pulse mx-auto" />
-              ))}
-            </div>
-          ) : filteredHostels.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
-              <FaIcon icon="fa-solid fa-hotel" className="text-4xl text-slate-300 mx-auto" />
-              <h3 className="font-medium text-slate-800 text-base">No hostels found</h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
-                Try widening your price range or clearing some amenity filters to see more results.
-              </p>
-              <button
-                onClick={() => setFilters({
-                  q: '',
-                  campus: '',
-                  area: '',
-                  roomType: '',
-                  minPrice: 0,
-                  maxPrice: 3000000,
-                  gender: '',
-                  amenities: [],
-                  sort: 'relevance'
-                })}
-                className="px-4 py-2 rounded-lg bg-[#0f3a98] text-white text-xs font-medium flex items-center gap-1.5 mx-auto"
-              >
-                <FaIcon icon="fa-solid fa-rotate-left" className="text-xs" />
-                Clear all filters
-              </button>
-            </div>
-          ) : (
-            <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
-              {filteredHostels.map(hostel => (
-                <HostelCard
-                  key={hostel.id}
-                  hostel={hostel}
-                  isShortlisted={shortlist.includes(hostel.id)}
-                  onToggleShortlist={handleToggleShortlist}
-                  isComparing={compareList.includes(hostel.id)}
-                  onToggleCompare={handleToggleCompare}
-                  onContactClick={handleContactClick}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        )}
       </main>
 
       {/* Floating Compare Pill */}

@@ -42,7 +42,7 @@ export default function HostelDetailPage() {
   }, [isContactOpen]);
 
   const isUnlocked = hostel ? unlockedHostels.includes(hostel.id) : false;
-  const hasCustodian = offers.some(o => o.userRole === 'custodian');
+  const hasCustodian = hostel ? hostel.status === 'claimed' : false;
 
   // Review submission
   const [newRating, setNewRating] = useState(5);

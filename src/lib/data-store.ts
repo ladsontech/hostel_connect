@@ -106,6 +106,26 @@ export const INITIAL_USERS: User[] = [
     createdAt: '2026-01-12T11:30:00Z'
   },
   {
+    id: 'usr_custodian_nana',
+    phone: '+256774222555',
+    name: 'Sarah Kiconco',
+    role: 'custodian',
+    status: 'active',
+    isVerified: true,
+    businessName: 'Nana Executive Residence',
+    createdAt: '2026-01-14T09:00:00Z'
+  },
+  {
+    id: 'usr_custodian_nakawa',
+    phone: '+256702888333',
+    name: 'David Ssewanyana',
+    role: 'custodian',
+    status: 'active',
+    isVerified: true,
+    businessName: 'Nakawa Royal Suites',
+    createdAt: '2026-01-16T10:30:00Z'
+  },
+  {
     id: 'usr_broker_brian',
     phone: '+256755888999',
     name: 'Brian Kigozi (Campus Scout)',
@@ -410,6 +430,256 @@ export const INITIAL_HOSTELS: Hostel[] = [
     createdAt: '2026-01-20T16:00:00Z',
     viewCount: 520,
     saveCount: 88
+  },
+  {
+    id: 'hst_mukono_haven',
+    name: 'Mukono Scholars Haven',
+    normalizedName: 'mukono scholars haven',
+    description: 'Peaceful student residence in Kauga, walking distance to Uganda Christian University main gate. Features tiled rooms, borehole water backup, and fenced 24/7 security.',
+    lat: 0.3545,
+    lng: 32.7422,
+    address: 'Kauga Road, Mukono',
+    landmark: 'Near UCU Bishop Tucker Gate',
+    area: 'Kauga',
+    campus: 'Uganda Christian University',
+    distanceCampusApprox: '5 min walk to UCU Main Gate',
+    status: 'unclaimed',
+    ratingAvg: 4.4,
+    ratingCount: 14,
+    genderPolicy: 'mixed',
+    amenities: ['water', 'security', 'wifi'],
+    photos: [
+      {
+        id: 'p13',
+        url: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80',
+        caption: 'Mukono Scholars Haven Courtyard',
+        isCover: true,
+        order: 1
+      },
+      {
+        id: 'p14',
+        url: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80',
+        caption: 'Bright furnished single room',
+        isCover: false,
+        order: 2
+      }
+    ],
+    rooms: [
+      {
+        id: 'rm_muk_single',
+        hostelId: 'hst_mukono_haven',
+        name: 'Single Standard',
+        type: 'single',
+        rentUgx: 900000,
+        roomsTotal: 32,
+        roomsAvailable: 6,
+        updatedAt: '2026-02-02T12:00:00Z',
+        updatedBy: 'system'
+      },
+      {
+        id: 'rm_muk_double',
+        hostelId: 'hst_mukono_haven',
+        name: 'Double Shared',
+        type: 'double',
+        rentUgx: 650000,
+        roomsTotal: 40,
+        roomsAvailable: 9,
+        updatedAt: '2026-02-02T12:00:00Z',
+        updatedBy: 'system'
+      }
+    ],
+    lastAvailabilityConfirmedAt: '2026-02-02T12:00:00Z',
+    createdAt: '2026-01-22T10:00:00Z',
+    viewCount: 410,
+    saveCount: 72
+  },
+  {
+    id: 'hst_kansanga_heights',
+    name: 'Kansanga Crest Hostel',
+    normalizedName: 'kansanga crest',
+    description: 'Modern accommodation tailored for KIU students along Ggaba Road. Offers steady water supply, fast WiFi zones, reading lounges, and guarded entry.',
+    lat: 0.2898,
+    lng: 32.6034,
+    address: 'Kansanga, off Ggaba Road',
+    landmark: 'Opposite KIU Main Campus Junction',
+    area: 'Kansanga',
+    campus: 'KIU',
+    distanceCampusApprox: '4 min walk to KIU Gate',
+    status: 'unclaimed',
+    ratingAvg: 4.5,
+    ratingCount: 19,
+    genderPolicy: 'mixed',
+    amenities: ['water', 'security', 'wifi', 'power_backup'],
+    photos: [
+      {
+        id: 'p15',
+        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80',
+        caption: 'Kansanga Crest Exterior',
+        isCover: true,
+        order: 1
+      },
+      {
+        id: 'p16',
+        url: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80',
+        caption: 'Self-contained student suite',
+        isCover: false,
+        order: 2
+      }
+    ],
+    rooms: [
+      {
+        id: 'rm_kan_single',
+        hostelId: 'hst_kansanga_heights',
+        name: 'Single Self-Contained',
+        type: 'self_contained_single',
+        rentUgx: 950000,
+        roomsTotal: 28,
+        roomsAvailable: 5,
+        updatedAt: '2026-02-03T11:00:00Z',
+        updatedBy: 'system'
+      },
+      {
+        id: 'rm_kan_double',
+        hostelId: 'hst_kansanga_heights',
+        name: 'Double Standard',
+        type: 'double',
+        rentUgx: 700000,
+        roomsTotal: 36,
+        roomsAvailable: 10,
+        updatedAt: '2026-02-03T11:00:00Z',
+        updatedBy: 'system'
+      }
+    ],
+    lastAvailabilityConfirmedAt: '2026-02-03T11:00:00Z',
+    createdAt: '2026-01-24T13:00:00Z',
+    viewCount: 490,
+    saveCount: 95
+  },
+  {
+    id: 'hst_nana',
+    name: 'Nana Executive Residence',
+    normalizedName: 'nana executive',
+    description: 'Direct custodian-managed girls residence near Makerere University offering quiet study suites, biometric gate security, shuttle drops, and 24/7 warden support.',
+    lat: 0.3318,
+    lng: 32.5662,
+    address: 'Kagugube Road, Makerere',
+    landmark: 'Near Makerere Main Gate Roundabout',
+    area: 'Kikoni',
+    campus: 'Makerere University',
+    distanceCampusApprox: '3 min walk to Makerere Main Gate',
+    status: 'claimed',
+    verifiedOwnerId: 'usr_custodian_nana',
+    ratingAvg: 4.9,
+    ratingCount: 44,
+    genderPolicy: 'girls_only',
+    amenities: ['water', 'security', 'wifi', 'power_backup', 'shuttle', 'meals'],
+    photos: [
+      {
+        id: 'p17',
+        url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80',
+        caption: 'Nana Residence Executive Wing',
+        isCover: true,
+        order: 1
+      },
+      {
+        id: 'p18',
+        url: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=1000&q=80',
+        caption: 'Quiet reading desk and bed space',
+        isCover: false,
+        order: 2
+      }
+    ],
+    rooms: [
+      {
+        id: 'rm_nana_single_sc',
+        hostelId: 'hst_nana',
+        name: 'Single Self-Contained',
+        type: 'self_contained_single',
+        rentUgx: 1500000,
+        roomsTotal: 50,
+        roomsAvailable: 7,
+        updatedAt: '2026-02-06T09:00:00Z',
+        updatedBy: 'usr_custodian_nana'
+      },
+      {
+        id: 'rm_nana_double_sc',
+        hostelId: 'hst_nana',
+        name: 'Double Self-Contained',
+        type: 'self_contained_double',
+        rentUgx: 1050000,
+        roomsTotal: 64,
+        roomsAvailable: 12,
+        updatedAt: '2026-02-06T09:00:00Z',
+        updatedBy: 'usr_custodian_nana'
+      }
+    ],
+    lastAvailabilityConfirmedAt: '2026-02-06T09:00:00Z',
+    createdAt: '2026-01-14T09:00:00Z',
+    viewCount: 1180,
+    saveCount: 260
+  },
+  {
+    id: 'hst_nakawa_royal',
+    name: 'Nakawa Royal Suites',
+    normalizedName: 'nakawa royal',
+    description: 'Verified custodian-run residence tailored for MUBS students. Clean balconies, standby power backup, dedicated study wing, and transparent room allocation desk.',
+    lat: 0.3264,
+    lng: 32.6199,
+    address: 'Port Bell Road, Nakawa',
+    landmark: '200m from MUBS Main Gate',
+    area: 'Nakawa',
+    campus: 'MUBS',
+    distanceCampusApprox: '4 min walk to MUBS Main Gate',
+    status: 'claimed',
+    verifiedOwnerId: 'usr_custodian_nakawa',
+    ratingAvg: 4.7,
+    ratingCount: 27,
+    genderPolicy: 'mixed',
+    amenities: ['water', 'security', 'wifi', 'power_backup'],
+    photos: [
+      {
+        id: 'p19',
+        url: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1000&q=80',
+        caption: 'Nakawa Royal Suites Room',
+        isCover: true,
+        order: 1
+      },
+      {
+        id: 'p20',
+        url: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1000&q=80',
+        caption: 'Shared dining and kitchen lounge',
+        isCover: false,
+        order: 2
+      }
+    ],
+    rooms: [
+      {
+        id: 'rm_nak_single',
+        hostelId: 'hst_nakawa_royal',
+        name: 'Single Self-Contained',
+        type: 'self_contained_single',
+        rentUgx: 1200000,
+        roomsTotal: 35,
+        roomsAvailable: 6,
+        updatedAt: '2026-02-05T14:00:00Z',
+        updatedBy: 'usr_custodian_nakawa'
+      },
+      {
+        id: 'rm_nak_double',
+        hostelId: 'hst_nakawa_royal',
+        name: 'Double Shared',
+        type: 'double',
+        rentUgx: 800000,
+        roomsTotal: 48,
+        roomsAvailable: 14,
+        updatedAt: '2026-02-05T14:00:00Z',
+        updatedBy: 'usr_custodian_nakawa'
+      }
+    ],
+    lastAvailabilityConfirmedAt: '2026-02-05T14:00:00Z',
+    createdAt: '2026-01-16T10:30:00Z',
+    viewCount: 840,
+    saveCount: 175
   }
 ];
 
@@ -447,6 +717,40 @@ export const INITIAL_OFFERS: Offer[] = [
     notes: 'Management desk open Mon - Sat.',
     createdAt: '2026-01-12T11:30:00Z',
     responseRatePct: 95
+  },
+  // Nana Executive Custodian
+  {
+    id: 'off_nana_custodian',
+    hostelId: 'hst_nana',
+    userId: 'usr_custodian_nana',
+    userName: 'Sarah Kiconco (Head Warden)',
+    userRole: 'custodian',
+    isVerified: true,
+    isAuthorised: true,
+    accessFeeUgx: 0,
+    contactPhone: '+256774222555',
+    whatsapp: '+256774222555',
+    status: 'active',
+    notes: 'Direct custodian office at Nana Executive Residence gate.',
+    createdAt: '2026-01-14T09:00:00Z',
+    responseRatePct: 99
+  },
+  // Nakawa Royal Suites Custodian
+  {
+    id: 'off_nakawa_custodian',
+    hostelId: 'hst_nakawa_royal',
+    userId: 'usr_custodian_nakawa',
+    userName: 'David Ssewanyana (Custodian)',
+    userRole: 'custodian',
+    isVerified: true,
+    isAuthorised: true,
+    accessFeeUgx: 0,
+    contactPhone: '+256702888333',
+    whatsapp: '+256702888333',
+    status: 'active',
+    notes: 'Direct hostel administration office. Zero broker fees.',
+    createdAt: '2026-01-16T10:30:00Z',
+    responseRatePct: 96
   },
   // Dream World Broker Brian (Unauthorised / Independent)
   {
