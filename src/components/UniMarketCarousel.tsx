@@ -177,13 +177,8 @@ export default function UniMarketCarousel() {
       {/* Modern Section Header */}
       <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-3">
         <div className="min-w-0 flex flex-col items-center sm:items-start">
-          <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs whitespace-nowrap">
-              <FaIcon icon="fa-solid fa-store" className="text-[11px] text-[#0f3a98]" />
-              <span>Campus Deals</span>
-            </span>
-            <span className="hidden sm:inline text-xs text-slate-300">•</span>
-            <span className="hidden sm:inline text-xs text-slate-500 font-normal">Student Services & Businesses</span>
+          <div className="hidden sm:flex items-center justify-start mb-0.5">
+            <span className="text-xs text-slate-500 font-normal">Student Services & Businesses</span>
           </div>
 
           <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight text-center sm:text-left">
