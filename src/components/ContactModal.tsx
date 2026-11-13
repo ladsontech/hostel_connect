@@ -200,9 +200,12 @@ interface BrokerBookingConfirmation {
   afterMethod?: 'mobile_money' | 'cash';
   provider?: 'mtn' | 'airtel';
   phone?: string;
+  meetingDate: string;
+  meetingTime: string;
+  meetingLocation: string;
 }
 
-/** Payment workflow for broker inspection: pay now via Mobile Money or choose pay-after-inspection method. */
+/** Payment and meetup scheduling workflow for broker inspection. */
 function BrokerInspectionCheckout({
   hostelId,
   brokerId,
@@ -219,10 +222,14 @@ function BrokerInspectionCheckout({
   feeUgx: number;
 }) {
   const storageKey = `hc_broker_booking_${hostelId}_${brokerId}`;
+  const todayIso = new Date().toISOString().split('T')[0];
   const [timing, setTiming] = useState<'now_momo' | 'after_inspection'>('now_momo');
   const [afterMethod, setAfterMethod] = useState<'mobile_money' | 'cash'>('mobile_money');
   const [provider, setProvider] = useState<'mtn' | 'airtel'>('mtn');
   const [phone, setPhone] = useState('');
+  const [meetingDate, setMeetingDate] = useState(todayIso);
+  const [meetingTime, setMeetingTime] = useState('10:00');
+  const [meetingLocation, setMeetingLocation] = useState(`${campus} Main Gate`);
   const [step, setStep] = useState<'form' | 'prompting' | 'confirmed'>('form');
   const [error, setError] = useState('');
   const [booking, setBooking] = useState<BrokerBookingConfirmation | null>(null);
@@ -241,10 +248,19 @@ function BrokerInspectionCheckout({
 
   const feeLabel = feeUgx > 0 ? formatUGX(feeUgx) : 'Free';
   const usesMomo = timing === 'now_momo' || afterMethod === 'mobile_money';
+  const suggestedLocations = [
+    `${campus} Main Gate`,
+    `${area} Stage`,
+  ];
 
   const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!meetingDate || !meetingTime || !meetingLocation.trim()) {
+      setError('Please specify the inspection date, time, and meetup location.');
+      return;
+    }
 
     if (usesMomo && (!phone.trim() || phone.replace(/\D/g, '').length < 9)) {
       setError('Please enter a valid Ugandan Mobile Money number.');
@@ -260,6 +276,9 @@ function BrokerInspectionCheckout({
         afterMethod: timing === 'after_inspection' ? afterMethod : undefined,
         provider: usesMomo ? provider : undefined,
         phone: usesMomo ? phone.trim() : undefined,
+        meetingDate,
+        meetingTime,
+        meetingLocation: meetingLocation.trim(),
       };
       setBooking(confirmation);
       try {
@@ -307,9 +326,35 @@ function BrokerInspectionCheckout({
         </div>
 
         <div className="text-xs text-slate-700 leading-relaxed">
-          <strong className="text-[#0f3a98]">{brokerName}</strong> has been assigned to meet you near{' '}
-          <strong className="text-[#0f3a98]">{campus}</strong> for your <strong className="text-[#0f3a98]">{area}</strong> room inspection.
+          <strong className="text-[#0f3a98]">{brokerName}</strong> has been booked to meet you for your{' '}
+          <strong className="text-[#0f3a98]">{area}</strong> room inspection.
         </div>
+
+        {/* Scheduled Meetup Date, Time & Location */}
+        {(booking.meetingDate || booking.meetingTime || booking.meetingLocation) && (
+          <div className="bg-[#f8fafc] border border-blue-200 rounded-xl p-3 space-y-1.5 text-[11px]">
+            {(booking.meetingDate || booking.meetingTime) && (
+              <div className="flex items-center justify-between gap-2 text-[#0f3a98]">
+                <span className="flex items-center gap-1.5 font-medium">
+                  <FaIcon icon="fa-solid fa-calendar-days" className="text-[#ffbe00]" />
+                  <span>Date & Time</span>
+                </span>
+                <span className="font-semibold">
+                  {[booking.meetingDate, booking.meetingTime].filter(Boolean).join(' at ')}
+                </span>
+              </div>
+            )}
+            {booking.meetingLocation && (
+              <div className="flex items-start justify-between gap-2 text-[#0f3a98]">
+                <span className="flex items-center gap-1.5 font-medium shrink-0">
+                  <FaIcon icon="fa-solid fa-location-dot" className="text-[#ffbe00]" />
+                  <span>Meetup Spot</span>
+                </span>
+                <span className="font-semibold text-right">{booking.meetingLocation}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="bg-[#e8effc] px-3 py-2 rounded-lg text-[11px] text-[#0f3a98] font-medium flex items-center justify-between gap-2 flex-wrap">
           <span>Payment Option: <strong>{methodLabel}</strong></span>
@@ -321,7 +366,7 @@ function BrokerInspectionCheckout({
           onClick={resetChoice}
           className="text-[11px] text-[#0f3a98] hover:underline font-medium"
         >
-          Change payment option
+          Change schedule or payment option
         </button>
       </div>
     );
@@ -330,81 +375,8 @@ function BrokerInspectionCheckout({
   return (
     <div className="p-4 rounded-xl bg-white border border-blue-200 space-y-3 shadow-xs">
       <div className="text-xs font-semibold text-[#0f3a98] text-center">
-        Choose How to Pay the Inspection Fee ({feeLabel})
+        Schedule Inspection & Payment ({feeLabel})
       </div>
-
-      {/* Timing Option: Pay First via Mobile Money OR Pay After Inspection */}
-      <div className="grid grid-cols-2 gap-2 text-xs">
-        <button
-          type="button"
-          onClick={() => { setTiming('now_momo'); setError(''); }}
-          className={`p-2.5 rounded-xl border text-left transition flex flex-col gap-0.5 ${
-            timing === 'now_momo'
-              ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-xs'
-              : 'border-slate-200 bg-[#f8fafc] text-slate-700 hover:border-blue-300'
-          }`}
-        >
-          <span className="font-semibold text-[11px] flex items-center gap-1.5">
-            <FaIcon icon="fa-solid fa-mobile-screen-button" className={timing === 'now_momo' ? 'text-[#ffbe00]' : 'text-[#0f3a98]'} />
-            <span>Pay First Now</span>
-          </span>
-          <span className={`text-[10px] ${timing === 'now_momo' ? 'text-white/80' : 'text-slate-500'}`}>
-            Mobile Money
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => { setTiming('after_inspection'); setError(''); }}
-          className={`p-2.5 rounded-xl border text-left transition flex flex-col gap-0.5 ${
-            timing === 'after_inspection'
-              ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-xs'
-              : 'border-slate-200 bg-[#f8fafc] text-slate-700 hover:border-blue-300'
-          }`}
-        >
-          <span className="font-semibold text-[11px] flex items-center gap-1.5">
-            <FaIcon icon="fa-solid fa-clock" className={timing === 'after_inspection' ? 'text-[#ffbe00]' : 'text-[#0f3a98]'} />
-            <span>After Inspection</span>
-          </span>
-          <span className={`text-[10px] ${timing === 'after_inspection' ? 'text-white/80' : 'text-slate-500'}`}>
-            Pay broker on tour
-          </span>
-        </button>
-      </div>
-
-      {timing === 'after_inspection' && (
-        <div className="space-y-1.5 bg-[#e8effc]/60 p-2.5 rounded-xl border border-blue-100">
-          <div className="text-[11px] font-medium text-[#0f3a98]">
-            How will you pay the broker after inspection?
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => { setAfterMethod('mobile_money'); setError(''); }}
-              className={`py-1.5 px-2 rounded-lg border text-[11px] font-medium flex items-center justify-center gap-1.5 transition ${
-                afterMethod === 'mobile_money'
-                  ? 'border-[#0f3a98] bg-white text-[#0f3a98] shadow-xs'
-                  : 'border-transparent bg-white/60 text-slate-600'
-              }`}
-            >
-              <FaIcon icon="fa-solid fa-mobile-screen" className="text-[#ffbe00]" />
-              <span>Mobile Money</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => { setAfterMethod('cash'); setError(''); }}
-              className={`py-1.5 px-2 rounded-lg border text-[11px] font-medium flex items-center justify-center gap-1.5 transition ${
-                afterMethod === 'cash'
-                  ? 'border-[#0f3a98] bg-white text-[#0f3a98] shadow-xs'
-                  : 'border-transparent bg-white/60 text-slate-600'
-              }`}
-            >
-              <FaIcon icon="fa-solid fa-money-bill-wave" className="text-[#ffbe00]" />
-              <span>Cash in Hand</span>
-            </button>
-          </div>
-        </div>
-      )}
 
       {error && (
         <div className="text-xs text-[#0f3a98] bg-[#ffbe00]/20 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1.5">
@@ -418,11 +390,164 @@ function BrokerInspectionCheckout({
           <FaIcon icon="fa-solid fa-spinner" className="animate-spin text-xl text-[#ffbe00]" />
           <div className="text-xs font-medium">Sending Mobile Money prompt to your phone...</div>
           <div className="text-[11px] text-blue-200">
-            Please enter your PIN on +256 {phone} to approve {feeLabel}.
+            Please enter your PIN on +256 {phone} to approve {feeLabel} for {meetingDate} at {meetingTime}.
           </div>
         </div>
       ) : (
-        <form onSubmit={handleConfirm} className="space-y-2.5">
+        <form onSubmit={handleConfirm} className="space-y-3">
+          {/* Specific Date, Time & Meetup Location */}
+          <div className="p-3 rounded-xl bg-[#e8effc]/55 border border-blue-100 space-y-2.5">
+            <div className="text-[11px] font-semibold text-[#0f3a98] text-center flex items-center justify-center gap-1.5">
+              <FaIcon icon="fa-solid fa-calendar-days" className="text-[#ffbe00]" />
+              <span>Set Date, Time & Meetup Location</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[10px] font-medium text-[#0f3a98] mb-1">
+                  Inspection Date
+                </label>
+                <input
+                  type="date"
+                  required
+                  min={todayIso}
+                  value={meetingDate}
+                  onChange={(e) => setMeetingDate(e.target.value)}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-blue-200 bg-white text-xs text-slate-800 focus:outline-hidden focus:border-[#0f3a98]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-medium text-[#0f3a98] mb-1">
+                  Specific Time
+                </label>
+                <input
+                  type="time"
+                  required
+                  value={meetingTime}
+                  onChange={(e) => setMeetingTime(e.target.value)}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-blue-200 bg-white text-xs text-slate-800 focus:outline-hidden focus:border-[#0f3a98]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-medium text-[#0f3a98] mb-1">
+                Meetup Location with Broker
+              </label>
+              <div className="flex items-center rounded-lg border border-blue-200 focus-within:border-[#0f3a98] bg-white overflow-hidden">
+                <span className="pl-2.5 pr-1.5 text-xs text-[#ffbe00] shrink-0">
+                  <FaIcon icon="fa-solid fa-location-dot" />
+                </span>
+                <input
+                  type="text"
+                  required
+                  placeholder={`e.g. ${campus} Main Gate or ${area} Stage`}
+                  value={meetingLocation}
+                  onChange={(e) => setMeetingLocation(e.target.value)}
+                  className="w-full pr-3 py-1.5 focus:outline-hidden text-xs text-slate-800 bg-transparent"
+                />
+              </div>
+
+              {/* Quick meetup spot suggestions */}
+              <div className="flex flex-wrap gap-1.5 mt-1.5">
+                {suggestedLocations.map((spot) => (
+                  <button
+                    key={spot}
+                    type="button"
+                    onClick={() => setMeetingLocation(spot)}
+                    className={`text-[10px] px-2 py-0.5 rounded-full border transition ${
+                      meetingLocation === spot
+                        ? 'bg-[#0f3a98] text-white border-[#0f3a98]'
+                        : 'bg-white text-[#0f3a98] border-blue-200 hover:border-[#0f3a98]'
+                    }`}
+                  >
+                    {spot}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Timing Option: Pay First via Mobile Money OR Pay After Inspection */}
+          <div className="space-y-2">
+            <div className="text-[11px] font-semibold text-[#0f3a98] text-center">
+              Choose Inspection Fee Payment Option
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <button
+                type="button"
+                onClick={() => { setTiming('now_momo'); setError(''); }}
+                className={`p-2.5 rounded-xl border text-left transition flex flex-col gap-0.5 ${
+                  timing === 'now_momo'
+                    ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-xs'
+                    : 'border-slate-200 bg-[#f8fafc] text-slate-700 hover:border-blue-300'
+                }`}
+              >
+                <span className="font-semibold text-[11px] flex items-center gap-1.5">
+                  <FaIcon icon="fa-solid fa-mobile-screen-button" className={timing === 'now_momo' ? 'text-[#ffbe00]' : 'text-[#0f3a98]'} />
+                  <span>Pay First Now</span>
+                </span>
+                <span className={`text-[10px] ${timing === 'now_momo' ? 'text-white/80' : 'text-slate-500'}`}>
+                  Mobile Money
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setTiming('after_inspection'); setError(''); }}
+                className={`p-2.5 rounded-xl border text-left transition flex flex-col gap-0.5 ${
+                  timing === 'after_inspection'
+                    ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-xs'
+                    : 'border-slate-200 bg-[#f8fafc] text-slate-700 hover:border-blue-300'
+                }`}
+              >
+                <span className="font-semibold text-[11px] flex items-center gap-1.5">
+                  <FaIcon icon="fa-solid fa-clock" className={timing === 'after_inspection' ? 'text-[#ffbe00]' : 'text-[#0f3a98]'} />
+                  <span>After Inspection</span>
+                </span>
+                <span className={`text-[10px] ${timing === 'after_inspection' ? 'text-white/80' : 'text-slate-500'}`}>
+                  Pay broker on tour
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {timing === 'after_inspection' && (
+            <div className="space-y-1.5 bg-[#e8effc]/60 p-2.5 rounded-xl border border-blue-100">
+              <div className="text-[11px] font-medium text-[#0f3a98] text-center">
+                How will you pay the broker after inspection?
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setAfterMethod('mobile_money'); setError(''); }}
+                  className={`py-1.5 px-2 rounded-lg border text-[11px] font-medium flex items-center justify-center gap-1.5 transition ${
+                    afterMethod === 'mobile_money'
+                      ? 'border-[#0f3a98] bg-white text-[#0f3a98] shadow-xs'
+                      : 'border-transparent bg-white/60 text-slate-600'
+                  }`}
+                >
+                  <FaIcon icon="fa-solid fa-mobile-screen" className="text-[#ffbe00]" />
+                  <span>Mobile Money</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setAfterMethod('cash'); setError(''); }}
+                  className={`py-1.5 px-2 rounded-lg border text-[11px] font-medium flex items-center justify-center gap-1.5 transition ${
+                    afterMethod === 'cash'
+                      ? 'border-[#0f3a98] bg-white text-[#0f3a98] shadow-xs'
+                      : 'border-transparent bg-white/60 text-slate-600'
+                  }`}
+                >
+                  <FaIcon icon="fa-solid fa-money-bill-wave" className="text-[#ffbe00]" />
+                  <span>Cash in Hand</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {usesMomo && (
             <>
               <MomoProviderToggle provider={provider} onChange={setProvider} />
@@ -452,10 +577,10 @@ function BrokerInspectionCheckout({
             />
             <span>
               {timing === 'now_momo'
-                ? `Pay Inspection Fee (${feeLabel})`
+                ? `Pay Inspection Fee (${feeLabel}) & Book`
                 : afterMethod === 'mobile_money'
-                  ? `Book Inspection (Pay ${provider === 'airtel' ? 'Airtel Money' : 'MTN MoMo'} After)`
-                  : 'Book Inspection (Pay Cash After)'}
+                  ? `Book Meetup (Pay ${provider === 'airtel' ? 'Airtel Money' : 'MTN MoMo'} After)`
+                  : 'Book Meetup (Pay Cash After)'}
             </span>
           </button>
         </form>
