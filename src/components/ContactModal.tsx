@@ -553,26 +553,6 @@ export default function ContactModal({
           ) : (
             /* STEP 2B: Matched Custodian Listing OR Seeded Broker Offer */
             <div className="space-y-3.5 animate-in fade-in duration-300 font-sans">
-              {/* Theme Match Banner after searching */}
-              {!isUnlocked && (
-                <div className="bg-[#e8effc] border border-blue-200 p-2.5 rounded-xl flex items-center justify-between gap-2 text-xs text-[#0f3a98] font-medium">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <FaIcon
-                      icon={hasCustodian ? 'fa-solid fa-shield-halved' : 'fa-solid fa-circle-check'}
-                      className="text-[#0f3a98] text-sm shrink-0"
-                    />
-                    <span className="truncate">
-                      {hasCustodian
-                        ? 'Direct Official Custodian Ready (No Broker)'
-                        : 'Verified Campus Broker Matched!'}
-                    </span>
-                  </div>
-                  <span className="text-[10px] bg-[#ffbe00] px-2.5 py-0.5 rounded-full text-[#0f3a98] font-semibold shrink-0">
-                    {hasCustodian ? 'Direct Desk' : 'Trek Guide'}
-                  </span>
-                </div>
-              )}
-
               {effectiveOffers.map((offer) => {
                 const isCustodian = offer.userRole === 'custodian';
 
