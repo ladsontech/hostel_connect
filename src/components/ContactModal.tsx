@@ -625,7 +625,7 @@ export default function ContactModal({
                           </div>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                        <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 text-xs">
                           <div>
                             <div className="font-semibold text-[#0f3a98] text-sm">
                               Official Hostel Custodian & Warden
@@ -635,7 +635,7 @@ export default function ContactModal({
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1.5 opacity-55 pointer-events-none shrink-0">
+                          <div className="flex items-center justify-center sm:justify-end gap-1.5 opacity-55 pointer-events-none shrink-0">
                             <span className="px-2.5 py-1 rounded-lg bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center gap-1 border border-blue-200">
                               <FaIcon icon="fa-solid fa-lock" className="text-[10px]" /> Call
                             </span>
