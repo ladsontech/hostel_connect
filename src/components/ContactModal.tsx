@@ -96,6 +96,323 @@ function PriceBarButton({ label, children }: { label: string; children: React.Re
   );
 }
 
+/** Shared MTN MoMo / Airtel Money network selector using official brand icons. */
+function MomoProviderToggle({
+  provider,
+  onChange,
+}: {
+  provider: 'mtn' | 'airtel';
+  onChange: (next: 'mtn' | 'airtel') => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2 text-xs">
+      <button
+        type="button"
+        onClick={() => onChange('mtn')}
+        className={`py-2 px-2 sm:px-3 rounded-lg border flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium whitespace-nowrap transition ${
+          provider === 'mtn'
+            ? 'border-[#ffbe00] bg-[#ffbe00]/15 text-[#0f3a98]'
+            : 'border-slate-200 bg-white text-slate-600'
+        }`}
+      >
+        <img
+          src="/MTN%20mobile%20money.png"
+          alt="MTN MoMo"
+          className="h-4 sm:h-5 w-auto object-contain rounded-sm shrink-0"
+        />
+        <span className="whitespace-nowrap">MTN MoMo</span>
+      </button>
+
+      <button
+        type="button"
+        onClick={() => onChange('airtel')}
+        className={`py-2 px-2 sm:px-3 rounded-lg border flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium whitespace-nowrap transition ${
+          provider === 'airtel'
+            ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98]'
+            : 'border-slate-200 bg-white text-slate-600'
+        }`}
+      >
+        <img
+          src="/Airtel%20mobile%20money.jpg"
+          alt="Airtel Money"
+          className="w-4 h-4 sm:w-5 sm:h-5 object-cover rounded-sm shrink-0"
+        />
+        <span className="whitespace-nowrap">Airtel Money</span>
+      </button>
+    </div>
+  );
+}
+
+interface BrokerBookingConfirmation {
+  ref: string;
+  timing: 'now_momo' | 'after_inspection';
+  afterMethod?: 'mobile_money' | 'cash';
+  provider?: 'mtn' | 'airtel';
+  phone?: string;
+}
+
+/** Payment workflow for broker inspection: pay now via Mobile Money or choose pay-after-inspection method. */
+function BrokerInspectionCheckout({
+  hostelId,
+  brokerId,
+  brokerName,
+  area,
+  campus,
+  feeUgx,
+}: {
+  hostelId: string;
+  brokerId: string;
+  brokerName: string;
+  area: string;
+  campus: string;
+  feeUgx: number;
+}) {
+  const storageKey = `hc_broker_booking_${hostelId}_${brokerId}`;
+  const [timing, setTiming] = useState<'now_momo' | 'after_inspection'>('now_momo');
+  const [afterMethod, setAfterMethod] = useState<'mobile_money' | 'cash'>('mobile_money');
+  const [provider, setProvider] = useState<'mtn' | 'airtel'>('mtn');
+  const [phone, setPhone] = useState('');
+  const [step, setStep] = useState<'form' | 'prompting' | 'confirmed'>('form');
+  const [error, setError] = useState('');
+  const [booking, setBooking] = useState<BrokerBookingConfirmation | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        setBooking(JSON.parse(saved));
+        setStep('confirmed');
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [storageKey]);
+
+  const feeLabel = feeUgx > 0 ? formatUGX(feeUgx) : 'Free';
+  const usesMomo = timing === 'now_momo' || afterMethod === 'mobile_money';
+
+  const handleConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (usesMomo && (!phone.trim() || phone.replace(/\D/g, '').length < 9)) {
+      setError('Please enter a valid Ugandan Mobile Money number.');
+      return;
+    }
+
+    const finalize = () => {
+      const confirmation: BrokerBookingConfirmation = {
+        ref: timing === 'now_momo'
+          ? `MOMO-INSP-${Math.floor(100000 + Math.random() * 900000)}`
+          : `INSP-PASS-${Math.floor(100000 + Math.random() * 900000)}`,
+        timing,
+        afterMethod: timing === 'after_inspection' ? afterMethod : undefined,
+        provider: usesMomo ? provider : undefined,
+        phone: usesMomo ? phone.trim() : undefined,
+      };
+      setBooking(confirmation);
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(confirmation));
+      } catch {
+        // ignore storage errors
+      }
+      setStep('confirmed');
+    };
+
+    if (timing === 'now_momo') {
+      setStep('prompting');
+      setTimeout(finalize, 2200);
+    } else {
+      finalize();
+    }
+  };
+
+  const resetChoice = () => {
+    setBooking(null);
+    setStep('form');
+    setError('');
+    try {
+      localStorage.removeItem(storageKey);
+    } catch {
+      // ignore storage errors
+    }
+  };
+
+  if (step === 'confirmed' && booking) {
+    const methodLabel = booking.timing === 'now_momo'
+      ? `Paid Now via ${booking.provider === 'airtel' ? 'Airtel Money' : 'MTN MoMo'}`
+      : booking.afterMethod === 'mobile_money'
+        ? `Pay After Inspection via ${booking.provider === 'airtel' ? 'Airtel Money' : 'MTN MoMo'}`
+        : 'Pay Cash After Inspection';
+
+    return (
+      <div className="p-4 rounded-xl bg-white border-2 border-[#0f3a98] space-y-2.5 shadow-xs">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0f3a98] text-white text-[11px] font-semibold">
+            <FaIcon icon="fa-solid fa-circle-check" className="text-[#ffbe00] text-xs" />
+            <span>{booking.timing === 'now_momo' ? 'Inspection Fee Paid' : 'Inspection Scheduled'}</span>
+          </span>
+          <span className="text-[11px] font-mono text-[#0f3a98] font-semibold">{booking.ref}</span>
+        </div>
+
+        <div className="text-xs text-slate-700 leading-relaxed">
+          <strong className="text-[#0f3a98]">{brokerName}</strong> has been assigned to meet you near{' '}
+          <strong className="text-[#0f3a98]">{campus}</strong> for your <strong className="text-[#0f3a98]">{area}</strong> room inspection.
+        </div>
+
+        <div className="bg-[#e8effc] px-3 py-2 rounded-lg text-[11px] text-[#0f3a98] font-medium flex items-center justify-between gap-2 flex-wrap">
+          <span>Payment Option: <strong>{methodLabel}</strong></span>
+          {booking.phone && <span className="font-mono">+256 {booking.phone}</span>}
+        </div>
+
+        <button
+          type="button"
+          onClick={resetChoice}
+          className="text-[11px] text-[#0f3a98] hover:underline font-medium"
+        >
+          Change payment option
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 rounded-xl bg-white border border-blue-200 space-y-3 shadow-xs">
+      <div className="text-xs font-semibold text-[#0f3a98]">
+        Choose How to Pay the Inspection Fee ({feeLabel})
+      </div>
+
+      {/* Timing Option: Pay First via Mobile Money OR Pay After Inspection */}
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <button
+          type="button"
+          onClick={() => { setTiming('now_momo'); setError(''); }}
+          className={`p-2.5 rounded-xl border text-left transition flex flex-col gap-0.5 ${
+            timing === 'now_momo'
+              ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-xs'
+              : 'border-slate-200 bg-[#f8fafc] text-slate-700 hover:border-blue-300'
+          }`}
+        >
+          <span className="font-semibold text-[11px] flex items-center gap-1.5">
+            <FaIcon icon="fa-solid fa-mobile-screen-button" className={timing === 'now_momo' ? 'text-[#ffbe00]' : 'text-[#0f3a98]'} />
+            <span>Pay First Now</span>
+          </span>
+          <span className={`text-[10px] ${timing === 'now_momo' ? 'text-white/80' : 'text-slate-500'}`}>
+            Mobile Money
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => { setTiming('after_inspection'); setError(''); }}
+          className={`p-2.5 rounded-xl border text-left transition flex flex-col gap-0.5 ${
+            timing === 'after_inspection'
+              ? 'border-[#0f3a98] bg-[#0f3a98] text-white shadow-xs'
+              : 'border-slate-200 bg-[#f8fafc] text-slate-700 hover:border-blue-300'
+          }`}
+        >
+          <span className="font-semibold text-[11px] flex items-center gap-1.5">
+            <FaIcon icon="fa-solid fa-clock" className={timing === 'after_inspection' ? 'text-[#ffbe00]' : 'text-[#0f3a98]'} />
+            <span>After Inspection</span>
+          </span>
+          <span className={`text-[10px] ${timing === 'after_inspection' ? 'text-white/80' : 'text-slate-500'}`}>
+            Pay broker on tour
+          </span>
+        </button>
+      </div>
+
+      {timing === 'after_inspection' && (
+        <div className="space-y-1.5 bg-[#e8effc]/60 p-2.5 rounded-xl border border-blue-100">
+          <div className="text-[11px] font-medium text-[#0f3a98]">
+            How will you pay the broker after inspection?
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => { setAfterMethod('mobile_money'); setError(''); }}
+              className={`py-1.5 px-2 rounded-lg border text-[11px] font-medium flex items-center justify-center gap-1.5 transition ${
+                afterMethod === 'mobile_money'
+                  ? 'border-[#0f3a98] bg-white text-[#0f3a98] shadow-xs'
+                  : 'border-transparent bg-white/60 text-slate-600'
+              }`}
+            >
+              <FaIcon icon="fa-solid fa-mobile-screen" className="text-[#ffbe00]" />
+              <span>Mobile Money</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => { setAfterMethod('cash'); setError(''); }}
+              className={`py-1.5 px-2 rounded-lg border text-[11px] font-medium flex items-center justify-center gap-1.5 transition ${
+                afterMethod === 'cash'
+                  ? 'border-[#0f3a98] bg-white text-[#0f3a98] shadow-xs'
+                  : 'border-transparent bg-white/60 text-slate-600'
+              }`}
+            >
+              <FaIcon icon="fa-solid fa-money-bill-wave" className="text-[#ffbe00]" />
+              <span>Cash in Hand</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="text-xs text-[#0f3a98] bg-[#ffbe00]/20 px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1.5">
+          <FaIcon icon="fa-solid fa-circle-exclamation" className="text-[#0f3a98]" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {step === 'prompting' ? (
+        <div className="p-4 rounded-xl bg-[#0f3a98] text-white text-center space-y-2 animate-pulse">
+          <FaIcon icon="fa-solid fa-spinner" className="animate-spin text-xl text-[#ffbe00]" />
+          <div className="text-xs font-medium">Sending Mobile Money prompt to your phone...</div>
+          <div className="text-[11px] text-blue-200">
+            Please enter your PIN on +256 {phone} to approve {feeLabel}.
+          </div>
+        </div>
+      ) : (
+        <form onSubmit={handleConfirm} className="space-y-2.5">
+          {usesMomo && (
+            <>
+              <MomoProviderToggle provider={provider} onChange={setProvider} />
+              <div className="flex items-center rounded-lg border border-blue-200 focus-within:border-[#0f3a98] bg-white overflow-hidden">
+                <span className="pl-3 pr-2 py-2 text-xs text-slate-400 font-medium select-none shrink-0 border-r border-blue-100">
+                  +256
+                </span>
+                <input
+                  type="tel"
+                  required
+                  placeholder={timing === 'now_momo' ? '770 000 000 (MoMo number to pay now)' : '770 000 000 (MoMo number for tour)'}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full px-3 py-2 focus:outline-hidden text-xs text-slate-800 bg-transparent"
+                />
+              </div>
+            </>
+          )}
+
+          <button
+            type="submit"
+            className="w-full px-4 py-2.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition"
+          >
+            <FaIcon
+              icon={timing === 'now_momo' ? 'fa-solid fa-shield-halved' : 'fa-solid fa-calendar-check'}
+              className="text-xs text-[#ffbe00]"
+            />
+            <span>
+              {timing === 'now_momo'
+                ? `Pay Inspection Fee (${feeLabel})`
+                : afterMethod === 'mobile_money'
+                  ? `Book Inspection (Pay ${provider === 'airtel' ? 'Airtel Money' : 'MTN MoMo'} After)`
+                  : 'Book Inspection (Pay Cash After)'}
+            </span>
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 export default function ContactModal({
   hostel,
   offers,
@@ -568,26 +885,15 @@ export default function ContactModal({
                     </p>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="pt-1 flex items-center gap-2">
-                    <a
-                      href={`https://wa.me/${activeScout.whatsapp}?text=Hello%20${encodeURIComponent(activeScout.name)},%20Hostel%20Connect%20matched%20you%20as%20the%20nearest%20verified%20scout%20for%20available%20rooms%20in%20${encodeURIComponent(hostel.area)}%20near%20${encodeURIComponent(hostel.campus)}.%20When%20can%20we%20tour?`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-medium flex items-center justify-center gap-2 shadow-sm transition"
-                    >
-                      <FaIcon icon="fa-brands fa-whatsapp" className="text-sm" />
-                      <span>WhatsApp Scout</span>
-                    </a>
-
-                    <a
-                      href={`tel:${activeScout.phone}`}
-                      className="flex-1 py-2.5 px-3 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center justify-center gap-2 shadow-sm transition"
-                    >
-                      <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
-                      <span>Call Directly</span>
-                    </a>
-                  </div>
+                  {/* Broker Inspection Payment / Scheduling Choice */}
+                  <BrokerInspectionCheckout
+                    hostelId={hostel.id}
+                    brokerId={activeScout.verifiedId}
+                    brokerName={activeScout.name}
+                    area={hostel.area}
+                    campus={hostel.campus}
+                    feeUgx={activeScout.accessFeeUgx}
+                  />
 
                   <button
                     onClick={triggerManualBrokerSearch}
@@ -698,41 +1004,7 @@ export default function ContactModal({
                           ) : (
                             <form onSubmit={handlePayConnectionFee} className="space-y-2.5 pt-1">
                               {/* Provider Toggle */}
-                              <div className="grid grid-cols-2 gap-2 text-xs">
-                                <button
-                                  type="button"
-                                  onClick={() => setMomoProvider('mtn')}
-                                  className={`py-2 px-2 sm:px-3 rounded-lg border flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium whitespace-nowrap transition ${
-                                    momoProvider === 'mtn'
-                                      ? 'border-[#ffbe00] bg-[#ffbe00]/15 text-[#0f3a98]'
-                                      : 'border-slate-200 bg-white text-slate-600'
-                                  }`}
-                                >
-                                  <img
-                                    src="/MTN%20mobile%20money.png"
-                                    alt="MTN MoMo"
-                                    className="h-4 sm:h-5 w-auto object-contain rounded-sm shrink-0"
-                                  />
-                                  <span className="whitespace-nowrap">MTN MoMo</span>
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => setMomoProvider('airtel')}
-                                  className={`py-2 px-2 sm:px-3 rounded-lg border flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium whitespace-nowrap transition ${
-                                    momoProvider === 'airtel'
-                                      ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98]'
-                                      : 'border-slate-200 bg-white text-slate-600'
-                                  }`}
-                                >
-                                  <img
-                                    src="/Airtel%20mobile%20money.jpg"
-                                    alt="Airtel Money"
-                                    className="w-4 h-4 sm:w-5 sm:h-5 object-cover rounded-sm shrink-0"
-                                  />
-                                  <span className="whitespace-nowrap">Airtel Money</span>
-                                </button>
-                              </div>
+                              <MomoProviderToggle provider={momoProvider} onChange={setMomoProvider} />
 
                               {/* Phone Input & Pay Button (2 stacked lines) */}
                               <div className="flex flex-col gap-2">
@@ -852,36 +1124,47 @@ export default function ContactModal({
                         </div>
                       )}
 
-                      {/* Direct Phone & Action Buttons */}
-                      <div className="pt-1 space-y-2.5">
-                        <div className="bg-white px-3 py-2 rounded-xl border border-blue-100 flex items-center justify-between gap-2 text-xs">
-                          <span className="text-slate-500 font-medium flex items-center gap-1.5">
-                            <FaIcon icon="fa-solid fa-phone-volume" className="text-[#ffbe00] text-xs" />
-                            <span>Direct Line</span>
-                          </span>
-                          <span className="text-[#0f3a98] font-mono font-semibold">
-                            {offer.contactPhone}
-                          </span>
-                        </div>
+                      {/* Custodian Direct Contacts OR Broker Inspection Checkout */}
+                      {isCustodian ? (
+                        <div className="pt-1 space-y-2.5">
+                          <div className="bg-white px-3 py-2 rounded-xl border border-blue-100 flex items-center justify-between gap-2 text-xs">
+                            <span className="text-slate-500 font-medium flex items-center gap-1.5">
+                              <FaIcon icon="fa-solid fa-phone-volume" className="text-[#ffbe00] text-xs" />
+                              <span>Direct Line</span>
+                            </span>
+                            <span className="text-[#0f3a98] font-mono font-semibold">
+                              {offer.contactPhone}
+                            </span>
+                          </div>
 
-                        <div className="grid grid-cols-2 gap-2">
-                          <button
-                            onClick={() => handleInitiateAction(offer, 'call')}
-                            className="py-2.5 px-3 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition shadow-sm"
-                          >
-                            <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
-                            <span>Call</span>
-                          </button>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              onClick={() => handleInitiateAction(offer, 'call')}
+                              className="py-2.5 px-3 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition shadow-sm"
+                            >
+                              <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
+                              <span>Call</span>
+                            </button>
 
-                          <button
-                            onClick={() => handleInitiateAction(offer, 'whatsapp')}
-                            className="py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition shadow-sm whitespace-nowrap"
-                          >
-                            <FaIcon icon="fa-brands fa-whatsapp" className="text-sm text-white" />
-                            <span>{isCustodian ? 'WhatsApp' : 'WhatsApp & Trek'}</span>
-                          </button>
+                            <button
+                              onClick={() => handleInitiateAction(offer, 'whatsapp')}
+                              className="py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition shadow-sm whitespace-nowrap"
+                            >
+                              <FaIcon icon="fa-brands fa-whatsapp" className="text-sm text-white" />
+                              <span>WhatsApp</span>
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <BrokerInspectionCheckout
+                          hostelId={hostel.id}
+                          brokerId={offer.id}
+                          brokerName={offer.userName}
+                          area={hostel.area}
+                          campus={hostel.campus}
+                          feeUgx={offer.accessFeeUgx}
+                        />
+                      )}
                     </div>
                   </div>
                 );
