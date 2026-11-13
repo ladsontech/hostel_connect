@@ -318,7 +318,7 @@ function BrokerInspectionCheckout({
 
   return (
     <div className="p-4 rounded-xl bg-white border border-blue-200 space-y-3 shadow-xs">
-      <div className="text-xs font-semibold text-[#0f3a98]">
+      <div className="text-xs font-semibold text-[#0f3a98] text-center">
         Choose How to Pay the Inspection Fee ({feeLabel})
       </div>
 
