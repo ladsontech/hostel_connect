@@ -281,7 +281,7 @@ export default function HomePage() {
               </div>
 
               {/* Mobile swipe hint */}
-              <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0 border border-blue-200/60 shadow-2xs whitespace-nowrap">
+              <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
                 <span>Swipe</span>
                 <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
               </div>
@@ -409,7 +409,7 @@ export default function HomePage() {
               <div className="flex items-center gap-2">
                 {/* Mobile swipe hint */}
                 {campusBrokerHostels.length > 0 && (
-                  <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0 border border-blue-200/60 shadow-2xs whitespace-nowrap">
+                  <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
                     <span>Swipe</span>
                     <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
                   </div>
@@ -498,7 +498,7 @@ export default function HomePage() {
               </div>
 
               {/* Mobile swipe hint */}
-              <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#0f3a98] font-medium bg-[#e8effc] px-2.5 py-1 rounded-full shrink-0 border border-blue-200/60 shadow-2xs whitespace-nowrap">
+              <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
                 <span>Swipe</span>
                 <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
               </div>
