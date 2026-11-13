@@ -101,3 +101,19 @@ b, strong {
     opacity: 0.95;
   }
 }
+
+@keyframes concentric-wave {
+  0%, 100% {
+    transform: scale(0.96);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* Hide Next.js floating dev indicator overlay so bottom modal footers remain unobstructed */
+nextjs-portal {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

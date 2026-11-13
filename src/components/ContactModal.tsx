@@ -951,98 +951,39 @@ export default function ContactModal({
           {/* STEP 1: Live Broker / Connection Search Animation (Shown for EVERY hostel before displaying price) */}
           {brokerSearchState === 'searching' ? (
             <div className="py-3 px-2 text-center space-y-4 flex flex-col items-center justify-center font-sans">
-              {/* Wavy Light-Wave Campus Radar Scanner */}
+              {/* Concentric Solid-Blue Light Wave Circles (no gradients or mixed colors) */}
               <div className="relative w-36 h-36 flex items-center justify-center">
-                {/* Soft glowing ambient light aura */}
-                <div
-                  className="absolute inset-1 rounded-full blur-md"
-                  style={{
-                    background:
-                      'radial-gradient(circle, rgba(255, 190, 0, 0.34) 0%, rgba(15, 58, 152, 0.22) 55%, rgba(15, 58, 152, 0) 75%)',
-                    animation: 'light-aura 2.8s ease-in-out infinite',
-                  }}
-                />
-
-                {/* Smooth outward wavy light ripples */}
+                {/* Outward monochrome blue ripple waves */}
                 <span
-                  className="absolute inset-0 rounded-full border-2 border-[#ffbe00]/60 shadow-[0_0_16px_rgba(255,190,0,0.4)]"
-                  style={{ animation: 'radar-ripple 2.4s cubic-bezier(0.2, 0.7, 0.4, 1) infinite' }}
+                  className="absolute inset-0 rounded-full bg-[#0f3a98]/15"
+                  style={{ animation: 'radar-ripple 2.4s ease-out infinite' }}
                 />
                 <span
-                  className="absolute inset-0 rounded-full border-2 border-[#0f3a98]/35 shadow-[0_0_18px_rgba(15,58,152,0.28)]"
-                  style={{ animation: 'radar-ripple 2.4s cubic-bezier(0.2, 0.7, 0.4, 1) 1.2s infinite' }}
+                  className="absolute inset-0 rounded-full bg-[#0f3a98]/12"
+                  style={{ animation: 'radar-ripple 2.4s ease-out 1.2s infinite' }}
                 />
 
-                {/* Wavy morphing light-wave halo rings */}
+                {/* Stepped-opacity concentric theme-blue circles */}
                 <span
-                  className="absolute w-[132px] h-[132px] border-2 border-[#ffbe00]/75 bg-[#ffbe00]/10 shadow-[0_0_20px_rgba(255,190,0,0.45)]"
-                  style={{ animation: 'wave-morph-a 5.5s linear infinite' }}
+                  className="absolute w-36 h-36 rounded-full bg-[#0f3a98]/[0.07]"
+                  style={{ animation: 'concentric-wave 2.4s ease-in-out 0s infinite' }}
                 />
                 <span
-                  className="absolute w-[124px] h-[124px] border-2 border-[#1d54c8]/55 bg-[#0f3a98]/10 shadow-[0_0_18px_rgba(29,84,200,0.38)]"
-                  style={{ animation: 'wave-morph-b 4.5s linear infinite' }}
+                  className="absolute w-[116px] h-[116px] rounded-full bg-[#0f3a98]/[0.14]"
+                  style={{ animation: 'concentric-wave 2.4s ease-in-out 0.25s infinite' }}
+                />
+                <span
+                  className="absolute w-[90px] h-[90px] rounded-full bg-[#0f3a98]/[0.24]"
+                  style={{ animation: 'concentric-wave 2.4s ease-in-out 0.5s infinite' }}
+                />
+                <span
+                  className="absolute w-[66px] h-[66px] rounded-full bg-[#0f3a98]/[0.42]"
+                  style={{ animation: 'concentric-wave 2.4s ease-in-out 0.75s infinite' }}
                 />
 
-                {/* Rotating harmonic wavy SVG ring around the core */}
-                <svg
-                  viewBox="0 0 140 140"
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  style={{ animation: 'radar-sweep 7s linear infinite' }}
-                >
-                  <path
-                    d="M70,8 C83,8 90,17 101,21 C112,25 123,23 128,34 C133,45 124,56 126,68 C128,80 136,89 130,100 C124,111 112,108 102,115 C92,122 85,132 72,132 C59,132 52,122 41,117 C30,112 18,116 12,105 C6,94 16,83 14,71 C12,59 5,48 11,37 C17,26 29,30 39,23 C49,16 57,8 70,8 Z"
-                    fill="none"
-                    stroke="rgba(255, 190, 0, 0.7)"
-                    strokeWidth="2"
-                  />
-                </svg>
-
-                {/* Concentric radar grid & crosshair */}
-                <div className="relative w-28 h-28 rounded-full bg-gradient-to-b from-[#e8effc] to-white border border-blue-200 shadow-inner overflow-hidden flex items-center justify-center z-10">
-                  {/* Inner rings */}
-                  <span className="absolute w-20 h-20 rounded-full border border-blue-200/75" />
-                  <span className="absolute w-12 h-12 rounded-full border border-blue-200/80" />
-                  {/* Crosshairs */}
-                  <span className="absolute inset-x-0 h-px bg-blue-200/60" />
-                  <span className="absolute inset-y-0 w-px bg-blue-200/60" />
-
-                  {/* Rotating conic radar sweep */}
-                  <div
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      background:
-                        'conic-gradient(from 0deg, rgba(15, 58, 152, 0) 220deg, rgba(15, 58, 152, 0.25) 320deg, rgba(255, 190, 0, 0.65) 360deg)',
-                      animation: 'radar-sweep 2.2s linear infinite',
-                    }}
-                  />
-
-                  {/* Detected scout avatar blips on radar */}
-                  <img
-                    src={DEFAULT_BROKER_AVATARS[0]}
-                    alt="Scout ping"
-                    className={`absolute top-2 right-3 w-5 h-5 rounded-full object-cover border border-[#ffbe00] shadow-xs transition-all duration-500 ${
-                      searchStep >= 1 ? 'opacity-100 scale-100' : 'opacity-40 scale-75'
-                    }`}
-                  />
-                  <img
-                    src={DEFAULT_BROKER_AVATARS[1]}
-                    alt="Scout ping"
-                    className={`absolute bottom-2.5 left-2.5 w-5 h-5 rounded-full object-cover border border-[#0f3a98] shadow-xs transition-all duration-500 ${
-                      searchStep >= 2 ? 'opacity-100 scale-100' : 'opacity-30 scale-75'
-                    }`}
-                  />
-                  <img
-                    src={DEFAULT_BROKER_AVATARS[2]}
-                    alt="Scout ping"
-                    className={`absolute bottom-3 right-2.5 w-4 h-4 rounded-full object-cover border border-[#ffbe00] shadow-xs transition-all duration-500 ${
-                      searchStep >= 3 ? 'opacity-100 scale-110' : 'opacity-25 scale-75'
-                    }`}
-                  />
-
-                  {/* Center Campus Beacon */}
-                  <div className="relative w-11 h-11 rounded-full bg-[#0f3a98] text-white flex items-center justify-center shadow-md border-2 border-[#ffbe00] z-10">
-                    <FaIcon icon="fa-solid fa-location-crosshairs" className="text-base text-[#ffbe00] animate-pulse" />
-                  </div>
+                {/* Crisp solid theme-blue center circle */}
+                <div className="relative w-11 h-11 rounded-full bg-[#0f3a98] text-white flex items-center justify-center z-10">
+                  <FaIcon icon="fa-solid fa-magnifying-glass" className="text-sm text-white" />
                 </div>
               </div>
 
