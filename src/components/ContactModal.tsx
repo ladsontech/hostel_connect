@@ -590,16 +590,16 @@ export default function ContactModal({
                       {/* Price Breakdown + Locked Details */}
                       <div className="p-4 space-y-3.5 bg-[#f8fafc]">
                         {/* Transparent Price Strip Revealed After Search */}
-                        <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#e8effc] border border-blue-200">
+                        <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs">
                           <div>
-                            <div className="text-[10px] text-slate-600 font-medium uppercase tracking-wide">Semester Rent</div>
-                            <div className="text-xs sm:text-sm font-bold text-[#0f3a98] mt-0.5">
+                            <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Semester Rent</div>
+                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
                               {roomPriceLabel}
                             </div>
                           </div>
-                          <div className="border-l border-blue-200 pl-3">
-                            <div className="text-[10px] text-slate-600 font-medium uppercase tracking-wide">Direct Unlock Fee</div>
-                            <div className="text-xs sm:text-sm font-bold text-[#0f3a98] mt-0.5 flex items-center gap-1.5">
+                          <div className="border-l border-white/25 pl-3">
+                            <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Direct Unlock Fee</div>
+                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5 flex items-center gap-1.5">
                               <span>UGX {CONNECTION_FEE_UGX.toLocaleString()}</span>
                               <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Once</span>
                             </div>
@@ -762,18 +762,18 @@ export default function ContactModal({
                         </h4>
 
                         {/* Price Breakdown Box (Room Rate & Fee) */}
-                        <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#e8effc]/70 border border-blue-200 mt-2.5">
+                        <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs mt-2.5">
                           <div>
-                            <div className="text-[10px] text-slate-600 font-medium uppercase tracking-wide">Semester Rent</div>
-                            <div className="text-xs sm:text-sm font-bold text-[#0f3a98] mt-0.5">
+                            <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Semester Rent</div>
+                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
                               {roomPriceLabel}
                             </div>
                           </div>
-                          <div className="border-l border-blue-200 pl-3">
-                            <div className="text-[10px] text-slate-600 font-medium uppercase tracking-wide">
+                          <div className="border-l border-white/25 pl-3">
+                            <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">
                               {isCustodian ? 'Connection Status' : 'Broker Access Fee'}
                             </div>
-                            <div className="text-xs sm:text-sm font-bold text-[#0f3a98] mt-0.5">
+                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
                               {isCustodian
                                 ? `Paid (UGX ${CONNECTION_FEE_UGX.toLocaleString()})`
                                 : (offer.accessFeeUgx > 0 ? formatUGX(offer.accessFeeUgx) : 'Free (No fee)')}
