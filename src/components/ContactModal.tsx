@@ -477,6 +477,7 @@ export default function ContactModal({
   // Broker / Connection searching animation state (runs for EVERY hostel before revealing price & contact)
   const [brokerSearchState, setBrokerSearchState] = useState<'searching' | 'matched'>('searching');
   const [searchStep, setSearchStep] = useState(0);
+  const [searchRunId, setSearchRunId] = useState(0);
   const [matchedBrokerIndex, setMatchedBrokerIndex] = useState(0);
 
   const verifiedBrokers = [
@@ -588,6 +589,7 @@ export default function ContactModal({
     clearSearchTimers();
     setBrokerSearchState('searching');
     setSearchStep(0);
+    setSearchRunId((prev) => prev + 1);
 
     searchTimersRef.current = [
       setTimeout(() => setSearchStep(1), 2500),
@@ -793,71 +795,138 @@ export default function ContactModal({
 
           {/* STEP 1: Live Broker / Connection Search Animation (Shown for EVERY hostel before displaying price) */}
           {brokerSearchState === 'searching' ? (
-            <div className="py-6 px-2 text-center space-y-5 flex flex-col items-center justify-center font-sans">
-              {/* Theme Radar Pulse Animation Container */}
-              <div className="relative w-28 h-28 flex items-center justify-center">
-                {/* Concentric theme radar rings */}
-                <span className="absolute w-28 h-28 rounded-full bg-[#0f3a98]/10 animate-ping duration-1000" />
-                <span className="absolute w-20 h-20 rounded-full bg-[#ffbe00]/25 animate-pulse duration-700" />
-                <span className="absolute w-24 h-24 rounded-full border-2 border-dashed border-[#ffbe00] animate-spin duration-3000" />
+            <div className="py-5 px-2 text-center space-y-5 flex flex-col items-center justify-center font-sans">
+              {/* Smooth Campus Radar Scanner with Orbiting Scout Pings */}
+              <div className="relative w-36 h-36 flex items-center justify-center">
+                {/* Smooth outward sonar ripples */}
+                <span
+                  className="absolute inset-0 rounded-full border-2 border-[#0f3a98]/25 bg-[#e8effc]/30"
+                  style={{ animation: 'radar-ripple 2.4s cubic-bezier(0.2, 0.7, 0.4, 1) infinite' }}
+                />
+                <span
+                  className="absolute inset-0 rounded-full border border-[#ffbe00]/55"
+                  style={{ animation: 'radar-ripple 2.4s cubic-bezier(0.2, 0.7, 0.4, 1) 1.2s infinite' }}
+                />
 
-                {/* Center Core Icon */}
-                <div className="relative w-14 h-14 rounded-full bg-[#0f3a98] text-white flex items-center justify-center shadow-lg border-2 border-[#ffbe00] z-10">
-                  <FaIcon icon="fa-solid fa-person-walking-luggage" className="text-xl text-[#ffbe00] animate-bounce" />
+                {/* Concentric radar grid & crosshair */}
+                <div className="relative w-32 h-32 rounded-full bg-gradient-to-b from-[#e8effc] to-white border border-blue-200 shadow-inner overflow-hidden flex items-center justify-center">
+                  {/* Inner rings */}
+                  <span className="absolute w-24 h-24 rounded-full border border-blue-200/70" />
+                  <span className="absolute w-14 h-14 rounded-full border border-blue-200/80" />
+                  {/* Crosshairs */}
+                  <span className="absolute inset-x-0 h-px bg-blue-200/60" />
+                  <span className="absolute inset-y-0 w-px bg-blue-200/60" />
+
+                  {/* Rotating conic radar sweep */}
+                  <div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background:
+                        'conic-gradient(from 0deg, rgba(15, 58, 152, 0) 225deg, rgba(15, 58, 152, 0.22) 325deg, rgba(255, 190, 0, 0.6) 360deg)',
+                      animation: 'radar-sweep 2.4s linear infinite',
+                    }}
+                  />
+
+                  {/* Detected scout avatar blips on radar */}
+                  <img
+                    src={DEFAULT_BROKER_AVATARS[0]}
+                    alt="Scout ping"
+                    className={`absolute top-2.5 right-4 w-5 h-5 rounded-full object-cover border border-[#ffbe00] shadow-xs transition-all duration-500 ${
+                      searchStep >= 1 ? 'opacity-100 scale-100' : 'opacity-40 scale-75'
+                    }`}
+                  />
+                  <img
+                    src={DEFAULT_BROKER_AVATARS[1]}
+                    alt="Scout ping"
+                    className={`absolute bottom-3 left-3 w-5 h-5 rounded-full object-cover border border-[#0f3a98] shadow-xs transition-all duration-500 ${
+                      searchStep >= 2 ? 'opacity-100 scale-100' : 'opacity-30 scale-75'
+                    }`}
+                  />
+                  <img
+                    src={DEFAULT_BROKER_AVATARS[2]}
+                    alt="Scout ping"
+                    className={`absolute bottom-4 right-3 w-4 h-4 rounded-full object-cover border border-[#ffbe00] shadow-xs transition-all duration-500 ${
+                      searchStep >= 3 ? 'opacity-100 scale-110' : 'opacity-25 scale-75'
+                    }`}
+                  />
+
+                  {/* Center Campus Beacon */}
+                  <div className="relative w-12 h-12 rounded-full bg-[#0f3a98] text-white flex items-center justify-center shadow-md border-2 border-[#ffbe00] z-10">
+                    <FaIcon icon="fa-solid fa-location-crosshairs" className="text-lg text-[#ffbe00] animate-pulse" />
+                  </div>
                 </div>
-
-                {/* Pulsing Theme Gold GPS Dot */}
-                <div className="absolute top-1.5 right-4 w-3 h-3 rounded-full bg-[#ffbe00] ring-2 ring-[#0f3a98] animate-ping" />
               </div>
 
-              {/* Status Headline */}
-              <div className="space-y-1.5 max-w-sm">
-                <h4 className="text-base font-semibold text-[#0f3a98]">
-                  Searching Most Suitable & Nearest Broker...
-                </h4>
+              {/* Status Headline & Smooth 10s Progress Bar */}
+              <div className="w-full max-w-sm space-y-2.5">
+                <div className="space-y-1">
+                  <h4 className="text-base font-semibold text-[#0f3a98]">
+                    Searching Most Suitable & Nearest Broker...
+                  </h4>
+                  <p className="text-xs text-slate-500 font-normal">
+                    Checking vetted scouts & live availability around {hostel.area}
+                  </p>
+                </div>
 
-                <p className="text-xs text-slate-500 font-normal">
-                  Checking vetted scouts, direct contacts & live rates around {hostel.area}
-                </p>
+                {/* Progress Track */}
+                <div className="space-y-1">
+                  <div className="w-full h-2 rounded-full bg-[#e8effc] overflow-hidden border border-blue-200/70">
+                    <div
+                      key={searchRunId}
+                      className="h-full rounded-full bg-gradient-to-r from-[#0f3a98] via-[#1d54c8] to-[#ffbe00]"
+                      style={{ animation: `search-progress ${BROKER_SEARCH_MIN_DURATION_MS}ms linear forwards` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] font-medium text-[#0f3a98]/75 px-0.5">
+                    <span>Scanning {hostel.campus}</span>
+                    <span>Step {Math.min(searchStep + 1, 4)} of 4</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Progressive Live Search Steps (Strictly Theme Blue & Gold) */}
-              <div className="w-full max-w-sm bg-[#e8effc]/45 p-3.5 rounded-xl border border-blue-200/80 text-left space-y-2.5 text-xs font-medium">
-                <div className={`flex items-center gap-2 transition-all ${searchStep >= 0 ? 'text-[#0f3a98]' : 'text-slate-400'}`}>
-                  <FaIcon
-                    icon={searchStep > 0 ? 'fa-solid fa-circle-check' : 'fa-solid fa-spinner'}
-                    className={`text-xs shrink-0 ${searchStep === 0 ? 'animate-spin text-[#ffbe00]' : 'text-[#0f3a98]'}`}
-                  />
-                  <span>Calibrating campus location: {hostel.campus}</span>
-                </div>
-
-                <div className={`flex items-center gap-2 transition-all ${searchStep >= 1 ? 'text-[#0f3a98]' : 'text-slate-400'}`}>
-                  <FaIcon
-                    icon={searchStep > 1 ? 'fa-solid fa-circle-check' : searchStep === 1 ? 'fa-solid fa-spinner' : 'fa-regular fa-circle'}
-                    className={`text-xs shrink-0 ${searchStep === 1 ? 'animate-spin text-[#ffbe00]' : searchStep > 1 ? 'text-[#0f3a98]' : 'text-slate-300'}`}
-                  />
-                  <span>Searching nearest hostel brokers in {hostel.area}...</span>
-                </div>
-
-                <div className={`flex items-center gap-2 transition-all ${searchStep >= 2 ? 'text-[#0f3a98]' : 'text-slate-400'}`}>
-                  <FaIcon
-                    icon={searchStep > 2 ? 'fa-solid fa-circle-check' : searchStep === 2 ? 'fa-solid fa-spinner' : 'fa-regular fa-circle'}
-                    className={`text-xs shrink-0 ${searchStep === 2 ? 'animate-spin text-[#ffbe00]' : searchStep > 2 ? 'text-[#0f3a98]' : 'text-slate-300'}`}
-                  />
-                  <span>Fetching verified room rates & fee pricing...</span>
-                </div>
-
-                <div className={`flex items-center gap-2 transition-all ${searchStep >= 3 ? 'text-[#0f3a98]' : 'text-slate-400'}`}>
-                  <FaIcon
-                    icon={searchStep >= 3 ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'}
-                    className={`text-xs shrink-0 ${searchStep >= 3 ? 'text-[#ffbe00]' : 'text-slate-300'}`}
-                  />
-                  <span>
-                    {hasCustodian
-                      ? 'Direct official custodian found — no broker needed!'
-                      : 'Matching top-rated verified broker for you...'}
-                  </span>
-                </div>
+              {/* Progressive Live Search Milestones */}
+              <div className="w-full max-w-sm bg-[#f8fafc] p-3 rounded-2xl border border-blue-200/80 text-left space-y-1.5 text-xs font-medium">
+                {[
+                  `Calibrating campus location: ${hostel.campus}`,
+                  `Searching nearest hostel brokers in ${hostel.area}...`,
+                  'Fetching verified room rates & fee pricing...',
+                  hasCustodian
+                    ? 'Direct official custodian found — no broker needed!'
+                    : 'Matching top-rated verified broker for you...',
+                ].map((label, idx) => {
+                  const isDone = searchStep > idx;
+                  const isActive = searchStep === idx;
+                  return (
+                    <div
+                      key={label}
+                      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl transition-all duration-300 ${
+                        isActive
+                          ? 'bg-[#e8effc] text-[#0f3a98] shadow-2xs'
+                          : isDone
+                            ? 'text-[#0f3a98]'
+                            : 'text-slate-400'
+                      }`}
+                    >
+                      <FaIcon
+                        icon={
+                          isDone
+                            ? 'fa-solid fa-circle-check'
+                            : isActive
+                              ? 'fa-solid fa-spinner'
+                              : 'fa-regular fa-circle'
+                        }
+                        className={`text-xs shrink-0 ${
+                          isActive
+                            ? 'animate-spin text-[#ffbe00]'
+                            : isDone
+                              ? 'text-[#0f3a98]'
+                              : 'text-slate-300'
+                        }`}
+                      />
+                      <span>{label}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ) : effectiveOffers.length === 0 ? (
