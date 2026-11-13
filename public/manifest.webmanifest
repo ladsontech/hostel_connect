@@ -1,0 +1,18 @@
+{
+  "name": "Hostel Connect Uganda",
+  "short_name": "Hostel Connect",
+  "description": "Verified student hostels near Makerere, MUBS, Kyambogo, and Ugandan campuses.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f3a98",
+  "theme_color": "#0f3a98",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

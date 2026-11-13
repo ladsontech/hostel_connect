@@ -93,6 +93,13 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
 
         {/* User Account / Login & Register Action */}
         <div className="flex items-center gap-3">
+          <Link
+            href="/download"
+            className="hidden lg:inline-flex px-3.5 py-1.5 rounded-lg bg-[#ffbe00] hover:bg-[#e5aa00] text-[#0f3a98] text-xs sm:text-sm font-medium shadow-sm transition items-center gap-1.5"
+          >
+            <FaIcon icon="fa-solid fa-download" className="text-xs" />
+            <span>Download Our App</span>
+          </Link>
           {currentUser ? (
             <div className="hidden md:flex items-center gap-2.5">
               <div className="text-right">
@@ -204,6 +211,15 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
               </button>
             </div>
           )}
+
+          <Link
+            href="/download"
+            onClick={() => setMobileMenuOpen(false)}
+            className="w-full py-2.5 px-4 rounded-xl bg-[#ffbe00] hover:bg-[#e5aa00] text-[#0f3a98] text-sm font-semibold shadow-sm transition flex items-center justify-center gap-2"
+          >
+            <FaIcon icon="fa-solid fa-download" className="text-xs text-[#0f3a98]" />
+            <span>Download Our App</span>
+          </Link>
 
           {shortlistCount > 0 && onOpenCompare && (
             <button

@@ -13,6 +13,11 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'Hostel Connect Uganda | University Hostel Marketplace',
   description: 'Verified student hostels near Makerere, MUBS, Kyambogo and other Ugandan universities. Direct contact with custodians and verified campus scouts.',
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({
