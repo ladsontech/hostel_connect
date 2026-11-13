@@ -102,12 +102,9 @@ export default function ContactModal({
   // Strictly ONLY hostels added/claimed by custodians get the Official Custodian Listing screen
   const hasCustodian = hostel ? hostel.status === 'claimed' : false;
 
-  // Room pricing summary for this hostel
+  // Fixed semester price matching the listing card (no ambiguous ranges)
   const minRentUgx = hostel?.rooms?.length ? Math.min(...hostel.rooms.map(r => r.rentUgx)) : 0;
-  const maxRentUgx = hostel?.rooms?.length ? Math.max(...hostel.rooms.map(r => r.rentUgx)) : 0;
-  const roomPriceLabel = minRentUgx > 0
-    ? (minRentUgx === maxRentUgx ? formatUGX(minRentUgx) : `${formatUGX(minRentUgx)} – ${formatUGX(maxRentUgx)}`)
-    : 'Contact for rates';
+  const roomPriceLabel = minRentUgx > 0 ? formatUGX(minRentUgx) : 'Contact for rate';
 
   // If uploaded by custodian, strictly NO brokers are shown since the student approaches the hostel themselves directly!
   const effectiveOffers: Offer[] = (hostel && hasCustodian)
@@ -648,14 +645,10 @@ export default function ContactModal({
                           </div>
                         </div>
 
-                        {/* Connection Fee Payment Box */}
+                        {/* Payment Box */}
                         <div className="p-4 rounded-xl bg-white border border-blue-200 space-y-3 shadow-xs">
                           <div>
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#ffbe00]/25 text-[#0f3a98]">
-                              <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-[#0f3a98]" />
-                              <span>Connection Fee Required</span>
-                            </span>
-                            <div className="text-xs font-medium text-slate-900 mt-1.5">
+                            <div className="text-xs font-medium text-slate-900">
                               Pay <strong className="text-[#0f3a98] font-bold text-sm">UGX {CONNECTION_FEE_UGX.toLocaleString()}</strong> to unlock direct custodian phone, WhatsApp & exact hostel address.
                             </div>
                             <div className="text-[11px] text-slate-500 font-normal mt-0.5">
