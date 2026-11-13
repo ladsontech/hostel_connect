@@ -262,26 +262,21 @@ export default function HomePage() {
         {featuredRooms.length > 0 && !filters.q && (
           <div id="featured-rooms" className="space-y-3 pt-2">
             {/* Modern Section Header */}
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs whitespace-nowrap">
-                    <FaIcon icon="fa-solid fa-fire" className="text-[11px] text-[#ffbe00]" />
-                    <span>Prime Vacancies</span>
-                  </span>
-                  <span className="hidden sm:inline text-xs text-slate-300">•</span>
-                  <span className="hidden sm:inline text-xs text-slate-500 font-normal">Direct Custodian Verified</span>
+            <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3">
+              <div className="min-w-0 flex flex-col items-center sm:items-start">
+                <div className="hidden sm:flex items-center justify-start mb-0.5">
+                  <span className="text-xs text-slate-500 font-normal">Direct Custodian Verified</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight text-center sm:text-left">
                   Featured Hostels & Rooms
                 </h2>
-                <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-xl">
+                <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-xl text-center sm:text-left">
                   Hand-picked student rooms with guaranteed amenities, verified custodians & close campus proximity
                 </p>
               </div>
 
               {/* Mobile swipe hint */}
-              <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
+              <div className="sm:hidden flex items-center justify-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
                 <span>Swipe</span>
                 <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
               </div>
@@ -396,17 +391,17 @@ export default function HomePage() {
         {/* Hostel List: All Ugandan Campuses (Broker-Guided Hostels) */}
         {(loading || campusBrokerHostels.length > 0 || filteredHostels.length === 0) && (
           <div id="explore">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
+            <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3 mb-4">
+              <div className="min-w-0 flex flex-col items-center sm:items-start">
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight text-center sm:text-left">
                   {filters.campus || 'All Ugandan Campuses'}
                 </h2>
-                <p className="text-xs text-slate-500 font-normal mt-0.5">
+                <p className="text-xs text-slate-500 font-normal mt-0.5 text-center sm:text-left">
                   {campusBrokerHostels.length} broker-guided hostels matching your criteria
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center sm:justify-end gap-2">
                 {/* Mobile swipe hint */}
                 {campusBrokerHostels.length > 0 && (
                   <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
@@ -479,9 +474,9 @@ export default function HomePage() {
         {/* Hostels Added by Custodians (Below All Ugandan Campuses) */}
         {(loading || custodianAddedHostels.length > 0) && (
           <div id="custodian-hostels" className="pt-2">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 mb-1">
+            <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3 mb-4">
+              <div className="min-w-0 flex flex-col items-center sm:items-start">
+                <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs whitespace-nowrap">
                     <FaIcon icon="fa-solid fa-shield-halved" className="text-[11px] text-[#ffbe00]" />
                     <span>Direct Custodian Verified</span>
@@ -489,16 +484,16 @@ export default function HomePage() {
                   <span className="hidden sm:inline text-xs text-slate-300">•</span>
                   <span className="hidden sm:inline text-xs text-slate-500 font-normal">Self-Approach • Zero Brokers</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight text-center sm:text-left">
                   Hostels Added by Custodians
                 </h2>
-                <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-2xl">
+                <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-2xl text-center sm:text-left">
                   {custodianAddedHostels.length} official hostel management listings — unlock direct custodian phone, WhatsApp & walk-in address with no broker
                 </p>
               </div>
 
               {/* Mobile swipe hint */}
-              <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
+              <div className="sm:hidden flex items-center justify-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
                 <span>Swipe</span>
                 <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
               </div>
