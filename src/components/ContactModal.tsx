@@ -275,9 +275,17 @@ export default function ContactModal({
       <div className="bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col overflow-hidden">
 
         {/* Header (Shields actual hostel name until unlocked) */}
-        <div className="p-4 sm:p-5 border-b border-blue-100 flex items-start justify-between bg-[#e8effc]/50">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
+        <div className="relative p-4 sm:p-5 border-b border-blue-100 bg-[#e8effc]/50 text-center">
+          <button
+            onClick={onClose}
+            aria-label="Close modal"
+            className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-[#0f3a98] hover:bg-[#0a2666] text-white flex items-center justify-center transition shadow-sm"
+          >
+            <FaIcon icon="fa-solid fa-xmark" className="text-xs text-white" />
+          </button>
+
+          <div className="min-w-0 flex flex-col items-center px-8">
+            <div className="flex items-center justify-center gap-2 flex-wrap">
               <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider px-2.5 py-0.5 rounded-full whitespace-nowrap ${
                 hasCustodian ? 'bg-[#0f3a98] text-white' : 'bg-[#ffbe00] text-[#0f3a98]'
               }`}>
@@ -289,22 +297,15 @@ export default function ContactModal({
               </span>
               <span className="text-xs text-slate-600 font-medium truncate">{hostel.campus}</span>
             </div>
-            <h3 className="font-semibold text-[#0f3a98] text-base sm:text-lg mt-1.5 leading-snug">
+            <h3 className="font-semibold text-[#0f3a98] text-base sm:text-lg mt-2 leading-snug text-center">
               Verified Student Accommodation • {hostel.area}
             </h3>
-            <p className="text-xs text-slate-500 font-normal mt-0.5">
+            <p className="text-xs text-slate-500 font-normal mt-0.5 text-center max-w-md">
               {hasCustodian
                 ? 'Direct connection to official hostel management desk. 100% money-back guarantee.'
                 : 'A verified campus broker will physically trek with you to inspect rooms and introduce you to the caretaker desk.'}
             </p>
           </div>
-          <button
-            onClick={onClose}
-            aria-label="Close modal"
-            className="w-8 h-8 rounded-full bg-[#0f3a98] hover:bg-[#0a2666] text-white flex items-center justify-center transition shadow-sm shrink-0 ml-3"
-          >
-            <FaIcon icon="fa-solid fa-xmark" className="text-xs text-white" />
-          </button>
         </div>
 
         {/* Modal Content */}
