@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import FaIcon from './FaIcon';
@@ -13,6 +13,7 @@ interface NavbarProps {
 
 export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }: NavbarProps) {
   const { currentUser, switchRole, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
@@ -93,8 +94,8 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
         {/* User Account / Login & Register Action */}
         <div className="flex items-center gap-3">
           {currentUser ? (
-            <div className="flex items-center gap-2.5">
-              <div className="text-right hidden sm:block">
+            <div className="hidden md:flex items-center gap-2.5">
+              <div className="text-right">
                 <div className="text-xs font-medium text-slate-900 flex items-center justify-end gap-1.5">
                   {currentUser.name}
                   {currentUser.isVerified && (
@@ -117,7 +118,7 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={() => onOpenAuth?.('login')}
                 className="px-3.5 py-1.5 rounded-lg border border-slate-300 hover:border-[#0f3a98] text-[#0f3a98] hover:bg-[#e8effc] text-xs sm:text-sm font-normal transition flex items-center gap-1.5"
@@ -134,8 +135,90 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
               </button>
             </div>
           )}
+
+          {/* Mobile 3-line menu button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+            className="md:hidden w-9 h-9 rounded-lg border border-slate-200 hover:border-[#0f3a98] flex items-center justify-center text-[#0f3a98] hover:bg-[#e8effc] transition"
+          >
+            <FaIcon icon={mobileMenuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'} className="text-sm" />
+          </button>
         </div>
       </div>
+
+      {/* Mobile Dropdown Menu (Login & Register inside 3-line menu) */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-2.5 shadow-md animate-in fade-in slide-in-from-top-2 duration-150">
+          {currentUser ? (
+            <div className="space-y-2.5">
+              <div className="p-3 rounded-xl bg-[#e8effc]/60 border border-blue-200/70 flex items-center justify-between gap-2">
+                <div>
+                  <div className="text-xs font-semibold text-[#0f3a98] flex items-center gap-1.5">
+                    <span>{currentUser.name}</span>
+                    {currentUser.isVerified && (
+                      <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98]" />
+                    )}
+                  </div>
+                  <div className="text-[11px] text-slate-600 capitalize mt-0.5">
+                    <span className="text-[#0f3a98] font-medium">{currentUser.role}</span>
+                    {currentUser.university && (
+                      <span className="text-slate-500"> • {currentUser.university}</span>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="px-3 py-1.5 rounded-lg border border-blue-200 bg-white text-[#0f3a98] text-xs font-medium flex items-center gap-1.5 hover:bg-blue-50 transition"
+                >
+                  <FaIcon icon="fa-solid fa-right-from-bracket" className="text-xs" />
+                  <span>Log out</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAuth?.('login');
+                }}
+                className="w-full py-2.5 px-4 rounded-xl border border-[#0f3a98]/30 bg-[#e8effc]/40 hover:bg-[#e8effc] text-[#0f3a98] text-sm font-medium transition flex items-center justify-center gap-2"
+              >
+                <FaIcon icon="fa-solid fa-arrow-right-to-bracket" className="text-xs text-[#0f3a98]" />
+                <span>Login</span>
+              </button>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAuth?.('register');
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-sm font-medium shadow-sm transition flex items-center justify-center gap-2"
+              >
+                <FaIcon icon="fa-solid fa-user-plus" className="text-xs text-[#ffbe00]" />
+                <span>Register</span>
+              </button>
+            </div>
+          )}
+
+          {shortlistCount > 0 && onOpenCompare && (
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenCompare();
+              }}
+              className="w-full py-2 px-4 rounded-xl bg-[#e8effc] text-[#0f3a98] text-xs font-medium flex items-center justify-center gap-2 border border-blue-200"
+            >
+              <FaIcon icon="fa-solid fa-layer-group" className="text-xs text-[#ffbe00]" />
+              <span>Compare ({shortlistCount})</span>
+            </button>
+          )}
+        </div>
+      )}
     </header>
   );
 }
