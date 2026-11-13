@@ -285,19 +285,8 @@ export default function ContactModal({
           </button>
 
           <div className="min-w-0 flex flex-col items-center px-8">
-            <div className="flex items-center justify-center gap-2 flex-wrap">
-              <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider px-2.5 py-0.5 rounded-full whitespace-nowrap ${
-                hasCustodian ? 'bg-[#0f3a98] text-white' : 'bg-[#ffbe00] text-[#0f3a98]'
-              }`}>
-                <FaIcon
-                  icon={hasCustodian ? 'fa-solid fa-shield-halved' : 'fa-solid fa-person-walking'}
-                  className={`text-[10px] ${hasCustodian ? 'text-[#ffbe00]' : 'text-[#0f3a98]'}`}
-                />
-                <span>{hasCustodian ? 'Official Custodian' : 'Campus Broker Viewing'}</span>
-              </span>
-              <span className="text-xs text-slate-600 font-medium truncate">{hostel.campus}</span>
-            </div>
-            <h3 className="font-semibold text-[#0f3a98] text-base sm:text-lg mt-2 leading-snug text-center">
+            <span className="text-xs text-slate-600 font-medium truncate">{hostel.campus}</span>
+            <h3 className="font-semibold text-[#0f3a98] text-base sm:text-lg mt-1 leading-snug text-center">
               Verified Student Accommodation • {hostel.area}
             </h3>
             <p className="text-xs text-slate-500 font-normal mt-0.5 text-center max-w-md">
