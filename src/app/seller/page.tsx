@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
@@ -669,13 +670,16 @@ export default function SellerPortalPage() {
                 const approval = hostel.approvalStatus || 'approved';
                 const canEditHostel =
                   currentUser?.role === 'custodian' || isUploadedByMe || hostel.status === 'unclaimed';
+                const coverPhoto =
+                  hostel.photos.find(p => p.mediaType !== 'video' && p.isCover) ||
+                  hostel.photos.find(p => p.mediaType !== 'video');
                 const photoCount = hostel.photos.filter(p => p.mediaType !== 'video').length;
                 const videoCount = hostel.photos.filter(p => p.mediaType === 'video').length;
 
                 return (
                   <div
                     key={hostel.id}
-                    className={`bg-white rounded-2xl border p-5 space-y-4 shadow-sm ${
+                    className={`bg-white rounded-2xl border p-4 sm:p-5 space-y-4 shadow-sm transition hover:shadow-md flex flex-col justify-between ${
                       approval === 'pending'
                         ? 'border-amber-300 ring-1 ring-amber-200/70'
                         : approval === 'rejected'
@@ -683,115 +687,157 @@ export default function SellerPortalPage() {
                           : 'border-slate-200'
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-1.5">
-                          <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
-                            {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
-                          </span>
-                          {approval === 'pending' && (
-                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                              Pending Admin Approval
-                            </span>
+                    {/* Top Card Header with Thumbnail + Status + Vacancy Box */}
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-[#edf2fc] border border-slate-200 shrink-0 flex items-center justify-center">
+                          {coverPhoto ? (
+                            <img
+                              src={coverPhoto.url}
+                              alt={hostel.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <FaIcon icon="fa-solid fa-building" className="text-xl text-[#0f3a98]/50" />
                           )}
-                          {approval === 'rejected' && (
-                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800 border border-rose-200">
-                              Rejected by Admin
-                            </span>
-                          )}
-                          {isUploadedByMe && (
-                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
-                              Uploaded by You
-                            </span>
-                          )}
-                          <span className="text-xs text-slate-500 font-medium">{hostel.area}</span>
                         </div>
-                        <h3 className="text-lg font-medium text-[#0f3a98] mt-1">{hostel.name}</h3>
-                        <p className="text-xs text-slate-500 font-medium">{hostel.distanceCampusApprox}</p>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <h3 className="text-base sm:text-lg font-semibold text-[#0f3a98] leading-snug truncate">
+                                {hostel.name}
+                              </h3>
+                              <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                                {hostel.area} • {hostel.distanceCampusApprox}
+                              </p>
+                            </div>
+
+                            <div className="px-2.5 py-1.5 rounded-xl bg-[#edf2fc] border border-blue-100 text-center shrink-0 whitespace-nowrap">
+                              <div className="text-xs sm:text-sm font-semibold text-[#0f3a98] leading-none">
+                                {availableRooms}/{totalRooms}
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-medium mt-0.5">Vacant</div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                            <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#e8effc] text-[#0f3a98] whitespace-nowrap">
+                              {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
+                            </span>
+                            {approval === 'pending' && (
+                              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 whitespace-nowrap">
+                                Pending Approval
+                              </span>
+                            )}
+                            {approval === 'rejected' && (
+                              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 border border-rose-200 whitespace-nowrap">
+                                Rejected
+                              </span>
+                            )}
+                            {isUploadedByMe && (
+                              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#ffbe00] text-[#0f3a98] whitespace-nowrap">
+                                Uploaded by You
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="text-right shrink-0">
-                        <div className="text-[#0f3a98] font-medium text-lg">
-                          {availableRooms} / {totalRooms}
+                      {/* Clean Room Inventory Section */}
+                      <div className="bg-slate-50/90 p-3 sm:p-3.5 rounded-xl border border-slate-200/70 space-y-2.5">
+                        <div className="flex items-center justify-between gap-2 text-xs">
+                          <span className="font-semibold text-slate-800">Rooms &amp; Rates</span>
+                          <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap flex items-center gap-1">
+                            <FaIcon
+                              icon={hostel.status === 'claimed' && currentUser?.role === 'broker' ? 'fa-solid fa-lock' : 'fa-solid fa-pen'}
+                              className="text-[10px] text-slate-400"
+                            />
+                            {hostel.status === 'claimed' && currentUser?.role === 'broker'
+                              ? 'Owner sets rates'
+                              : 'Editable'}
+                          </span>
                         </div>
-                        <div className="text-[11px] text-slate-400 font-medium">Rooms Vacant</div>
+
+                        <div className="space-y-1.5">
+                          {hostel.rooms.map(room => (
+                            <div
+                              key={room.id}
+                              className="flex items-center justify-between gap-3 py-2 px-3 rounded-xl bg-white border border-slate-200/80"
+                            >
+                              <div className="min-w-0">
+                                <div className="text-xs font-medium text-slate-900 truncate">{room.name}</div>
+                                <div className="text-[11px] font-semibold text-[#0f3a98] mt-0.5 whitespace-nowrap">
+                                  {formatUGX(room.rentUgx)}{' '}
+                                  <span className="font-normal text-slate-400">/ sem</span>
+                                </div>
+                              </div>
+                              <span className="px-2.5 py-1 rounded-lg bg-[#edf2fc] text-[#0f3a98] text-[11px] font-semibold shrink-0 whitespace-nowrap">
+                                {room.roomsAvailable} left
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {currentUser?.role === 'custodian' && (
+                          <div className="pt-1.5 flex flex-wrap items-center gap-2">
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="Single vacant"
+                              className="w-28 px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-medium"
+                              onChange={e => setEditSingleRoomsAvailable(parseInt(e.target.value) || 0)}
+                            />
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="Double vacant"
+                              className="w-28 px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-medium"
+                              onChange={e => setEditDoubleRoomsAvailable(parseInt(e.target.value) || 0)}
+                            />
+                            <button
+                              onClick={() => handleUpdateRooms(hostel.id)}
+                              className="px-3 py-1.5 bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium rounded-lg transition whitespace-nowrap"
+                            >
+                              Update Vacancy
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    {/* Media summary strip */}
-                    <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-[#edf2fc]/70 border border-blue-100 text-xs">
-                      <div className="flex items-center gap-3 text-[#0f3a98] font-medium">
-                        <span className="flex items-center gap-1">
-                          <FaIcon icon="fa-solid fa-image" className="text-[11px]" />
+                    {/* Clean Action & Media Footer */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                      <div className="flex items-center gap-2 text-[11px] text-[#0f3a98] font-medium">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#edf2fc]">
+                          <FaIcon icon="fa-solid fa-image" className="text-[10px]" />
                           {photoCount} {photoCount === 1 ? 'Photo' : 'Photos'}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <FaIcon icon="fa-solid fa-video" className="text-[11px]" />
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#edf2fc]">
+                          <FaIcon icon="fa-solid fa-video" className="text-[10px]" />
                           {videoCount} {videoCount === 1 ? 'Video' : 'Videos'}
                         </span>
                       </div>
 
-                      {canEditHostel && (
-                        <button
-                          type="button"
-                          onClick={() => openEditHostelModal(hostel)}
-                          className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-[11px] font-medium flex items-center gap-1.5 shadow-xs transition"
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/hostels/${hostel.id}`}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-[11px] font-medium inline-flex items-center gap-1 transition whitespace-nowrap"
                         >
-                          <FaIcon icon="fa-solid fa-pen-to-square" className="text-[11px] text-[#ffbe00]" />
-                          <span>Edit Details &amp; Media</span>
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Room inventory quick editor */}
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
-                      <div className="flex items-center justify-between text-xs font-medium text-slate-700">
-                        <span>Room Types &amp; Availability</span>
-                        <span className="text-slate-400">BR-1: Owner sets vacancy</span>
-                      </div>
-
-                      {hostel.rooms.map(room => (
-                        <div key={room.id} className="flex items-center justify-between text-xs py-1 border-b border-slate-200/50">
-                          <div>
-                            <span className="font-medium text-slate-800">{room.name}</span>
-                            <span className="text-slate-500 ml-2">({formatUGX(room.rentUgx)})</span>
-                          </div>
-                          <span className="font-medium text-[#0f3a98] bg-white px-2 py-0.5 rounded border border-slate-200">
-                            {room.roomsAvailable} left
-                          </span>
-                        </div>
-                      ))}
-
-                      {currentUser?.role === 'custodian' ? (
-                        <div className="pt-2 flex items-center gap-2">
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="Single vacant"
-                            className="w-28 px-2.5 py-1 text-xs border rounded bg-white font-medium"
-                            onChange={e => setEditSingleRoomsAvailable(parseInt(e.target.value) || 0)}
-                          />
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="Double vacant"
-                            className="w-28 px-2.5 py-1 text-xs border rounded bg-white font-medium"
-                            onChange={e => setEditDoubleRoomsAvailable(parseInt(e.target.value) || 0)}
-                          />
+                          <FaIcon icon="fa-solid fa-eye" className="text-[10px]" />
+                          <span>Preview</span>
+                        </Link>
+                        {canEditHostel && (
                           <button
-                            onClick={() => handleUpdateRooms(hostel.id)}
-                            className="px-3 py-1 bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium rounded transition"
+                            type="button"
+                            onClick={() => openEditHostelModal(hostel)}
+                            className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-[11px] font-medium inline-flex items-center gap-1.5 shadow-xs transition whitespace-nowrap"
                           >
-                            Update Vacancy
+                            <FaIcon icon="fa-solid fa-pen-to-square" className="text-[10px] text-[#ffbe00]" />
+                            <span>Edit Details &amp; Media</span>
                           </button>
-                        </div>
-                      ) : (
-                        <div className="text-[11px] text-amber-900 bg-amber-50 p-2 rounded font-medium">
-                          {hostel.status === 'claimed'
-                            ? 'Owner sets claimed room rent & vacancy (BR-1). You can edit hostel details & upload photos/videos on listings you added.'
-                            : 'Unclaimed listing — use "Edit Details & Media" above to update room rents, photos, videos, and details.'}
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
