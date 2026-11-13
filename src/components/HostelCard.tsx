@@ -27,7 +27,10 @@ export default function HostelCard({
   const minRent = rents.length ? Math.min(...rents) : 0;
   const maxRent = rents.length ? Math.max(...rents) : 0;
   const totalAvailable = hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
-  const coverPhoto = hostel.photos.find(p => p.isCover) || hostel.photos[0];
+  const coverPhoto =
+    hostel.photos.find(p => p.isCover && p.mediaType !== 'video') ||
+    hostel.photos.find(p => p.mediaType !== 'video') ||
+    hostel.photos[0];
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[285px] max-w-[295px] shrink-0 snap-start mx-auto">

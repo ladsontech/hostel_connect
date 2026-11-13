@@ -189,34 +189,50 @@ export default function HostelDetailPage() {
           </button>
         </div>
 
-        {/* Gallery */}
+        {/* Gallery (Images & Videos) */}
         <div className="space-y-3">
-          <div className="relative aspect-[16/9] md:aspect-[21/9] w-full rounded-2xl overflow-hidden bg-slate-900 shadow-md">
-            <img
-              src={photos[selectedPhotoIndex]?.url || photos[0].url}
-              alt={hostel.name}
-              className="w-full h-full object-cover"
-            />
+          {(() => {
+            const activeMedia = photos[selectedPhotoIndex] || photos[0];
+            const isVideo = activeMedia?.mediaType === 'video';
+            return (
+              <div className="relative aspect-[16/9] md:aspect-[21/9] w-full rounded-2xl overflow-hidden bg-slate-900 shadow-md">
+                {isVideo ? (
+                  <video
+                    key={activeMedia.url}
+                    src={activeMedia.url}
+                    controls
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={activeMedia?.url || photos[0].url}
+                    alt={hostel.name}
+                    className="w-full h-full object-cover"
+                  />
+                )}
 
-            {/* Badges on main image */}
-            <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-              {hostel.status === 'claimed' ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-[#0f3a98] text-white shadow-md">
-                  <FaIcon icon="fa-solid fa-shield-halved" className="text-xs text-[#ffbe00]" />
-                  Custodian Verified
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-[#ffbe00] text-[#0f3a98] shadow-md">
-                  <FaIcon icon="fa-solid fa-tag" className="text-xs" />
-                  Agent Listed
-                </span>
-              )}
-            </div>
+                {/* Badges on main image */}
+                <div className="pointer-events-none absolute top-4 left-4 flex flex-wrap gap-2">
+                  {hostel.status === 'claimed' ? (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-[#0f3a98] text-white shadow-md">
+                      <FaIcon icon="fa-solid fa-shield-halved" className="text-xs text-[#ffbe00]" />
+                      Custodian Verified
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-[#ffbe00] text-[#0f3a98] shadow-md">
+                      <FaIcon icon="fa-solid fa-tag" className="text-xs" />
+                      Agent Listed
+                    </span>
+                  )}
+                </div>
 
-            <div className="absolute bottom-4 right-4 px-3 py-1 bg-black/80 text-white text-xs rounded-lg font-medium">
-              Photo {selectedPhotoIndex + 1} of {photos.length}
-            </div>
-          </div>
+                <div className="pointer-events-none absolute bottom-4 right-4 px-3 py-1 bg-black/80 text-white text-xs rounded-lg font-medium">
+                  {isVideo ? 'Video' : 'Photo'} {selectedPhotoIndex + 1} of {photos.length}
+                </div>
+              </div>
+            );
+          })()}
 
           {photos.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1">
@@ -224,11 +240,18 @@ export default function HostelDetailPage() {
                 <button
                   key={p.id}
                   onClick={() => setSelectedPhotoIndex(idx)}
-                  className={`relative w-20 h-14 rounded-lg overflow-hidden border-2 shrink-0 transition ${
+                  className={`relative w-20 h-14 rounded-lg overflow-hidden border-2 shrink-0 transition bg-slate-900 ${
                     selectedPhotoIndex === idx ? 'border-[#0f3a98] ring-2 ring-[#ffbe00]' : 'border-transparent opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={p.url} alt="thumb" className="w-full h-full object-cover" />
+                  {p.mediaType === 'video' ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-[#0f3a98] text-white">
+                      <FaIcon icon="fa-solid fa-circle-play" className="text-sm text-[#ffbe00]" />
+                      <span className="text-[9px] font-medium mt-0.5">Video</span>
+                    </div>
+                  ) : (
+                    <img src={p.url} alt="thumb" className="w-full h-full object-cover" />
+                  )}
                 </button>
               ))}
             </div>

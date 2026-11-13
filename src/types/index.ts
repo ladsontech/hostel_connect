@@ -44,6 +44,7 @@ export interface HostelPhoto {
   caption?: string;
   isCover: boolean;
   order: number;
+  mediaType?: 'image' | 'video';
 }
 
 export interface Hostel {

@@ -5,9 +5,219 @@ import Navbar from '@/components/Navbar';
 import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/auth-context';
-import { Hostel, SubscriptionPlan, UserSubscription } from '@/types';
+import { Hostel, HostelPhoto, SubscriptionPlan, UserSubscription } from '@/types';
 import { formatUGX } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
+
+/** Reusable image & video gallery manager for creating or editing hostel listings. */
+function HostelMediaEditor({
+  items,
+  onChange,
+}: {
+  items: HostelPhoto[];
+  onChange: (next: HostelPhoto[]) => void;
+}) {
+  const [urlInput, setUrlInput] = useState('');
+  const [urlKind, setUrlKind] = useState<'image' | 'video'>('image');
+  const [captionInput, setCaptionInput] = useState('');
+  const [mediaNotice, setMediaNotice] = useState('');
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setMediaNotice('');
+
+    Array.from(files).forEach((file) => {
+      if (file.size > 12 * 1024 * 1024) {
+        setMediaNotice(`${file.name} exceeds 12MB. Try a smaller clip or paste a video URL.`);
+        return;
+      }
+      const isVideo = file.type.startsWith('video/');
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = typeof reader.result === 'string' ? reader.result : '';
+        if (!result) return;
+        const newItem: HostelPhoto = {
+          id: `media_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          url: result,
+          caption: file.name.replace(/\.[^.]+$/, ''),
+          isCover: !isVideo && items.every(i => !i.isCover || i.mediaType === 'video'),
+          order: items.length + 1,
+          mediaType: isVideo ? 'video' : 'image',
+        };
+        onChange([...items, newItem]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    e.target.value = '';
+  };
+
+  const handleAddUrl = () => {
+    const clean = urlInput.trim();
+    if (!clean) return;
+    const isVideo =
+      urlKind === 'video' || /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(clean);
+    const nextItem: HostelPhoto = {
+      id: `media_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      url: clean,
+      caption: captionInput.trim() || (isVideo ? 'Hostel Video Tour' : 'Hostel Photo'),
+      isCover: !isVideo && items.every(i => !i.isCover || i.mediaType === 'video'),
+      order: items.length + 1,
+      mediaType: isVideo ? 'video' : 'image',
+    };
+    onChange([...items, nextItem]);
+    setUrlInput('');
+    setCaptionInput('');
+  };
+
+  const handleSetCover = (id: string) => {
+    onChange(
+      items.map((item) => ({
+        ...item,
+        isCover: item.id === id && item.mediaType !== 'video',
+      }))
+    );
+  };
+
+  const handleRemove = (id: string) => {
+    const remaining = items.filter((i) => i.id !== id);
+    if (remaining.length > 0 && !remaining.some(i => i.isCover && i.mediaType !== 'video')) {
+      const firstImg = remaining.find(i => i.mediaType !== 'video');
+      if (firstImg) firstImg.isCover = true;
+    }
+    onChange(remaining);
+  };
+
+  const handleCaptionChange = (id: string, caption: string) => {
+    onChange(items.map(i => (i.id === id ? { ...i, caption } : i)));
+  };
+
+  return (
+    <div className="space-y-3 p-4 rounded-xl bg-slate-50 border border-slate-200">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <div className="text-xs font-semibold text-[#0f3a98]">Hostel Photos &amp; Videos</div>
+          <p className="text-[11px] text-slate-500">
+            Upload photos/videos from your device or paste links. Photos can be set as the cover image.
+          </p>
+        </div>
+        <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-xs transition">
+          <FaIcon icon="fa-solid fa-cloud-arrow-up" className="text-xs text-[#ffbe00]" />
+          <span>Upload Photo / Video</span>
+          <input
+            type="file"
+            accept="image/*,video/*"
+            multiple
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </label>
+      </div>
+
+      {/* Add via URL */}
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
+        <select
+          value={urlKind}
+          onChange={e => setUrlKind(e.target.value as 'image' | 'video')}
+          className="sm:col-span-2 px-2.5 py-2 text-xs rounded-lg border border-slate-200 bg-white font-medium text-[#0f3a98]"
+        >
+          <option value="image">Photo URL</option>
+          <option value="video">Video URL</option>
+        </select>
+        <input
+          type="url"
+          placeholder={urlKind === 'video' ? 'https://.../room-tour.mp4' : 'https://.../hostel-photo.jpg'}
+          value={urlInput}
+          onChange={e => setUrlInput(e.target.value)}
+          className="sm:col-span-5 px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white"
+        />
+        <input
+          type="text"
+          placeholder="Caption (optional)"
+          value={captionInput}
+          onChange={e => setCaptionInput(e.target.value)}
+          className="sm:col-span-3 px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white"
+        />
+        <button
+          type="button"
+          onClick={handleAddUrl}
+          className="sm:col-span-2 px-3 py-2 rounded-lg bg-[#ffbe00] hover:bg-[#e5aa00] text-[#0f3a98] text-xs font-semibold transition"
+        >
+          Add Media
+        </button>
+      </div>
+
+      {mediaNotice && (
+        <div className="text-[11px] text-rose-600 font-medium">{mediaNotice}</div>
+      )}
+
+      {/* Existing Media Grid */}
+      {items.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+          {items.map((item) => {
+            const isVideo = item.mediaType === 'video';
+            return (
+              <div
+                key={item.id}
+                className="bg-white rounded-xl border border-slate-200 p-2 flex items-center gap-2.5 shadow-2xs"
+              >
+                <div className="w-16 h-14 rounded-lg overflow-hidden bg-slate-900 shrink-0 relative">
+                  {isVideo ? (
+                    <video src={item.url} className="w-full h-full object-cover" muted playsInline />
+                  ) : (
+                    <img src={item.url} alt={item.caption || 'Hostel media'} className="w-full h-full object-cover" />
+                  )}
+                  <span className="absolute bottom-0.5 right-0.5 px-1 rounded bg-black/75 text-[9px] text-white font-medium">
+                    {isVideo ? 'VID' : 'IMG'}
+                  </span>
+                </div>
+
+                <div className="flex-1 min-w-0 space-y-1">
+                  <input
+                    type="text"
+                    value={item.caption || ''}
+                    placeholder={isVideo ? 'Video caption' : 'Photo caption'}
+                    onChange={e => handleCaptionChange(item.id, e.target.value)}
+                    className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-slate-50"
+                  />
+                  <div className="flex items-center justify-between gap-1">
+                    {!isVideo ? (
+                      <button
+                        type="button"
+                        onClick={() => handleSetCover(item.id)}
+                        className={`text-[10px] font-semibold px-2 py-0.5 rounded transition ${
+                          item.isCover
+                            ? 'bg-[#0f3a98] text-white'
+                            : 'bg-[#e8effc] text-[#0f3a98] hover:bg-blue-100'
+                        }`}
+                      >
+                        {item.isCover ? 'Cover Photo' : 'Set Cover'}
+                      </button>
+                    ) : (
+                      <span className="text-[10px] font-medium text-slate-500">Video Tour</span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleRemove(item.id)}
+                      className="text-[10px] text-rose-600 hover:text-rose-700 font-medium px-1.5 py-0.5 rounded hover:bg-rose-50"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-4 text-xs text-slate-400">
+          No photos or videos added yet.
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function SellerPortalPage() {
   const { currentUser, switchRole } = useAuth();
@@ -36,7 +246,22 @@ export default function SellerPortalPage() {
   const [formPhone, setFormPhone] = useState('+256 700 123 456');
   const [formSingleRent, setFormSingleRent] = useState('1200000');
   const [formDoubleRent, setFormDoubleRent] = useState('850000');
+  const [formMedia, setFormMedia] = useState<HostelPhoto[]>([]);
   const [formSubmitting, setFormSubmitting] = useState(false);
+
+  // Edit Hostel Modal State (for Broker & Custodian listings)
+  const [editingHostel, setEditingHostel] = useState<Hostel | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editCampus, setEditCampus] = useState('Makerere University');
+  const [editArea, setEditArea] = useState('');
+  const [editAddress, setEditAddress] = useState('');
+  const [editLandmark, setEditLandmark] = useState('');
+  const [editDistance, setEditDistance] = useState('');
+  const [editGender, setEditGender] = useState<'mixed' | 'girls_only' | 'boys_only'>('mixed');
+  const [editDescription, setEditDescription] = useState('');
+  const [editMedia, setEditMedia] = useState<HostelPhoto[]>([]);
+  const [editRooms, setEditRooms] = useState<Hostel['rooms']>([]);
+  const [editSaving, setEditSaving] = useState(false);
 
   // Duplicate Check Modal State
   const [duplicateWarning, setDuplicateWarning] = useState<any>(null);
@@ -122,6 +347,7 @@ export default function SellerPortalPage() {
       contactPhone: formPhone,
       whatsapp: formPhone,
       accessFeeUgx: parseInt(formAccessFee) || 0,
+      photos: formMedia.length > 0 ? formMedia : undefined,
       rooms: [
         { name: 'Single Room', type: 'single', rentUgx: parseInt(formSingleRent) || 1000000, roomsTotal: 30, roomsAvailable: 5 },
         { name: 'Double Shared', type: 'double', rentUgx: parseInt(formDoubleRent) || 750000, roomsTotal: 50, roomsAvailable: 12 }
@@ -141,11 +367,12 @@ export default function SellerPortalPage() {
       if (res.status === 409 && data.duplicateDetected) {
         setDuplicateWarning(data);
       } else if (data.success) {
-        alert(`Hostel "${data.hostel.name}" added successfully!`);
+        setUpdateMsg(`Hostel "${data.hostel.name}" published! You can edit its details, photos, and videos anytime below.`);
         setHostels(prev => [data.hostel, ...prev]);
         setActiveTab('listings');
         setFormName('');
         setFormDescription('');
+        setFormMedia([]);
         setBypassReason('');
       } else {
         alert(data.error || 'Failed to add hostel');
@@ -154,6 +381,63 @@ export default function SellerPortalPage() {
       alert(err.message);
     } finally {
       setFormSubmitting(false);
+    }
+  };
+
+  const openEditHostelModal = (hostel: Hostel) => {
+    setEditingHostel(hostel);
+    setEditName(hostel.name);
+    setEditCampus(hostel.campus);
+    setEditArea(hostel.area);
+    setEditAddress(hostel.address);
+    setEditLandmark(hostel.landmark);
+    setEditDistance(hostel.distanceCampusApprox);
+    setEditGender(hostel.genderPolicy);
+    setEditDescription(hostel.description);
+    setEditMedia(hostel.photos || []);
+    setEditRooms(hostel.rooms || []);
+  };
+
+  const handleSaveHostelEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingHostel) return;
+    setEditSaving(true);
+
+    const canEditRooms =
+      currentUser?.role === 'custodian' || editingHostel.status === 'unclaimed';
+
+    try {
+      const res = await fetch(`/api/v1/hostels/${editingHostel.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUser?.id,
+          userRole: currentUser?.role,
+          name: editName,
+          campus: editCampus,
+          area: editArea,
+          address: editAddress,
+          landmark: editLandmark,
+          distanceCampusApprox: editDistance,
+          genderPolicy: editGender,
+          description: editDescription,
+          photos: editMedia,
+          ...(canEditRooms ? { rooms: editRooms } : {}),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setHostels(prev => prev.map(h => (h.id === editingHostel.id ? data.hostel : h)));
+        setUpdateMsg(`Updated "${data.hostel.name}" details and media successfully.`);
+        setTimeout(() => setUpdateMsg(''), 4000);
+        setEditingHostel(null);
+      } else {
+        alert(data.error || 'Failed to update hostel');
+      }
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setEditSaving(false);
     }
   };
 
@@ -345,25 +629,41 @@ export default function SellerPortalPage() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {hostels.map(hostel => {
+              {[...hostels]
+                .sort((a, b) => {
+                  const aMine = a.scoutUserId === currentUser?.id ? 1 : 0;
+                  const bMine = b.scoutUserId === currentUser?.id ? 1 : 0;
+                  return bMine - aMine;
+                })
+                .map(hostel => {
                 const totalRooms = hostel.rooms.reduce((acc, r) => acc + r.roomsTotal, 0);
                 const availableRooms = hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
+                const isUploadedByMe = hostel.scoutUserId === currentUser?.id;
+                const canEditHostel =
+                  currentUser?.role === 'custodian' || isUploadedByMe || hostel.status === 'unclaimed';
+                const photoCount = hostel.photos.filter(p => p.mediaType !== 'video').length;
+                const videoCount = hostel.photos.filter(p => p.mediaType === 'video').length;
 
                 return (
                   <div key={hostel.id} className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shadow-sm">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-2">
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-1.5">
                           <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
                             {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
                           </span>
+                          {isUploadedByMe && (
+                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
+                              Uploaded by You
+                            </span>
+                          )}
                           <span className="text-xs text-slate-500 font-medium">{hostel.area}</span>
                         </div>
                         <h3 className="text-lg font-medium text-[#0f3a98] mt-1">{hostel.name}</h3>
                         <p className="text-xs text-slate-500 font-medium">{hostel.distanceCampusApprox}</p>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <div className="text-[#0f3a98] font-medium text-lg">
                           {availableRooms} / {totalRooms}
                         </div>
@@ -371,10 +671,35 @@ export default function SellerPortalPage() {
                       </div>
                     </div>
 
+                    {/* Media summary strip */}
+                    <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-[#edf2fc]/70 border border-blue-100 text-xs">
+                      <div className="flex items-center gap-3 text-[#0f3a98] font-medium">
+                        <span className="flex items-center gap-1">
+                          <FaIcon icon="fa-solid fa-image" className="text-[11px]" />
+                          {photoCount} {photoCount === 1 ? 'Photo' : 'Photos'}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <FaIcon icon="fa-solid fa-video" className="text-[11px]" />
+                          {videoCount} {videoCount === 1 ? 'Video' : 'Videos'}
+                        </span>
+                      </div>
+
+                      {canEditHostel && (
+                        <button
+                          type="button"
+                          onClick={() => openEditHostelModal(hostel)}
+                          className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-[11px] font-medium flex items-center gap-1.5 shadow-xs transition"
+                        >
+                          <FaIcon icon="fa-solid fa-pen-to-square" className="text-[11px] text-[#ffbe00]" />
+                          <span>Edit Details &amp; Media</span>
+                        </button>
+                      )}
+                    </div>
+
                     {/* Room inventory quick editor */}
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
                       <div className="flex items-center justify-between text-xs font-medium text-slate-700">
-                        <span>Room Types & Availability</span>
+                        <span>Room Types &amp; Availability</span>
                         <span className="text-slate-400">BR-1: Owner sets vacancy</span>
                       </div>
 
@@ -415,7 +740,9 @@ export default function SellerPortalPage() {
                         </div>
                       ) : (
                         <div className="text-[11px] text-amber-900 bg-amber-50 p-2 rounded font-medium">
-                          ⚠️ As a Broker, room rent and total vacancy are managed by the hostel owner (BR-1). You can set your custom access fee.
+                          {hostel.status === 'claimed'
+                            ? 'Owner sets claimed room rent & vacancy (BR-1). You can edit hostel details & upload photos/videos on listings you added.'
+                            : 'Unclaimed listing — use "Edit Details & Media" above to update room rents, photos, videos, and details.'}
                         </div>
                       )}
                     </div>
@@ -877,6 +1204,9 @@ export default function SellerPortalPage() {
                 </div>
               </div>
 
+              {/* Hostel Photos & Videos Uploader */}
+              <HostelMediaEditor items={formMedia} onChange={setFormMedia} />
+
               <button
                 type="submit"
                 disabled={formSubmitting}
@@ -891,6 +1221,181 @@ export default function SellerPortalPage() {
         )}
 
       </main>
+
+      {/* Edit Hostel Details, Photos & Videos Modal */}
+      {editingHostel && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans">
+          <div className="bg-white w-full sm:max-w-2xl rounded-t-2xl sm:rounded-2xl shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col overflow-hidden">
+            <div className="p-4 sm:p-5 bg-[#0f3a98] text-white flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-base sm:text-lg leading-tight">
+                  Edit Hostel &amp; Media — {editingHostel.name}
+                </h3>
+                <p className="text-[11px] text-blue-100 mt-0.5">
+                  Update listing details, upload photos or videos, and manage media gallery
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingHostel(null)}
+                aria-label="Close editor"
+                className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition"
+              >
+                <FaIcon icon="fa-solid fa-xmark" className="text-xs" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveHostelEdit} className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Hostel Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 focus:ring-2 focus:ring-[#0f3a98]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">University Campus</label>
+                  <select
+                    value={editCampus}
+                    onChange={e => setEditCampus(e.target.value)}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white"
+                  >
+                    <option>Makerere University</option>
+                    <option>MUBS</option>
+                    <option>Kyambogo University</option>
+                    <option>Uganda Christian University</option>
+                    <option>KIU</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Area</label>
+                  <input
+                    type="text"
+                    required
+                    value={editArea}
+                    onChange={e => setEditArea(e.target.value)}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Landmark</label>
+                  <input
+                    type="text"
+                    value={editLandmark}
+                    onChange={e => setEditLandmark(e.target.value)}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Gender Policy</label>
+                  <select
+                    value={editGender}
+                    onChange={e => setEditGender(e.target.value as 'mixed' | 'girls_only' | 'boys_only')}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white"
+                  >
+                    <option value="mixed">Mixed</option>
+                    <option value="girls_only">Girls Only</option>
+                    <option value="boys_only">Boys Only</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Street / Address</label>
+                  <input
+                    type="text"
+                    value={editAddress}
+                    onChange={e => setEditAddress(e.target.value)}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Campus Distance</label>
+                  <input
+                    type="text"
+                    value={editDistance}
+                    onChange={e => setEditDistance(e.target.value)}
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Description</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={editDescription}
+                  onChange={e => setEditDescription(e.target.value)}
+                  className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200"
+                />
+              </div>
+
+              {(currentUser?.role === 'custodian' || editingHostel.status === 'unclaimed') && editRooms.length > 0 && (
+                <div className="p-3.5 rounded-xl bg-[#edf2fc]/70 border border-blue-100 space-y-2.5">
+                  <div className="text-xs font-semibold text-[#0f3a98]">Room Rates &amp; Availability</div>
+                  <div className="space-y-2">
+                    {editRooms.map((room, rIdx) => (
+                      <div key={room.id} className="grid grid-cols-12 gap-2 items-center bg-white p-2 rounded-lg border border-blue-100 text-xs">
+                        <input
+                          type="text"
+                          value={room.name}
+                          onChange={e => setEditRooms(prev => prev.map((r, i) => i === rIdx ? { ...r, name: e.target.value } : r))}
+                          className="col-span-5 px-2 py-1 rounded border border-slate-200 font-medium"
+                        />
+                        <input
+                          type="number"
+                          value={room.rentUgx}
+                          onChange={e => setEditRooms(prev => prev.map((r, i) => i === rIdx ? { ...r, rentUgx: parseInt(e.target.value) || 0 } : r))}
+                          className="col-span-4 px-2 py-1 rounded border border-slate-200 font-medium"
+                          title="Rent (UGX)"
+                        />
+                        <input
+                          type="number"
+                          min="0"
+                          value={room.roomsAvailable}
+                          onChange={e => setEditRooms(prev => prev.map((r, i) => i === rIdx ? { ...r, roomsAvailable: parseInt(e.target.value) || 0 } : r))}
+                          className="col-span-3 px-2 py-1 rounded border border-slate-200 font-medium text-center"
+                          title="Vacant rooms"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Full Photo & Video Gallery Editor */}
+              <HostelMediaEditor items={editMedia} onChange={setEditMedia} />
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingHostel(null)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editSaving}
+                  className="px-5 py-2 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-semibold shadow-sm transition flex items-center gap-1.5"
+                >
+                  <FaIcon icon="fa-solid fa-check" className="text-xs text-[#ffbe00]" />
+                  <span>{editSaving ? 'Saving...' : 'Save Changes'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <AuthModal
         isOpen={isAuthOpen}
