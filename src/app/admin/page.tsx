@@ -13,6 +13,8 @@ export default function AdminPanelPage() {
 
   // Data states
   const [hostels, setHostels] = useState<Hostel[]>([]);
+  const [adminActionMsg, setAdminActionMsg] = useState('');
+  const [moderatingId, setModeratingId] = useState<string | null>(null);
 
   // Duplicate Merge Tool Form (FR-10.4)
   const [primaryHostelId, setPrimaryHostelId] = useState('');
@@ -29,7 +31,7 @@ export default function AdminPanelPage() {
 
   const loadData = async () => {
     try {
-      const res = await fetch('/api/v1/hostels');
+      const res = await fetch('/api/v1/hostels?includeUnapproved=true');
       const data = await res.json();
       if (data.success) {
         setHostels(data.hostels);
@@ -40,6 +42,37 @@ export default function AdminPanelPage() {
       }
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const handleModerateHostel = async (
+    hostelId: string,
+    updates: { approvalStatus?: 'pending' | 'approved' | 'rejected'; status?: 'claimed' | 'unclaimed' | 'suspended' },
+    successText: string
+  ) => {
+    setModeratingId(hostelId);
+    setAdminActionMsg('');
+    try {
+      const res = await fetch(`/api/v1/hostels/${hostelId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUser?.id || 'usr_admin_1',
+          userRole: 'admin',
+          ...updates,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setHostels(prev => prev.map(h => (h.id === hostelId ? data.hostel : h)));
+        setAdminActionMsg(successText);
+      } else {
+        alert(data.error || 'Failed to update hostel status');
+      }
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setModeratingId(null);
     }
   };
 
@@ -162,17 +195,55 @@ export default function AdminPanelPage() {
           </button>
           <button
             onClick={() => setActiveTab('hostels')}
-            className={`px-4 py-2 rounded-xl transition ${
+            className={`px-4 py-2 rounded-xl transition flex items-center gap-1.5 ${
               activeTab === 'hostels' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'hover:bg-slate-200 text-slate-700'
             }`}
           >
-            Manage Hostels (FR-10.3)
+            <span>Manage Hostels (FR-10.3)</span>
+            {hostels.filter(h => h.approvalStatus === 'pending').length > 0 && (
+              <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded-full bg-[#ffbe00] text-[#0f3a98]">
+                {hostels.filter(h => h.approvalStatus === 'pending').length} Pending
+              </span>
+            )}
           </button>
         </div>
+
+        {adminActionMsg && (
+          <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-medium flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <FaIcon icon="fa-solid fa-circle-check" className="text-sm text-[#0f3a98]" />
+              <span>{adminActionMsg}</span>
+            </div>
+            <button onClick={() => setAdminActionMsg('')} className="text-slate-400 hover:text-slate-600">
+              Dismiss
+            </button>
+          </div>
+        )}
 
         {/* TAB 1: DASHBOARD KPIS */}
         {activeTab === 'kpis' && (
           <div className="space-y-6">
+            {hostels.filter(h => h.approvalStatus === 'pending').length > 0 && (
+              <div className="p-4 rounded-2xl bg-amber-50 border-2 border-[#ffbe00] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <FaIcon icon="fa-solid fa-clock" className="text-amber-700 text-lg mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-sm font-medium text-amber-950">
+                      {hostels.filter(h => h.approvalStatus === 'pending').length} Hostel Upload(s) Awaiting Admin Approval
+                    </div>
+                    <p className="text-xs text-amber-800 font-medium mt-0.5">
+                      Broker-uploaded hostels stay hidden from public student search until approved by an Admin.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveTab('hostels')}
+                  className="px-4 py-2 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs font-medium shrink-0 transition"
+                >
+                  Review &amp; Approve Hostels
+                </button>
+              </div>
+            )}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="text-xs font-medium text-slate-400 mb-1">Total Users by Role</div>
@@ -371,45 +442,204 @@ export default function AdminPanelPage() {
         )}
 
         {/* TAB 4: MANAGE HOSTELS */}
-        {activeTab === 'hostels' && (
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <h2 className="text-lg font-medium text-[#0f3a98]">Registered Hostel Buildings ({hostels.length})</h2>
-            <div className="divide-y divide-slate-100">
-              {hostels.map(h => (
-                <div key={h.id} className="py-3 flex items-center justify-between text-xs">
-                  <div>
-                    <span className="font-medium text-slate-900 text-sm">{h.name}</span>
-                    <span className="text-slate-400 ml-2 font-medium">({h.area} • {h.campus})</span>
-                    <div className="text-slate-500 text-[11px] mt-0.5 font-medium">
-                      Status: <strong className="text-[#0f3a98]">{h.status}</strong> • Views: {h.viewCount} • Saves: {h.saveCount}
-                    </div>
-                  </div>
+        {activeTab === 'hostels' && (() => {
+          const pendingHostels = hostels.filter(h => h.approvalStatus === 'pending');
+          const sortedHostels = [...hostels].sort((a, b) => {
+            const rank = (h: Hostel) => (h.approvalStatus === 'pending' ? 0 : h.approvalStatus === 'rejected' ? 1 : 2);
+            return rank(a) - rank(b);
+          });
 
-                  <div className="flex items-center gap-2">
-                    {h.status === 'unclaimed' && (
-                      <button
-                        onClick={() => {
-                          h.status = 'claimed';
-                          setHostels([...hostels]);
-                          alert(`Hostel "${h.name}" marked as Custodian Claimed!`);
-                        }}
-                        className="px-3 py-1 bg-[#0f3a98] text-[#ffbe00] rounded font-medium"
-                      >
-                        Approve Owner Claim
-                      </button>
-                    )}
-                    <button
-                      onClick={() => alert(`Suspending ${h.name}`)}
-                      className="px-2.5 py-1 text-rose-600 hover:bg-rose-50 rounded font-medium"
-                    >
-                      Suspend
-                    </button>
+          return (
+          <div className="space-y-5">
+            {pendingHostels.length > 0 && (
+              <div className="bg-amber-50/70 p-5 sm:p-6 rounded-2xl border-2 border-[#ffbe00] shadow-sm space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h2 className="text-lg font-medium text-[#0f3a98]">
+                      Pending Broker Hostel Approvals ({pendingHostels.length})
+                    </h2>
+                    <p className="text-xs text-amber-900 font-medium">
+                      Review newly uploaded hostels before they become visible on the student marketplace.
+                    </p>
                   </div>
                 </div>
-              ))}
+
+                <div className="space-y-3">
+                  {pendingHostels.map(h => {
+                    const photoCount = h.photos.filter(p => p.mediaType !== 'video').length;
+                    const videoCount = h.photos.filter(p => p.mediaType === 'video').length;
+                    return (
+                      <div
+                        key={h.id}
+                        className="p-4 rounded-xl bg-white border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                      >
+                        <div>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                              Pending Approval
+                            </span>
+                            <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
+                              {photoCount} Photos • {videoCount} Videos
+                            </span>
+                          </div>
+                          <div className="font-medium text-slate-900 text-sm mt-1">
+                            {h.name}{' '}
+                            <span className="text-slate-400 font-normal">({h.area} • {h.campus})</span>
+                          </div>
+                          <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{h.description}</p>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            disabled={moderatingId === h.id}
+                            onClick={() =>
+                              handleModerateHostel(
+                                h.id,
+                                { approvalStatus: 'approved' },
+                                `Approved "${h.name}" — now live for students!`
+                              )
+                            }
+                            className="px-3.5 py-2 bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] rounded-lg text-xs font-medium transition disabled:opacity-50"
+                          >
+                            Approve Hostel
+                          </button>
+                          <button
+                            disabled={moderatingId === h.id}
+                            onClick={() =>
+                              handleModerateHostel(
+                                h.id,
+                                { approvalStatus: 'rejected' },
+                                `Rejected "${h.name}". Broker can still see and edit it in their portal.`
+                              )
+                            }
+                            className="px-3 py-2 border border-rose-200 text-rose-700 hover:bg-rose-50 rounded-lg text-xs font-medium transition disabled:opacity-50"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+              <h2 className="text-lg font-medium text-[#0f3a98]">Registered Hostel Buildings ({hostels.length})</h2>
+              <div className="divide-y divide-slate-100">
+                {sortedHostels.map(h => {
+                  const approval = h.approvalStatus || 'approved';
+                  return (
+                  <div key={h.id} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-medium text-slate-900 text-sm">{h.name}</span>
+                        <span className="text-slate-400 font-medium">({h.area} • {h.campus})</span>
+                        <span
+                          className={`text-[11px] font-medium px-2 py-0.5 rounded ${
+                            approval === 'pending'
+                              ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                              : approval === 'rejected'
+                                ? 'bg-rose-100 text-rose-800'
+                                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          }`}
+                        >
+                          {approval === 'pending'
+                            ? 'Pending Approval'
+                            : approval === 'rejected'
+                              ? 'Rejected'
+                              : 'Admin Approved'}
+                        </span>
+                      </div>
+                      <div className="text-slate-500 text-[11px] mt-1 font-medium">
+                        Ownership: <strong className="text-[#0f3a98]">{h.status}</strong> • Views: {h.viewCount} • Saves: {h.saveCount}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      {approval !== 'approved' && (
+                        <button
+                          disabled={moderatingId === h.id}
+                          onClick={() =>
+                            handleModerateHostel(
+                              h.id,
+                              { approvalStatus: 'approved' },
+                              `Approved "${h.name}" — now visible in student search.`
+                            )
+                          }
+                          className="px-3 py-1 bg-[#0f3a98] text-[#ffbe00] rounded font-medium disabled:opacity-50"
+                        >
+                          Approve
+                        </button>
+                      )}
+                      {approval === 'pending' && (
+                        <button
+                          disabled={moderatingId === h.id}
+                          onClick={() =>
+                            handleModerateHostel(
+                              h.id,
+                              { approvalStatus: 'rejected' },
+                              `Marked "${h.name}" as rejected.`
+                            )
+                          }
+                          className="px-2.5 py-1 text-rose-700 border border-rose-200 hover:bg-rose-50 rounded font-medium disabled:opacity-50"
+                        >
+                          Reject
+                        </button>
+                      )}
+                      {h.status === 'unclaimed' && (
+                        <button
+                          disabled={moderatingId === h.id}
+                          onClick={() =>
+                            handleModerateHostel(
+                              h.id,
+                              { status: 'claimed', approvalStatus: 'approved' },
+                              `Hostel "${h.name}" marked as Custodian Claimed & Approved.`
+                            )
+                          }
+                          className="px-3 py-1 border border-[#0f3a98] text-[#0f3a98] hover:bg-blue-50 rounded font-medium disabled:opacity-50"
+                        >
+                          Approve Owner Claim
+                        </button>
+                      )}
+                      {h.status !== 'suspended' ? (
+                        <button
+                          disabled={moderatingId === h.id}
+                          onClick={() =>
+                            handleModerateHostel(
+                              h.id,
+                              { status: 'suspended' },
+                              `Suspended "${h.name}".`
+                            )
+                          }
+                          className="px-2.5 py-1 text-rose-600 hover:bg-rose-50 rounded font-medium disabled:opacity-50"
+                        >
+                          Suspend
+                        </button>
+                      ) : (
+                        <button
+                          disabled={moderatingId === h.id}
+                          onClick={() =>
+                            handleModerateHostel(
+                              h.id,
+                              { status: 'unclaimed' },
+                              `Restored "${h.name}".`
+                            )
+                          }
+                          className="px-2.5 py-1 text-emerald-700 hover:bg-emerald-50 rounded font-medium disabled:opacity-50"
+                        >
+                          Restore
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        )}
+          );
+        })()}
 
       </main>
 

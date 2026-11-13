@@ -290,7 +290,7 @@ export default function SellerPortalPage() {
   const loadData = async () => {
     try {
       const [hostelsRes, subRes] = await Promise.all([
-        fetch('/api/v1/hostels'),
+        fetch('/api/v1/hostels?includeUnapproved=true'),
         fetch(`/api/v1/subscriptions?userId=${currentUser?.id || 'usr_custodian_olympia'}`)
       ]);
       const hData = await hostelsRes.json();
@@ -367,7 +367,12 @@ export default function SellerPortalPage() {
       if (res.status === 409 && data.duplicateDetected) {
         setDuplicateWarning(data);
       } else if (data.success) {
-        setUpdateMsg(`Hostel "${data.hostel.name}" published! You can edit its details, photos, and videos anytime below.`);
+        const isPendingApproval = data.hostel?.approvalStatus === 'pending';
+        setUpdateMsg(
+          isPendingApproval
+            ? `Hostel "${data.hostel.name}" uploaded and queued for Admin approval. It is shown below as Pending Approval, and you can edit its details, photos, and videos anytime.`
+            : `Hostel "${data.hostel.name}" published! You can edit its details, photos, and videos anytime below.`
+        );
         setHostels(prev => [data.hostel, ...prev]);
         setActiveTab('listings');
         setFormName('');
@@ -612,14 +617,34 @@ export default function SellerPortalPage() {
         </div>
 
         {/* TAB 1: LISTINGS & INVENTORY MANAGEMENT */}
-        {activeTab === 'listings' && (
+        {activeTab === 'listings' && (() => {
+          const visibleHostels = hostels.filter(h => h.status !== 'suspended');
+          const pendingHostelsCount = visibleHostels.filter(h => h.approvalStatus === 'pending').length;
+          return (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h2 className="text-lg font-medium text-[#0f3a98]">Active Accommodations</h2>
-                <p className="text-xs text-slate-500 font-medium">Update vacancy numbers or manage room rents</p>
+                <p className="text-xs text-slate-500 font-medium">
+                  Update vacancy numbers, edit hostel details &amp; media, or track unapproved submissions
+                </p>
               </div>
+              {pendingHostelsCount > 0 && (
+                <span className="text-xs font-medium px-3 py-1.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5">
+                  <FaIcon icon="fa-solid fa-clock" className="text-[11px]" />
+                  <span>{pendingHostelsCount} Pending Admin Approval</span>
+                </span>
+              )}
             </div>
+
+            {pendingHostelsCount > 0 && (
+              <div className="p-3.5 bg-amber-50 border border-amber-200 text-amber-950 text-xs font-medium rounded-xl flex items-start gap-2.5">
+                <FaIcon icon="fa-solid fa-hourglass-half" className="text-amber-700 mt-0.5 shrink-0" />
+                <span>
+                  Hostels uploaded by brokers require Admin approval before appearing in public student search. Unapproved submissions remain visible below so you can inspect or edit their details, photos, and videos while awaiting approval.
+                </span>
+              </div>
+            )}
 
             {updateMsg && (
               <div className="p-3 bg-blue-50 border border-blue-200 text-[#0f3a98] text-xs font-medium rounded-xl flex items-center gap-2">
@@ -629,29 +654,51 @@ export default function SellerPortalPage() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[...hostels]
+              {[...visibleHostels]
                 .sort((a, b) => {
+                  const aPending = a.approvalStatus === 'pending' ? 2 : 0;
+                  const bPending = b.approvalStatus === 'pending' ? 2 : 0;
                   const aMine = a.scoutUserId === currentUser?.id ? 1 : 0;
                   const bMine = b.scoutUserId === currentUser?.id ? 1 : 0;
-                  return bMine - aMine;
+                  return (bPending + bMine) - (aPending + aMine);
                 })
                 .map(hostel => {
                 const totalRooms = hostel.rooms.reduce((acc, r) => acc + r.roomsTotal, 0);
                 const availableRooms = hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
                 const isUploadedByMe = hostel.scoutUserId === currentUser?.id;
+                const approval = hostel.approvalStatus || 'approved';
                 const canEditHostel =
                   currentUser?.role === 'custodian' || isUploadedByMe || hostel.status === 'unclaimed';
                 const photoCount = hostel.photos.filter(p => p.mediaType !== 'video').length;
                 const videoCount = hostel.photos.filter(p => p.mediaType === 'video').length;
 
                 return (
-                  <div key={hostel.id} className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shadow-sm">
+                  <div
+                    key={hostel.id}
+                    className={`bg-white rounded-2xl border p-5 space-y-4 shadow-sm ${
+                      approval === 'pending'
+                        ? 'border-amber-300 ring-1 ring-amber-200/70'
+                        : approval === 'rejected'
+                          ? 'border-rose-300'
+                          : 'border-slate-200'
+                    }`}
+                  >
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex flex-wrap items-center gap-1.5">
                           <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
                             {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
                           </span>
+                          {approval === 'pending' && (
+                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                              Pending Admin Approval
+                            </span>
+                          )}
+                          {approval === 'rejected' && (
+                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800 border border-rose-200">
+                              Rejected by Admin
+                            </span>
+                          )}
                           {isUploadedByMe && (
                             <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
                               Uploaded by You
@@ -751,7 +798,8 @@ export default function SellerPortalPage() {
               })}
             </div>
           </div>
-        )}
+          );
+        })()}
 
         {/* TAB 2: SELLER ANALYTICS */}
         {activeTab === 'analytics' && (
@@ -1022,7 +1070,9 @@ export default function SellerPortalPage() {
             <div>
               <h2 className="text-xl font-medium text-[#0f3a98]">List a New Campus Hostel</h2>
               <p className="text-xs text-slate-500 font-medium">
-                A hostel exists once per physical building. If an existing building matches your submission, you will attach as an offer.
+                {currentUser?.role === 'broker'
+                  ? 'New broker uploads are sent for Admin approval before appearing in student search, and stay visible in your portal so you can edit details, photos, or videos anytime.'
+                  : 'A hostel exists once per physical building. If an existing building matches your submission, you will attach as an offer.'}
               </p>
             </div>
 

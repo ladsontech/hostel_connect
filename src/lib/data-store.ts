@@ -819,12 +819,12 @@ export const INITIAL_REPORTS: Report[] = [
   }
 ];
 
-// Singleton database holder
-let globalDb: AppDatabase | null = null;
+// Shared singleton across Next.js route module instances in dev/SSR
+const globalForDb = globalThis as typeof globalThis & { __hostelConnectDb?: AppDatabase };
 
 export function getDatabase(): AppDatabase {
-  if (!globalDb) {
-    globalDb = {
+  if (!globalForDb.__hostelConnectDb) {
+    globalForDb.__hostelConnectDb = {
       users: [...INITIAL_USERS],
       hostels: [...INITIAL_HOSTELS],
       offers: [...INITIAL_OFFERS],
@@ -837,5 +837,5 @@ export function getDatabase(): AppDatabase {
       auditLogs: []
     };
   }
-  return globalDb;
+  return globalForDb.__hostelConnectDb;
 }

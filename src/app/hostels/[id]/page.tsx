@@ -189,6 +189,24 @@ export default function HostelDetailPage() {
           </button>
         </div>
 
+        {(hostel.approvalStatus === 'pending' || hostel.approvalStatus === 'rejected') && (
+          <div className={`p-3.5 rounded-xl border text-xs font-medium flex items-center gap-2.5 ${
+            hostel.approvalStatus === 'pending'
+              ? 'bg-amber-50 border-amber-300 text-amber-950'
+              : 'bg-rose-50 border-rose-200 text-rose-900'
+          }`}>
+            <FaIcon
+              icon={hostel.approvalStatus === 'pending' ? 'fa-solid fa-clock' : 'fa-solid fa-ban'}
+              className={hostel.approvalStatus === 'pending' ? 'text-amber-700' : 'text-rose-600'}
+            />
+            <span>
+              {hostel.approvalStatus === 'pending'
+                ? 'Pending Admin Approval — this uploaded hostel is currently hidden from public student search until an Admin approves it.'
+                : 'Rejected by Admin — this listing is not shown in public student search.'}
+            </span>
+          </div>
+        )}
+
         {/* Gallery (Images & Videos) */}
         <div className="space-y-3">
           {(() => {

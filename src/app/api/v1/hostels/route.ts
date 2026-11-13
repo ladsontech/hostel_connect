@@ -16,12 +16,23 @@ export async function GET(request: Request) {
   const gender = searchParams.get('gender') || '';
   const amenity = searchParams.get('amenity') || '';
   const sort = searchParams.get('sort') || 'relevance';
+  const includeUnapproved = searchParams.get('includeUnapproved') === 'true';
+  const sellerId = searchParams.get('sellerId') || '';
 
   const db = getDatabase();
 
   let results = db.hostels.filter(hostel => {
-    // Hidden if suspended
-    if (hostel.status === 'suspended') return false;
+    const approval = hostel.approvalStatus || 'approved';
+
+    // Hidden if suspended (unless explicitly requested for portal review)
+    if (hostel.status === 'suspended' && !includeUnapproved) return false;
+
+    // Unapproved/rejected hostels are hidden from public student listings unless requested for seller/admin portals
+    if (!includeUnapproved && approval !== 'approved') {
+      if (!sellerId || hostel.scoutUserId !== sellerId) {
+        return false;
+      }
+    }
 
     // Search query match (name, description, area, campus, landmark)
     if (q) {
@@ -149,7 +160,9 @@ export async function POST(request: Request) {
     }
 
     // Determine scout recognition (FR-6.7 Scout badge for first seller)
+    // Broker uploads require admin approval before appearing in public student search
     const newHostelId = `hst_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const initialApprovalStatus = sellerRole === 'broker' ? 'pending' : 'approved';
     const newHostel: Hostel = {
       id: newHostelId,
       name,
@@ -163,6 +176,7 @@ export async function POST(request: Request) {
       campus,
       distanceCampusApprox: distanceCampusApprox || 'Walking distance',
       status: sellerRole === 'custodian' ? 'claimed' : 'unclaimed',
+      approvalStatus: initialApprovalStatus,
       verifiedOwnerId: sellerRole === 'custodian' ? sellerId : undefined,
       scoutUserId: sellerId,
       ratingAvg: 5.0,
@@ -215,6 +229,19 @@ export async function POST(request: Request) {
     };
 
     db.offers.push(newOffer);
+
+    if (initialApprovalStatus === 'pending') {
+      db.auditLogs.push({
+        id: `aud_pending_${Date.now()}`,
+        actorId: sellerId,
+        actorName: sellerRole || 'broker',
+        action: 'HOSTEL_SUBMITTED_FOR_ADMIN_APPROVAL',
+        entity: 'hostel',
+        entityId: newHostelId,
+        after: { name, campus, area, approvalStatus: 'pending' },
+        timestamp: new Date().toISOString()
+      });
+    }
 
     // If duplicate check was bypassed, create audit/flag log for admin review
     if (forceCreate && duplicateBypassReason) {

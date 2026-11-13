@@ -64,6 +64,8 @@ export async function PUT(
     amenities,
     photos,
     rooms,
+    approvalStatus,
+    status,
     userId,
     userRole
   } = body;
@@ -103,6 +105,40 @@ export async function PUT(
   }
   if (Array.isArray(amenities)) {
     hostel.amenities = amenities;
+  }
+
+  // Admin-only approval & listing status moderation
+  if (userRole === 'admin') {
+    if (approvalStatus === 'approved' || approvalStatus === 'rejected' || approvalStatus === 'pending') {
+      const previousApproval = hostel.approvalStatus || 'approved';
+      hostel.approvalStatus = approvalStatus;
+      db.auditLogs.push({
+        id: `aud_approval_${Date.now()}`,
+        actorId: userId || 'usr_admin_1',
+        actorName: 'Admin',
+        action: `HOSTEL_APPROVAL_${approvalStatus.toUpperCase()}`,
+        entity: 'hostel',
+        entityId: id,
+        before: { approvalStatus: previousApproval },
+        after: { approvalStatus },
+        timestamp: new Date().toISOString(),
+      });
+    }
+    if (status === 'claimed' || status === 'unclaimed' || status === 'suspended') {
+      const previousStatus = hostel.status;
+      hostel.status = status;
+      db.auditLogs.push({
+        id: `aud_status_${Date.now()}`,
+        actorId: userId || 'usr_admin_1',
+        actorName: 'Admin',
+        action: `HOSTEL_STATUS_${status.toUpperCase()}`,
+        entity: 'hostel',
+        entityId: id,
+        before: { status: previousStatus },
+        after: { status },
+        timestamp: new Date().toISOString(),
+      });
+    }
   }
 
   if (Array.isArray(photos)) {

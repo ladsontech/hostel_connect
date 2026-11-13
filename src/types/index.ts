@@ -25,6 +25,7 @@ export interface User {
 }
 
 export type HostelStatus = 'unclaimed' | 'claimed' | 'suspended';
+export type HostelApprovalStatus = 'pending' | 'approved' | 'rejected';
 
 export interface RoomType {
   id: string;
@@ -60,6 +61,7 @@ export interface Hostel {
   campus: string; // e.g., Makerere University, MUBS, Kyambogo University
   distanceCampusApprox: string; // e.g. "5 min walk from Makerere Main Gate"
   status: HostelStatus;
+  approvalStatus?: HostelApprovalStatus; // Admin approval state for newly uploaded hostels
   verifiedOwnerId?: string; // Custodian who owns it
   scoutUserId?: string; // First seller who added the hostel
   ratingAvg: number;
