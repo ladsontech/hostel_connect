@@ -812,11 +812,6 @@ export default function ContactModal({
 
               {/* Status Headline */}
               <div className="space-y-1.5 max-w-sm">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e8effc] text-[#0f3a98] text-[11px] font-medium border border-blue-200 shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-[#ffbe00] animate-pulse" />
-                  <span>Live Campus Network Search Active</span>
-                </div>
-
                 <h4 className="text-base font-semibold text-[#0f3a98]">
                   Searching Most Suitable & Nearest Broker...
                 </h4>
