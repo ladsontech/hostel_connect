@@ -14,6 +14,20 @@ interface ContactModalProps {
   onRequireAuth: () => void;
 }
 
+/** Horizontal theme-blue pill button displaying a pricing label and amount on one line. */
+function PriceBarButton({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="w-full px-4 py-2.5 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex items-center justify-between gap-3">
+      <span className="text-[11px] text-white/85 font-medium uppercase tracking-wide whitespace-nowrap">
+        {label}
+      </span>
+      <span className="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5 whitespace-nowrap">
+        {children}
+      </span>
+    </div>
+  );
+}
+
 export default function ContactModal({
   hostel,
   offers,
@@ -578,21 +592,15 @@ export default function ContactModal({
 
                       {/* Price Breakdown + Locked Details */}
                       <div className="p-4 space-y-3.5 bg-[#f8fafc]">
-                        {/* 2 Independent Price Buttons Revealed After Search */}
-                        <div className="grid grid-cols-2 gap-2.5">
-                          <div className="p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex flex-col items-center justify-center text-center">
-                            <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Semester Rent</div>
-                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
-                              {roomPriceLabel}
-                            </div>
-                          </div>
-                          <div className="p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex flex-col items-center justify-center text-center">
-                            <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Direct Unlock Fee</div>
-                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5 flex items-center justify-center gap-1.5 flex-wrap">
-                              <span>UGX {CONNECTION_FEE_UGX.toLocaleString()}</span>
-                              <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Once</span>
-                            </div>
-                          </div>
+                        {/* 2 Independent Horizontal Price Buttons on 2 Stacked Rows */}
+                        <div className="flex flex-col gap-2">
+                          <PriceBarButton label="Semester Rent">
+                            {roomPriceLabel}
+                          </PriceBarButton>
+                          <PriceBarButton label="Direct Unlock Fee">
+                            <span>UGX {CONNECTION_FEE_UGX.toLocaleString()}</span>
+                            <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Once</span>
+                          </PriceBarButton>
                         </div>
 
                         <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 text-xs">
@@ -747,24 +755,16 @@ export default function ContactModal({
                           {offer.userName}
                         </h4>
 
-                        {/* 2 Independent Price Buttons (Room Rate & Fee) */}
-                        <div className="grid grid-cols-2 gap-2.5 mt-2.5">
-                          <div className="p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex flex-col items-center justify-center text-center">
-                            <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">Semester Rent</div>
-                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
-                              {roomPriceLabel}
-                            </div>
-                          </div>
-                          <div className="p-3 rounded-xl bg-[#0f3a98] text-white border border-[#0f3a98] shadow-xs flex flex-col items-center justify-center text-center">
-                            <div className="text-[10px] text-white/80 font-medium uppercase tracking-wide">
-                              {isCustodian ? 'Connection Status' : 'Broker Access Fee'}
-                            </div>
-                            <div className="text-xs sm:text-sm font-bold text-white mt-0.5">
-                              {isCustodian
-                                ? `Paid (UGX ${CONNECTION_FEE_UGX.toLocaleString()})`
-                                : (offer.accessFeeUgx > 0 ? formatUGX(offer.accessFeeUgx) : 'Free (No fee)')}
-                            </div>
-                          </div>
+                        {/* 2 Independent Horizontal Price Buttons on 2 Stacked Rows */}
+                        <div className="flex flex-col gap-2 mt-2.5">
+                          <PriceBarButton label="Semester Rent">
+                            {roomPriceLabel}
+                          </PriceBarButton>
+                          <PriceBarButton label={isCustodian ? 'Connection Status' : 'Broker Access Fee'}>
+                            {isCustodian
+                              ? `Paid (UGX ${CONNECTION_FEE_UGX.toLocaleString()})`
+                              : (offer.accessFeeUgx > 0 ? formatUGX(offer.accessFeeUgx) : 'Free (No fee)')}
+                          </PriceBarButton>
                         </div>
 
                         {/* Revealed Hostel Name and Direct Self-Approach Directions once unlocked */}
