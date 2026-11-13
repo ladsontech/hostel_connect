@@ -542,9 +542,11 @@ export default function AdvertisePage() {
                         : 'border-slate-200 hover:border-slate-300 bg-white text-slate-600'
                     }`}
                   >
-                    <div className="w-7 h-7 rounded-full bg-[#ffbe00] text-[#0f3a98] flex items-center justify-center font-bold text-xs shrink-0">
-                      M
-                    </div>
+                    <img
+                      src="/MTN%20mobile%20money.png"
+                      alt="MTN MoMo"
+                      className="h-7 w-auto max-w-[36px] object-contain rounded-sm shrink-0"
+                    />
                     <div className="text-left">
                       <div className="text-xs font-medium">MTN MoMo</div>
                       <div className="text-[10px] text-slate-400">Prompt sent to 077/078/076</div>
@@ -560,9 +562,11 @@ export default function AdvertisePage() {
                         : 'border-slate-200 hover:border-slate-300 bg-white text-slate-600'
                     }`}
                   >
-                    <div className="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
-                      A
-                    </div>
+                    <img
+                      src="/Airtel%20mobile%20money.jpg"
+                      alt="Airtel Money"
+                      className="w-7 h-7 object-cover rounded-lg shrink-0"
+                    />
                     <div className="text-left">
                       <div className="text-xs font-medium">Airtel Money</div>
                       <div className="text-[10px] text-slate-400">Prompt sent to 070/075/074</div>

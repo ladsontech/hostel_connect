@@ -685,7 +685,11 @@ export default function ContactModal({
                                       : 'border-slate-200 bg-white text-slate-600'
                                   }`}
                                 >
-                                  <span className="w-4 h-4 rounded-full bg-[#ffbe00] text-[#0f3a98] font-bold text-[10px] flex items-center justify-center">M</span>
+                                  <img
+                                    src="/MTN%20mobile%20money.png"
+                                    alt="MTN MoMo"
+                                    className="h-5 w-auto object-contain rounded-sm shrink-0"
+                                  />
                                   <span>MTN MoMo</span>
                                 </button>
 
@@ -698,7 +702,11 @@ export default function ContactModal({
                                       : 'border-slate-200 bg-white text-slate-600'
                                   }`}
                                 >
-                                  <span className="w-4 h-4 rounded-full bg-[#0f3a98] text-[#ffbe00] font-bold text-[10px] flex items-center justify-center">A</span>
+                                  <img
+                                    src="/Airtel%20mobile%20money.jpg"
+                                    alt="Airtel Money"
+                                    className="w-5 h-5 object-cover rounded-sm shrink-0"
+                                  />
                                   <span>Airtel Money</span>
                                 </button>
                               </div>

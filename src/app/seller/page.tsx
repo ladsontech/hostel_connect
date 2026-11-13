@@ -592,7 +592,11 @@ export default function SellerPortalPage() {
                             : 'border-slate-200 text-slate-600'
                         }`}
                       >
-                        <FaIcon icon="fa-solid fa-mobile-screen-button" className="text-xs text-[#ffbe00]" />
+                        <img
+                          src="/MTN%20mobile%20money.png"
+                          alt="MTN MoMo"
+                          className="h-5 w-auto object-contain rounded-sm shrink-0"
+                        />
                         MTN MoMo
                       </button>
                       <button
@@ -604,7 +608,11 @@ export default function SellerPortalPage() {
                             : 'border-slate-200 text-slate-600'
                         }`}
                       >
-                        <FaIcon icon="fa-solid fa-mobile-screen-button" className="text-xs text-rose-600" />
+                        <img
+                          src="/Airtel%20mobile%20money.jpg"
+                          alt="Airtel Money"
+                          className="w-5 h-5 object-cover rounded-sm shrink-0"
+                        />
                         Airtel Money
                       </button>
                     </div>
