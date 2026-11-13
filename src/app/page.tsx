@@ -476,13 +476,8 @@ export default function HomePage() {
           <div id="custodian-hostels" className="pt-2">
             <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3 mb-4">
               <div className="min-w-0 flex flex-col items-center sm:items-start">
-                <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#e8effc] text-[#0f3a98] border border-blue-200/60 shadow-2xs whitespace-nowrap">
-                    <FaIcon icon="fa-solid fa-shield-halved" className="text-[11px] text-[#ffbe00]" />
-                    <span>Direct Custodian Verified</span>
-                  </span>
-                  <span className="hidden sm:inline text-xs text-slate-300">•</span>
-                  <span className="hidden sm:inline text-xs text-slate-500 font-normal">Self-Approach • Zero Brokers</span>
+                <div className="hidden sm:flex items-center justify-start gap-2 mb-1">
+                  <span className="text-xs text-slate-500 font-normal">Self-Approach • Zero Brokers</span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight text-center sm:text-left">
                   Hostels Added by Custodians

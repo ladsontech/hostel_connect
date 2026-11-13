@@ -30,7 +30,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Default to Mary (Student)
-  const [currentUser, setCurrentUser] = useState<User | null>(INITIAL_USERS[4]);
+  const [currentUser, setCurrentUser] = useState<User | null>(
+    () => INITIAL_USERS.find(u => u.role === 'student') || INITIAL_USERS[6] || INITIAL_USERS[0]
+  );
 
   useEffect(() => {
     const saved = localStorage.getItem('hostel_connect_user');

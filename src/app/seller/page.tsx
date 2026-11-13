@@ -55,10 +55,12 @@ export default function SellerPortalPage() {
   const [updateMsg, setUpdateMsg] = useState('');
 
   useEffect(() => {
-    if (currentUser?.role === 'student') {
-      switchRole('custodian');
+    if (currentUser?.role === 'broker') {
+      setSelectedPlanId('plan_broker_starter');
+    } else if (currentUser?.role === 'custodian') {
+      setSelectedPlanId('plan_custodian_standard');
     }
-  }, [currentUser]);
+  }, [currentUser?.role]);
 
   const loadData = async () => {
     try {
@@ -221,7 +223,57 @@ export default function SellerPortalPage() {
       }} />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 space-y-6">
-        
+        {/* Role Gate when logged in as Student (shows the real difference vs Broker & Custodian) */}
+        {(!currentUser || currentUser.role === 'student') ? (
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 text-center max-w-2xl mx-auto space-y-5 shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-[#e8effc] text-[#0f3a98] mx-auto flex items-center justify-center border border-blue-200">
+              <FaIcon icon="fa-solid fa-graduation-cap" className="text-2xl text-[#0f3a98]" />
+            </div>
+            <div className="space-y-1.5">
+              <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#e8effc] text-[#0f3a98]">
+                {currentUser ? `Signed in as ${currentUser.name} (Student)` : 'Not Signed In'}
+              </span>
+              <h1 className="text-xl sm:text-2xl font-semibold text-[#0f3a98]">
+                Student Account View vs Broker &amp; Custodian Portals
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
+                Students browse hostels, compare rooms, pay connection fees, and schedule room inspections. Listing management &amp; analytics are separated into Broker and Custodian portals.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              <a
+                href="/"
+                className="p-3.5 rounded-xl border border-blue-200 bg-[#e8effc]/60 hover:bg-[#e8effc] text-[#0f3a98] text-xs font-semibold flex flex-col items-center gap-1 transition"
+              >
+                <FaIcon icon="fa-solid fa-magnifying-glass" className="text-base text-[#0f3a98]" />
+                <span>Stay in Student View</span>
+                <span className="text-[10px] font-normal text-slate-600">Browse &amp; Book Hostels</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={() => switchRole('broker')}
+                className="p-3.5 rounded-xl border border-[#ffbe00] bg-[#ffbe00]/15 hover:bg-[#ffbe00]/25 text-[#0f3a98] text-xs font-semibold flex flex-col items-center gap-1 transition"
+              >
+                <FaIcon icon="fa-solid fa-person-walking" className="text-base text-[#0f3a98]" />
+                <span>Switch to Broker</span>
+                <span className="text-[10px] font-normal text-slate-600">Inspection Offers &amp; Leads</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => switchRole('custodian')}
+                className="p-3.5 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-semibold flex flex-col items-center gap-1 shadow-sm transition"
+              >
+                <FaIcon icon="fa-solid fa-hotel" className="text-base text-[#ffbe00]" />
+                <span>Switch to Custodian</span>
+                <span className="text-[10px] font-normal text-blue-100">Room Vacancy &amp; Owner Portal</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+        <>
         {/* Top Seller Banner */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
           <div>
@@ -847,6 +899,8 @@ export default function SellerPortalPage() {
               </button>
             </form>
           </div>
+        )}
+        </>
         )}
 
       </main>

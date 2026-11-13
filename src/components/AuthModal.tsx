@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { UserRole } from '@/types';
 import FaIcon from './FaIcon';
@@ -12,7 +13,8 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalProps) {
-  const { loginWithCredentials, loginWithGoogle, registerUser } = useAuth();
+  const router = useRouter();
+  const { currentUser, switchRole, loginWithCredentials, loginWithGoogle, registerUser } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   
   // Login fields
@@ -111,6 +113,17 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     }
   };
 
+  const handleQuickRoleLogin = (targetRole: 'student' | 'broker' | 'custodian') => {
+    setError('');
+    switchRole(targetRole);
+    onClose();
+    if (targetRole === 'student') {
+      router.push('/');
+    } else {
+      router.push('/seller');
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center py-6 sm:py-8 animate-in fade-in">
       <div className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 flex flex-col font-sans max-h-[90vh] my-auto overflow-hidden">
@@ -181,6 +194,89 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
           {/* ================= LOGIN MODE ================= */}
           {mode === 'login' ? (
             <div className="space-y-4">
+              {/* 3 Quick Demo Account Login Buttons (Student / Broker / Custodian) */}
+              <div className="p-3 rounded-2xl bg-[#e8effc]/70 border border-blue-200/80 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-[#0f3a98] flex items-center gap-1.5">
+                    <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-[#ffbe00]" />
+                    <span>Instant Role Login (Demo)</span>
+                  </span>
+                  <span className="text-[10px] text-[#0f3a98]/70 font-medium">1-Click Switch</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickRoleLogin('student')}
+                    className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition-all shadow-2xs ${
+                      currentUser?.role === 'student'
+                        ? 'bg-[#0f3a98] border-[#0f3a98] text-white ring-2 ring-[#ffbe00]'
+                        : 'bg-white border-blue-200 hover:border-[#0f3a98] text-[#0f3a98]'
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      currentUser?.role === 'student' ? 'bg-white/15 text-[#ffbe00]' : 'bg-[#e8effc] text-[#0f3a98]'
+                    }`}>
+                      <FaIcon icon="fa-solid fa-graduation-cap" className="text-sm" />
+                    </div>
+                    <span className="text-xs font-semibold leading-tight">Student</span>
+                    <span className={`text-[10px] leading-tight ${
+                      currentUser?.role === 'student' ? 'text-blue-100' : 'text-slate-500'
+                    }`}>
+                      Browse &amp; Book
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickRoleLogin('broker')}
+                    className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition-all shadow-2xs ${
+                      currentUser?.role === 'broker'
+                        ? 'bg-[#0f3a98] border-[#0f3a98] text-white ring-2 ring-[#ffbe00]'
+                        : 'bg-[#ffbe00]/15 border-[#ffbe00] hover:bg-[#ffbe00]/25 text-[#0f3a98]'
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      currentUser?.role === 'broker' ? 'bg-[#ffbe00] text-[#0f3a98]' : 'bg-[#ffbe00] text-[#0f3a98]'
+                    }`}>
+                      <FaIcon icon="fa-solid fa-person-walking" className="text-sm" />
+                    </div>
+                    <span className="text-xs font-semibold leading-tight">Broker</span>
+                    <span className={`text-[10px] leading-tight ${
+                      currentUser?.role === 'broker' ? 'text-blue-100' : 'text-[#0f3a98]/80'
+                    }`}>
+                      Scout &amp; Fees
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickRoleLogin('custodian')}
+                    className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition-all shadow-2xs ${
+                      currentUser?.role === 'custodian'
+                        ? 'bg-[#0f3a98] border-[#0f3a98] text-white ring-2 ring-[#ffbe00]'
+                        : 'bg-white border-blue-200 hover:border-[#0f3a98] text-[#0f3a98]'
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      currentUser?.role === 'custodian' ? 'bg-white/15 text-[#ffbe00]' : 'bg-[#0f3a98] text-[#ffbe00]'
+                    }`}>
+                      <FaIcon icon="fa-solid fa-hotel" className="text-sm" />
+                    </div>
+                    <span className="text-xs font-semibold leading-tight">Custodian</span>
+                    <span className={`text-[10px] leading-tight ${
+                      currentUser?.role === 'custodian' ? 'text-blue-100' : 'text-slate-500'
+                    }`}>
+                      Owner Portal
+                    </span>
+                  </button>
+                </div>
+
+                <p className="text-[10px] text-[#0f3a98]/80 text-center font-normal leading-snug">
+                  Pick a role to log straight in and compare Student, Broker, and Custodian views.
+                </p>
+              </div>
+
               {/* One-Click Google Authentication (Only in Login) */}
               <button
                 type="button"

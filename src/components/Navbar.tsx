@@ -102,6 +102,27 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
           </Link>
           {currentUser ? (
             <div className="hidden md:flex items-center gap-2.5">
+              {(currentUser.role === 'custodian' || currentUser.role === 'broker') && (
+                <Link
+                  href="/seller"
+                  className="px-3 py-1.5 rounded-lg bg-[#e8effc] hover:bg-blue-100 text-[#0f3a98] text-xs font-medium border border-blue-200 transition flex items-center gap-1.5"
+                >
+                  <FaIcon
+                    icon={currentUser.role === 'custodian' ? 'fa-solid fa-hotel' : 'fa-solid fa-person-walking'}
+                    className="text-xs text-[#0f3a98]"
+                  />
+                  <span>{currentUser.role === 'custodian' ? 'Custodian Portal' : 'Broker Portal'}</span>
+                </Link>
+              )}
+              {currentUser.role === 'admin' && (
+                <Link
+                  href="/admin"
+                  className="px-3 py-1.5 rounded-lg bg-[#e8effc] hover:bg-blue-100 text-[#0f3a98] text-xs font-medium border border-blue-200 transition flex items-center gap-1.5"
+                >
+                  <FaIcon icon="fa-solid fa-shield-halved" className="text-xs text-[#0f3a98]" />
+                  <span>Admin Panel</span>
+                </Link>
+              )}
               <div className="text-right">
                 <div className="text-xs font-medium text-slate-900 flex items-center justify-end gap-1.5">
                   {currentUser.name}
@@ -116,6 +137,16 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
                   )}
                 </div>
               </div>
+              {onOpenAuth && (
+                <button
+                  onClick={() => onOpenAuth('login')}
+                  title="Switch Account Role"
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-[#0f3a98] text-[#0f3a98] hover:bg-[#e8effc] text-xs font-medium transition flex items-center gap-1"
+                >
+                  <FaIcon icon="fa-solid fa-repeat" className="text-[11px]" />
+                  <span>Switch</span>
+                </button>
+              )}
               <button
                 onClick={logout}
                 title="Log out"
@@ -175,17 +206,45 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
                   </div>
                 </div>
 
-                <button
-                  onClick={() => {
-                    logout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-3 py-1.5 rounded-lg border border-blue-200 bg-white text-[#0f3a98] text-xs font-medium flex items-center gap-1.5 hover:bg-blue-50 transition"
-                >
-                  <FaIcon icon="fa-solid fa-right-from-bracket" className="text-xs" />
-                  <span>Log out</span>
-                </button>
+                <div className="flex items-center gap-1.5">
+                  {onOpenAuth && (
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        onOpenAuth('login');
+                      }}
+                      className="px-2.5 py-1.5 rounded-lg bg-[#0f3a98] text-white text-xs font-medium flex items-center gap-1 hover:bg-[#0a2666] transition"
+                    >
+                      <FaIcon icon="fa-solid fa-repeat" className="text-[11px] text-[#ffbe00]" />
+                      <span>Switch</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg border border-blue-200 bg-white text-[#0f3a98] text-xs font-medium flex items-center gap-1 hover:bg-blue-50 transition"
+                  >
+                    <FaIcon icon="fa-solid fa-right-from-bracket" className="text-xs" />
+                    <span>Log out</span>
+                  </button>
+                </div>
               </div>
+
+              {(currentUser.role === 'custodian' || currentUser.role === 'broker') && (
+                <Link
+                  href="/seller"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-2.5 px-4 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-sm font-medium shadow-sm transition flex items-center justify-center gap-2"
+                >
+                  <FaIcon
+                    icon={currentUser.role === 'custodian' ? 'fa-solid fa-hotel' : 'fa-solid fa-person-walking'}
+                    className="text-xs text-[#ffbe00]"
+                  />
+                  <span>{currentUser.role === 'custodian' ? 'Open Custodian Portal' : 'Open Broker Portal'}</span>
+                </Link>
+              )}
             </div>
           ) : (
             <div className="flex flex-col gap-2">
