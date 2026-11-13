@@ -726,25 +726,22 @@ export default function ContactModal({
                     <div className="flex items-start justify-between gap-3">
                       <div className="w-full">
                         {/* Role Badges */}
-                        <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                          {isCustodian ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#0f3a98] text-white">
-                              <FaIcon icon="fa-solid fa-circle-check" className="text-[10px] text-[#ffbe00]" />
-                              <span>Official Custodian / Owner Unlocked</span>
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#ffbe00] text-[#0f3a98]">
-                              <FaIcon icon="fa-solid fa-person-walking" className="text-[11px]" />
-                              <span>Campus Broker (Trek & Guide)</span>
-                            </span>
-                          )}
+                        {(isCustodian || offer.responseRatePct) && (
+                          <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                            {isCustodian && (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#0f3a98] text-white">
+                                <FaIcon icon="fa-solid fa-circle-check" className="text-[10px] text-[#ffbe00]" />
+                                <span>Official Custodian / Owner Unlocked</span>
+                              </span>
+                            )}
 
-                          {offer.responseRatePct && (
-                            <span className="text-[11px] text-[#0f3a98]/80 font-medium">
-                              • {offer.responseRatePct}% response rate
-                            </span>
-                          )}
-                        </div>
+                            {offer.responseRatePct && (
+                              <span className="text-[11px] text-[#0f3a98]/80 font-medium">
+                                {isCustodian ? '• ' : ''}{offer.responseRatePct}% response rate
+                              </span>
+                            )}
+                          </div>
+                        )}
 
                         <h4 className="font-semibold text-[#0f3a98] text-sm sm:text-base">
                           {offer.userName}
