@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
 import { formatUGX, getPhoneDialerLink, getWhatsAppDeepLink } from '@/lib/utils';
@@ -535,9 +535,34 @@ export default function ContactModal({
           ])
     : hostelOffers.filter(o => o.userRole === 'broker');
 
+  // Minimum duration for the live broker search screen before displaying matched results & price
+  const BROKER_SEARCH_MIN_DURATION_MS = 10000;
+  const searchTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const clearSearchTimers = () => {
+    searchTimersRef.current.forEach(clearTimeout);
+    searchTimersRef.current = [];
+  };
+
+  const runBrokerSearchSequence = () => {
+    clearSearchTimers();
+    setBrokerSearchState('searching');
+    setSearchStep(0);
+
+    searchTimersRef.current = [
+      setTimeout(() => setSearchStep(1), 2500),
+      setTimeout(() => setSearchStep(2), 5200),
+      setTimeout(() => setSearchStep(3), 8000),
+      setTimeout(() => setBrokerSearchState('matched'), BROKER_SEARCH_MIN_DURATION_MS),
+    ];
+  };
+
   // Run the live searching-for-broker animation for EVERY hostel whenever the modal opens (unless already unlocked)
   useEffect(() => {
-    if (!isOpen || !hostel) return;
+    if (!isOpen || !hostel) {
+      clearSearchTimers();
+      return;
+    }
 
     setPaymentStep('form');
     setErrorMsg('');
@@ -557,26 +582,16 @@ export default function ContactModal({
     }
 
     if (alreadyUnlocked) {
+      clearSearchTimers();
       setBrokerSearchState('matched');
       setSearchStep(3);
       return;
     }
 
-    setBrokerSearchState('searching');
-    setSearchStep(0);
-
-    const step1 = setTimeout(() => setSearchStep(1), 650);
-    const step2 = setTimeout(() => setSearchStep(2), 1350);
-    const step3 = setTimeout(() => setSearchStep(3), 2050);
-    const finish = setTimeout(() => {
-      setBrokerSearchState('matched');
-    }, 2700);
+    runBrokerSearchSequence();
 
     return () => {
-      clearTimeout(step1);
-      clearTimeout(step2);
-      clearTimeout(step3);
-      clearTimeout(finish);
+      clearSearchTimers();
     };
   }, [isOpen, hostel?.id]);
 
@@ -584,12 +599,7 @@ export default function ContactModal({
 
   const triggerManualBrokerSearch = () => {
     setMatchedBrokerIndex((prev) => (prev + 1) % verifiedBrokers.length);
-    setBrokerSearchState('searching');
-    setSearchStep(0);
-    setTimeout(() => setSearchStep(1), 550);
-    setTimeout(() => setSearchStep(2), 1150);
-    setTimeout(() => setSearchStep(3), 1750);
-    setTimeout(() => setBrokerSearchState('matched'), 2350);
+    runBrokerSearchSequence();
   };
 
   const handlePayConnectionFee = (e: React.FormEvent) => {
