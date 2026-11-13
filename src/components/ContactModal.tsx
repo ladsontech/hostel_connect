@@ -14,6 +14,74 @@ interface ContactModalProps {
   onRequireAuth: () => void;
 }
 
+const DEFAULT_BROKER_AVATARS = [
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+  'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=256&q=80',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80',
+];
+
+/** Circular avatar for hostel brokers and custodians with graceful initials fallback. */
+function BrokerAvatar({
+  name,
+  avatarUrl,
+  isCustodian = false,
+}: {
+  name: string;
+  avatarUrl?: string;
+  isCustodian?: boolean;
+}) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const initials = name
+    .replace(/\(.*?\)/g, '')
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((n) => n[0]?.toUpperCase() ?? '')
+    .join('');
+
+  return (
+    <div className="relative shrink-0">
+      {avatarUrl && !imgFailed ? (
+        <img
+          src={avatarUrl}
+          alt={name}
+          onError={() => setImgFailed(true)}
+          className="w-14 h-14 rounded-full object-cover border-2 border-[#ffbe00] shadow-md bg-white"
+        />
+      ) : (
+        <div className="w-14 h-14 rounded-full bg-white text-[#0f3a98] font-bold text-sm flex items-center justify-center border-2 border-[#ffbe00] shadow-md">
+          {isCustodian ? <FaIcon icon="fa-solid fa-shield-halved" className="text-lg text-[#0f3a98]" /> : initials}
+        </div>
+      )}
+      <div
+        className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#ffbe00] border-2 border-[#0f3a98] flex items-center justify-center text-[9px] text-[#0f3a98] shadow-xs"
+        title="Verified Member"
+      >
+        <FaIcon icon={isCustodian ? 'fa-solid fa-shield-halved' : 'fa-solid fa-check'} />
+      </div>
+    </div>
+  );
+}
+
+/** Pill badge clearly showing whether the broker is a student or communal resident. */
+function ResidentTypeBadge({ residentType }: { residentType?: 'student' | 'communal' }) {
+  const isStudent = residentType === 'student';
+  return (
+    <span
+      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap shadow-xs ${
+        isStudent ? 'bg-[#ffbe00] text-[#0f3a98]' : 'bg-white text-[#0f3a98]'
+      }`}
+    >
+      <FaIcon
+        icon={isStudent ? 'fa-solid fa-graduation-cap' : 'fa-solid fa-house-user'}
+        className={`text-[9px] ${isStudent ? 'text-[#0f3a98]' : 'text-[#ffbe00]'}`}
+      />
+      <span>{isStudent ? 'Student Broker' : 'Communal Resident'}</span>
+    </span>
+  );
+}
+
 /** Horizontal theme-blue pill button displaying a pricing label and amount on one line. */
 function PriceBarButton({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -58,6 +126,8 @@ export default function ContactModal({
     {
       name: 'Brian Mukasa',
       title: 'Senior Campus Scout',
+      residentType: 'student' as const,
+      avatarUrl: DEFAULT_BROKER_AVATARS[0],
       phone: '+256701234567',
       whatsapp: '256701234567',
       rating: 4.9,
@@ -72,6 +142,8 @@ export default function ContactModal({
     {
       name: 'Brenda Ainembabye',
       title: 'Lead Student Guide',
+      residentType: 'student' as const,
+      avatarUrl: DEFAULT_BROKER_AVATARS[1],
       phone: '+256772345678',
       whatsapp: '256772345678',
       rating: 4.8,
@@ -86,6 +158,8 @@ export default function ContactModal({
     {
       name: 'Ronald Ssempa',
       title: 'Vetted Area Coordinator',
+      residentType: 'communal' as const,
+      avatarUrl: DEFAULT_BROKER_AVATARS[2],
       phone: '+256705678901',
       whatsapp: '256705678901',
       rating: 4.9,
@@ -427,62 +501,22 @@ export default function ContactModal({
           ) : effectiveOffers.length === 0 ? (
             /* STEP 2A: Matched Campus Scout Fallback (Non-Custodian Hostels without seeded broker offers) */
             <div className="space-y-3.5 animate-in fade-in duration-300 font-sans">
-              {/* Theme Match Banner */}
-              <div className="bg-[#e8effc] border border-blue-200 p-2.5 rounded-xl flex items-center justify-between gap-2 text-xs text-[#0f3a98] font-medium">
-                <div className="flex items-center gap-2 min-w-0">
-                  <FaIcon icon="fa-solid fa-circle-check" className="text-[#0f3a98] text-sm shrink-0" />
-                  <span className="truncate">Nearest Verified Campus Broker Matched!</span>
-                </div>
-                <span className="text-[10px] bg-[#ffbe00] px-2.5 py-0.5 rounded-full text-[#0f3a98] font-semibold shrink-0">
-                  {activeScout.distance}
-                </span>
-              </div>
-
-              {/* Price Display Box (Room Rate & Broker Fee) */}
-              <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#e8effc]/60 border border-blue-200">
-                <div>
-                  <div className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">Semester Rent</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#0f3a98] mt-0.5">
-                    {roomPriceLabel}
-                  </div>
-                </div>
-                <div className="border-l border-blue-200/80 pl-3">
-                  <div className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">Broker Viewing Fee</div>
-                  <div className="text-xs sm:text-sm font-bold text-[#0f3a98] mt-0.5 flex items-center gap-1.5">
-                    <span>{formatUGX(activeScout.accessFeeUgx)}</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Trek</span>
-                  </div>
-                </div>
-              </div>
-
               {/* Broker Card */}
-              <div className="rounded-2xl border-2 border-[#0f3a98] bg-white overflow-hidden shadow-sm">
-                {/* Top Header */}
-                <div className="bg-[#0f3a98] p-3.5 sm:p-4 text-white flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <div className="w-11 h-11 rounded-full bg-white text-[#0f3a98] font-bold text-sm flex items-center justify-center border-2 border-[#ffbe00] shadow-sm">
-                        {activeScout.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#ffbe00] border-2 border-[#0f3a98] flex items-center justify-center text-[9px] text-[#0f3a98]" title="Active on campus">
-                        <FaIcon icon="fa-solid fa-check" />
-                      </div>
-                    </div>
+              <div className="rounded-2xl border-2 border-[#0f3a98] bg-white overflow-hidden shadow-md">
+                {/* Top Profile Header */}
+                <div className="bg-[#0f3a98] p-4 text-white flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <BrokerAvatar name={activeScout.name} avatarUrl={activeScout.avatarUrl} />
 
-                    <div>
+                    <div className="min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <h4 className="font-medium text-white text-sm sm:text-base">
+                        <h4 className="font-semibold text-white text-sm sm:text-base truncate">
                           {activeScout.name}
                         </h4>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#ffbe00] text-[#0f3a98] flex items-center gap-1">
-                          <FaIcon icon="fa-solid fa-award" className="text-[9px]" />
-                          Verified Scout
-                        </span>
                       </div>
-                      <div className="text-[11px] text-blue-200 flex items-center gap-2 mt-0.5">
-                        <span>{activeScout.title}</span>
-                        <span>•</span>
-                        <span className="flex items-center text-[#ffbe00] font-medium">
+                      <div className="flex items-center gap-2 flex-wrap mt-1">
+                        <ResidentTypeBadge residentType={activeScout.residentType} />
+                        <span className="flex items-center text-[11px] text-[#ffbe00] font-medium">
                           <FaIcon icon="fa-solid fa-star" className="text-[10px] mr-1" />
                           {activeScout.rating} ({activeScout.reviews} tours)
                         </span>
@@ -491,8 +525,20 @@ export default function ContactModal({
                   </div>
                 </div>
 
-                {/* Proximity & ETA Grid */}
-                <div className="p-3.5 sm:p-4 space-y-3 bg-[#f8fafc]">
+                {/* Card Body */}
+                <div className="p-4 space-y-3 bg-[#f8fafc]">
+                  {/* 2 Independent Horizontal Price Buttons */}
+                  <div className="flex flex-col gap-2">
+                    <PriceBarButton label="Semester Rent">
+                      {roomPriceLabel}
+                    </PriceBarButton>
+                    <PriceBarButton label="Broker Viewing Fee">
+                      <span>{formatUGX(activeScout.accessFeeUgx)}</span>
+                      <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Trek</span>
+                    </PriceBarButton>
+                  </div>
+
+                  {/* Proximity & ETA Grid */}
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="bg-white p-2.5 rounded-xl border border-blue-100">
                       <div className="text-[10px] text-slate-400 font-medium uppercase">Campus Distance</div>
@@ -725,100 +771,116 @@ export default function ContactModal({
                 return (
                   <div
                     key={offer.id}
-                    className={`p-4 rounded-2xl border-2 transition space-y-3 ${
-                      isCustodian
-                        ? 'border-[#0f3a98] bg-[#e8effc]/30 shadow-xs'
-                        : 'border-[#0f3a98] bg-white shadow-xs'
-                    }`}
+                    className="rounded-2xl border-2 border-[#0f3a98] bg-white overflow-hidden shadow-md transition"
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="w-full">
-                        {/* Role Badges */}
-                        {(isCustodian || offer.responseRatePct) && (
-                          <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                            {isCustodian && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#0f3a98] text-white">
-                                <FaIcon icon="fa-solid fa-circle-check" className="text-[10px] text-[#ffbe00]" />
-                                <span>Official Custodian / Owner Unlocked</span>
+                    {/* Rich Theme-Blue Profile Header */}
+                    <div className="bg-[#0f3a98] p-4 text-white flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <BrokerAvatar
+                          name={offer.userName}
+                          avatarUrl={offer.avatarUrl || (!isCustodian ? DEFAULT_BROKER_AVATARS[0] : undefined)}
+                          isCustodian={isCustodian}
+                        />
+
+                        <div className="min-w-0">
+                          <h4 className="font-semibold text-white text-sm sm:text-base leading-snug truncate">
+                            {offer.userName}
+                          </h4>
+
+                          <div className="flex items-center gap-2 flex-wrap mt-1">
+                            {isCustodian ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#ffbe00] text-[#0f3a98] whitespace-nowrap">
+                                <FaIcon icon="fa-solid fa-circle-check" className="text-[9px]" />
+                                <span>Official Custodian</span>
                               </span>
+                            ) : (
+                              <ResidentTypeBadge residentType={offer.residentType ?? 'communal'} />
                             )}
 
                             {offer.responseRatePct && (
-                              <span className="text-[11px] text-[#0f3a98]/80 font-medium">
-                                {isCustodian ? '• ' : ''}{offer.responseRatePct}% response rate
+                              <span className="text-[11px] text-blue-200 font-medium whitespace-nowrap">
+                                • {offer.responseRatePct}% response rate
                               </span>
                             )}
                           </div>
-                        )}
-
-                        <h4 className="font-semibold text-[#0f3a98] text-sm sm:text-base">
-                          {offer.userName}
-                        </h4>
-
-                        {/* 2 Independent Horizontal Price Buttons on 2 Stacked Rows */}
-                        <div className="flex flex-col gap-2 mt-2.5">
-                          <PriceBarButton label="Semester Rent">
-                            {roomPriceLabel}
-                          </PriceBarButton>
-                          <PriceBarButton label={isCustodian ? 'Connection Status' : 'Broker Access Fee'}>
-                            {isCustodian
-                              ? `Paid (UGX ${CONNECTION_FEE_UGX.toLocaleString()})`
-                              : (offer.accessFeeUgx > 0 ? formatUGX(offer.accessFeeUgx) : 'Free (No fee)')}
-                          </PriceBarButton>
                         </div>
-
-                        {/* Revealed Hostel Name and Direct Self-Approach Directions once unlocked */}
-                        {isCustodian && isUnlocked && (
-                          <div className="space-y-1.5 mt-2.5 p-3 rounded-xl bg-[#e8effc] border border-blue-200">
-                            <div className="text-xs text-[#0f3a98] font-medium flex items-center gap-1.5">
-                              <FaIcon icon="fa-solid fa-building" className="text-xs text-[#0f3a98]" />
-                              <span>Official Hostel Name: <strong>{hostel.name}</strong></span>
-                            </div>
-                            <div className="text-xs text-slate-700 flex items-center gap-1.5">
-                              <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#ffbe00]" />
-                              <span>Direct Address: <strong>{hostel.landmark} ({hostel.area})</strong></span>
-                            </div>
-                            <div className="text-[11px] text-[#0f3a98] bg-[#ffbe00]/25 px-2.5 py-1 rounded-lg font-medium flex items-center gap-1.5 mt-1">
-                              <FaIcon icon="fa-solid fa-circle-check" className="text-[10px] text-[#0f3a98]" />
-                              <span>Direct approach: You can now walk directly to the hostel desk yourself or call/WhatsApp below.</span>
-                            </div>
-                          </div>
-                        )}
-
-                        {paymentRef && isCustodian && (
-                          <div className="mt-2 text-[11px] text-[#0f3a98] font-medium">
-                            Receipt Ref: <span className="font-mono">{paymentRef}</span>
-                          </div>
-                        )}
-
-                        {offer.notes && (
-                          <p className="text-xs text-slate-500 mt-2 italic">"{offer.notes}"</p>
-                        )}
                       </div>
                     </div>
 
-                    {/* Actions (Fully active and unlocked) */}
-                    <div className="pt-3 border-t border-blue-100 flex items-center justify-between gap-2 flex-wrap">
-                      <div className="text-xs text-[#0f3a98] font-mono font-semibold">
-                        {offer.contactPhone}
+                    {/* Card Body */}
+                    <div className="p-4 space-y-3 bg-[#f8fafc]">
+                      {/* 2 Independent Horizontal Price Buttons on 2 Stacked Rows */}
+                      <div className="flex flex-col gap-2">
+                        <PriceBarButton label="Semester Rent">
+                          {roomPriceLabel}
+                        </PriceBarButton>
+                        <PriceBarButton label={isCustodian ? 'Connection Status' : 'Broker Access Fee'}>
+                          {isCustodian
+                            ? `Paid (UGX ${CONNECTION_FEE_UGX.toLocaleString()})`
+                            : (offer.accessFeeUgx > 0 ? formatUGX(offer.accessFeeUgx) : 'Free (No fee)')}
+                        </PriceBarButton>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleInitiateAction(offer, 'call')}
-                          className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 transition shadow-sm"
-                        >
-                          <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
-                          <span>Call</span>
-                        </button>
+                      {/* Revealed Hostel Name and Direct Self-Approach Directions once unlocked */}
+                      {isCustodian && isUnlocked && (
+                        <div className="space-y-1.5 p-3 rounded-xl bg-white border border-blue-100">
+                          <div className="text-xs text-[#0f3a98] font-medium flex items-center gap-1.5">
+                            <FaIcon icon="fa-solid fa-building" className="text-xs text-[#0f3a98]" />
+                            <span>Official Hostel Name: <strong>{hostel.name}</strong></span>
+                          </div>
+                          <div className="text-xs text-slate-700 flex items-center gap-1.5">
+                            <FaIcon icon="fa-solid fa-location-dot" className="text-xs text-[#ffbe00]" />
+                            <span>Direct Address: <strong>{hostel.landmark} ({hostel.area})</strong></span>
+                          </div>
+                          <div className="text-[11px] text-[#0f3a98] bg-[#ffbe00]/25 px-2.5 py-1 rounded-lg font-medium flex items-center gap-1.5 mt-1">
+                            <FaIcon icon="fa-solid fa-circle-check" className="text-[10px] text-[#0f3a98]" />
+                            <span>Direct approach: You can now walk directly to the hostel desk yourself or call/WhatsApp below.</span>
+                          </div>
+                        </div>
+                      )}
 
-                        <button
-                          onClick={() => handleInitiateAction(offer, 'whatsapp')}
-                          className="px-3.5 py-1.5 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-medium flex items-center gap-1.5 transition shadow-sm"
-                        >
-                          <FaIcon icon="fa-brands fa-whatsapp" className="text-xs text-white" />
-                          <span>{isCustodian ? 'WhatsApp' : 'WhatsApp & Trek'}</span>
-                        </button>
+                      {paymentRef && isCustodian && (
+                        <div className="text-[11px] text-[#0f3a98] font-medium px-1">
+                          Receipt Ref: <span className="font-mono">{paymentRef}</span>
+                        </div>
+                      )}
+
+                      {offer.notes && (
+                        <div className="bg-white p-3 rounded-xl border border-blue-100 flex items-start gap-2.5 text-xs text-slate-600">
+                          <FaIcon icon="fa-solid fa-quote-left" className="text-[#ffbe00] text-xs mt-0.5 shrink-0" />
+                          <p className="italic leading-relaxed">{offer.notes}</p>
+                        </div>
+                      )}
+
+                      {/* Direct Phone & Action Buttons */}
+                      <div className="pt-1 space-y-2.5">
+                        <div className="bg-white px-3 py-2 rounded-xl border border-blue-100 flex items-center justify-between gap-2 text-xs">
+                          <span className="text-slate-500 font-medium flex items-center gap-1.5">
+                            <FaIcon icon="fa-solid fa-phone-volume" className="text-[#ffbe00] text-xs" />
+                            <span>Direct Line</span>
+                          </span>
+                          <span className="text-[#0f3a98] font-mono font-semibold">
+                            {offer.contactPhone}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            onClick={() => handleInitiateAction(offer, 'call')}
+                            className="py-2.5 px-3 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition shadow-sm"
+                          >
+                            <FaIcon icon="fa-solid fa-phone" className="text-xs text-[#ffbe00]" />
+                            <span>Call</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleInitiateAction(offer, 'whatsapp')}
+                            className="py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-medium flex items-center justify-center gap-1.5 transition shadow-sm whitespace-nowrap"
+                          >
+                            <FaIcon icon="fa-brands fa-whatsapp" className="text-sm text-white" />
+                            <span>{isCustodian ? 'WhatsApp' : 'WhatsApp & Trek'}</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

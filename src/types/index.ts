@@ -86,6 +86,8 @@ export interface Offer {
   whatsapp: string;
   status: 'active' | 'hidden';
   notes?: string;
+  avatarUrl?: string;
+  residentType?: 'student' | 'communal';
   createdAt: string;
   responseRatePct: number;
 }

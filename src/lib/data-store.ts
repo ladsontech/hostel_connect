@@ -766,6 +766,8 @@ export const INITIAL_OFFERS: Offer[] = [
     whatsapp: '+256755888999',
     status: 'active',
     notes: 'Can guide you to available rooms and introduce to caretaker.',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+    residentType: 'communal',
     createdAt: '2026-01-18T14:30:00Z',
     responseRatePct: 88
   }
