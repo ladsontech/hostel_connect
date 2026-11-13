@@ -55,12 +55,12 @@ export default function SellerPortalPage() {
   const [updateMsg, setUpdateMsg] = useState('');
 
   useEffect(() => {
-    if (currentUser?.role === 'broker') {
-      setSelectedPlanId('plan_broker_starter');
+    if (currentUser?.role === 'broker' && activeTab === 'subscription') {
+      setActiveTab('listings');
     } else if (currentUser?.role === 'custodian') {
       setSelectedPlanId('plan_custodian_standard');
     }
-  }, [currentUser?.role]);
+  }, [currentUser?.role, activeTab]);
 
   const loadData = async () => {
     try {
@@ -287,7 +287,7 @@ export default function SellerPortalPage() {
             </p>
           </div>
 
-          {/* Quick tab switcher (2x2 clean grid on mobile, inline bar on desktop) */}
+          {/* Quick tab switcher (brokers list free with 3 tabs; custodians see Subscription & MoMo too) */}
           <div className="w-full lg:w-auto grid grid-cols-2 sm:inline-flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl text-xs font-medium shrink-0">
             <button
               onClick={() => setActiveTab('listings')}
@@ -305,17 +305,21 @@ export default function SellerPortalPage() {
             >
               Lead Analytics
             </button>
-            <button
-              onClick={() => setActiveTab('subscription')}
-              className={`px-3 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
-                activeTab === 'subscription' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Subscription &amp; MoMo
-            </button>
+            {currentUser?.role === 'custodian' && (
+              <button
+                onClick={() => setActiveTab('subscription')}
+                className={`px-3 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
+                  activeTab === 'subscription' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Subscription &amp; MoMo
+              </button>
+            )}
             <button
               onClick={() => setActiveTab('add')}
-              className="px-3 py-2.5 sm:py-2 rounded-lg bg-[#ffbe00] hover:bg-[#e5aa00] text-[#0f3a98] font-semibold transition flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap"
+              className={`px-3 py-2.5 sm:py-2 rounded-lg bg-[#ffbe00] hover:bg-[#e5aa00] text-[#0f3a98] font-semibold transition flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap ${
+                currentUser?.role === 'broker' ? 'col-span-2 sm:col-span-1' : ''
+              }`}
             >
               <FaIcon icon="fa-solid fa-plus" className="text-xs" />
               <span>Add Hostel</span>
@@ -537,15 +541,15 @@ export default function SellerPortalPage() {
           </div>
         )}
 
-        {/* TAB 3: SUBSCRIPTION & MOMO PAYMENT */}
-        {activeTab === 'subscription' && (
+        {/* TAB 3: CUSTODIAN SUBSCRIPTION & MOMO PAYMENT (Brokers join and list free) */}
+        {activeTab === 'subscription' && currentUser?.role === 'custodian' && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-xl font-medium text-[#0f3a98]">Per-Semester Subscription</h2>
+                  <h2 className="text-xl font-medium text-[#0f3a98]">Custodian Semester Pass</h2>
                   <p className="text-xs text-slate-500 font-medium">
-                    Hostel Connect collects semester subscriptions from sellers. Students are never charged.
+                    Semester subscriptions apply only to official hostel custodians. Brokers and students join free.
                   </p>
                 </div>
 
@@ -569,9 +573,9 @@ export default function SellerPortalPage() {
                 </div>
               )}
 
-              {/* Plans Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                {plans.map(plan => {
+              {/* Plans Grid (Custodian plans only — brokers list for free) */}
+              <div className="grid grid-cols-1 max-w-md gap-4 pt-2">
+                {plans.filter(plan => plan.role === 'custodian').map(plan => {
                   const isSelected = selectedPlanId === plan.id;
                   return (
                     <div

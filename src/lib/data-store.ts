@@ -40,34 +40,6 @@ export const INITIAL_PLANS: SubscriptionPlan[] = [
       'Full lead analytics (WhatsApp, Calls, Saves)',
       'Direct phone & WhatsApp contact on listing'
     ]
-  },
-  {
-    id: 'plan_broker_starter',
-    role: 'broker',
-    name: 'Broker Starter Tier',
-    priceUgx: 35000,
-    hostelCap: 5,
-    durationDays: 120,
-    features: [
-      'Attach offers to up to 5 hostels',
-      'Disclose custom access fee per offer',
-      'Verified Broker badge (with ID verification)',
-      'Lead notifications & analytics'
-    ]
-  },
-  {
-    id: 'plan_broker_pro',
-    role: 'broker',
-    name: 'Broker Pro Campus Tier',
-    priceUgx: 80000,
-    hostelCap: 20,
-    durationDays: 120,
-    features: [
-      'Attach offers to up to 20 hostels',
-      'Priority offer listing rank in contact modal',
-      'Weekly performance summary report',
-      'Authorised Agent application to custodians'
-    ]
   }
 ];
 
@@ -815,16 +787,6 @@ export const INITIAL_SUBSCRIPTIONS: UserSubscription[] = [
     startDate: '2026-01-10T10:00:00Z',
     endDate: '2026-05-10T10:00:00Z',
     activeHostelIds: ['hst_olympia']
-  },
-  {
-    id: 'sub_broker_brian',
-    userId: 'usr_broker_brian',
-    planId: 'plan_broker_starter',
-    status: 'trial',
-    isTrial: true,
-    startDate: '2026-01-15T14:00:00Z',
-    endDate: '2026-02-15T14:00:00Z', // 30-day free trial per FR-6.1
-    activeHostelIds: ['hst_olympia', 'hst_dreamworld']
   }
 ];
 
