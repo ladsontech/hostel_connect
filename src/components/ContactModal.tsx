@@ -41,21 +41,21 @@ function BrokerAvatar({
     .join('');
 
   return (
-    <div className="relative w-16 h-16 shrink-0">
+    <div className="relative w-20 h-20 shrink-0">
       {avatarUrl && !imgFailed ? (
         <img
           src={avatarUrl}
           alt={name}
           onError={() => setImgFailed(true)}
-          className="w-16 h-16 rounded-full object-cover border-2 border-[#ffbe00] ring-4 ring-white/15 shadow-md bg-white"
+          className="w-20 h-20 rounded-full object-cover border-4 border-white ring-2 ring-[#0f3a98]/20 shadow-md bg-white"
         />
       ) : (
-        <div className="w-16 h-16 rounded-full bg-white text-[#0f3a98] font-bold text-base flex items-center justify-center border-2 border-[#ffbe00] ring-4 ring-white/15 shadow-md">
-          {isCustodian ? <FaIcon icon="fa-solid fa-shield-halved" className="text-xl text-[#0f3a98]" /> : initials}
+        <div className="w-20 h-20 rounded-full bg-[#e8effc] text-[#0f3a98] font-bold text-lg flex items-center justify-center border-4 border-white ring-2 ring-[#0f3a98]/20 shadow-md">
+          {isCustodian ? <FaIcon icon="fa-solid fa-shield-halved" className="text-2xl text-[#0f3a98]" /> : initials}
         </div>
       )}
       <div
-        className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-[#ffbe00] border-2 border-[#0f3a98] flex items-center justify-center text-[9px] text-[#0f3a98] shadow-xs"
+        className="absolute bottom-0.5 right-0.5 w-6 h-6 rounded-full bg-[#0f3a98] border-2 border-white flex items-center justify-center text-[10px] text-[#ffbe00] shadow-xs"
         title="Verified Member"
       >
         <FaIcon icon={isCustodian ? 'fa-solid fa-shield-halved' : 'fa-solid fa-check'} />
@@ -69,65 +69,87 @@ function ResidentTypeBadge({ residentType }: { residentType?: 'student' | 'commu
   const isStudent = residentType === 'student';
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap shadow-xs ${
+      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold whitespace-nowrap shadow-xs ${
         isStudent ? 'bg-[#ffbe00] text-[#0f3a98]' : 'bg-white text-[#0f3a98]'
       }`}
     >
       <FaIcon
         icon={isStudent ? 'fa-solid fa-graduation-cap' : 'fa-solid fa-house-user'}
-        className={`text-[9px] ${isStudent ? 'text-[#0f3a98]' : 'text-[#ffbe00]'}`}
+        className="text-[9px] text-[#0f3a98]"
       />
       <span>{isStudent ? 'Student Broker' : 'Communal Resident'}</span>
     </span>
   );
 }
 
-/** Centered profile hero header shared across matched scout and offer cards. */
+/** Clean white profile hero card with inset cover banner, overlapping avatar, and 3-column stats bar. */
 function BrokerProfileHeader({
   name,
   subtitle,
   avatarUrl,
   isCustodian = false,
   residentType,
-  metaChip,
+  stats,
 }: {
   name: string;
   subtitle?: string;
   avatarUrl?: string;
   isCustodian?: boolean;
   residentType?: 'student' | 'communal';
-  metaChip?: React.ReactNode;
+  stats: { value: string; label: string }[];
 }) {
   return (
-    <div
-      className="relative overflow-hidden bg-[#0f3a98] px-4 pt-5 pb-4 text-white flex flex-col items-center text-center border-b-2 border-[#ffbe00]/40"
-      style={{ background: 'linear-gradient(180deg, #0f3a98 0%, #0a2b75 100%)' }}
-    >
-      <div className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-[#ffbe00]/10 blur-xl" />
+    <div className="bg-white pb-3 border-b border-blue-100">
+      {/* Inset Rounded Cover Banner */}
+      <div className="px-3 pt-3">
+        <div className="relative h-24 rounded-2xl bg-[#0f3a98] overflow-hidden flex items-start justify-end p-2.5">
+          {/* Subtle decorative flat rings */}
+          <span className="pointer-events-none -bottom-10 -left-8 absolute w-32 h-32 rounded-full bg-white/[0.07]" />
+          <span className="pointer-events-none -top-10 -right-8 absolute w-28 h-28 rounded-full bg-white/[0.08]" />
 
-      <BrokerAvatar name={name} avatarUrl={avatarUrl} isCustodian={isCustodian} />
+          {/* Top-right role pill */}
+          <div className="relative z-10">
+            {isCustodian ? (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-white text-[#0f3a98] whitespace-nowrap shadow-xs">
+                <FaIcon icon="fa-solid fa-circle-check" className="text-[10px] text-[#0f3a98]" />
+                <span>Official Custodian</span>
+              </span>
+            ) : (
+              <ResidentTypeBadge residentType={residentType ?? 'communal'} />
+            )}
+          </div>
+        </div>
+      </div>
 
-      <h4 className="relative z-10 mt-3 font-bold text-white text-base sm:text-lg leading-snug text-center">
-        {name}
-      </h4>
+      {/* Overlapping Centered Profile Picture */}
+      <div className="relative z-10 -mt-10 flex justify-center">
+        <BrokerAvatar name={name} avatarUrl={avatarUrl} isCustodian={isCustodian} />
+      </div>
 
-      {subtitle && (
-        <p className="relative z-10 mt-0.5 text-xs text-blue-100 font-medium text-center">
-          {subtitle}
-        </p>
-      )}
-
-      <div className="relative z-10 mt-2.5 flex items-center justify-center gap-2 flex-wrap">
-        {isCustodian ? (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#ffbe00] text-[#0f3a98] whitespace-nowrap shadow-xs">
-            <FaIcon icon="fa-solid fa-circle-check" className="text-[10px]" />
-            <span>Official Custodian</span>
-          </span>
-        ) : (
-          <ResidentTypeBadge residentType={residentType ?? 'communal'} />
+      {/* Centered Name & Clean Bio */}
+      <div className="px-5 pt-2.5 text-center">
+        <h4 className="font-bold text-[#0f3a98] text-lg leading-snug">
+          {name}
+        </h4>
+        {subtitle && (
+          <p className="mt-0.5 text-xs text-slate-500 font-normal max-w-xs mx-auto leading-relaxed">
+            {subtitle}
+          </p>
         )}
+      </div>
 
-        {metaChip}
+      {/* Rounded 3-Column Metrics Strip */}
+      <div className="mx-3 mt-3.5 rounded-2xl bg-[#edf2fc]/80 border border-blue-100 py-2.5 px-2 grid grid-cols-3 divide-x divide-blue-200/70 text-center">
+        {stats.map((item) => (
+          <div key={item.label} className="px-1.5">
+            <div className="text-sm font-bold text-[#0f3a98] leading-tight truncate">
+              {item.value}
+            </div>
+            <div className="text-[10px] text-slate-500 font-medium mt-0.5 truncate">
+              {item.label}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -1147,12 +1169,11 @@ export default function ContactModal({
                   subtitle={`${activeScout.title} • ${activeScout.campus}`}
                   avatarUrl={activeScout.avatarUrl}
                   residentType={activeScout.residentType}
-                  metaChip={(
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0a2463] border border-[#ffbe00]/60 text-[11px] text-[#ffbe00] font-semibold whitespace-nowrap shadow-xs">
-                      <FaIcon icon="fa-solid fa-star" className="text-[10px]" />
-                      <span>{activeScout.rating} ({activeScout.reviews} tours)</span>
-                    </span>
-                  )}
+                  stats={[
+                    { value: `${activeScout.rating} ★`, label: 'Rating' },
+                    { value: `${activeScout.reviews}`, label: 'Inspections' },
+                    { value: activeScout.distance.replace(' away', ''), label: 'Distance' },
+                  ]}
                 />
 
                 {/* Card Body */}
@@ -1365,12 +1386,11 @@ export default function ContactModal({
                       avatarUrl={offer.avatarUrl || (!isCustodian ? DEFAULT_BROKER_AVATARS[0] : undefined)}
                       isCustodian={isCustodian}
                       residentType={offer.residentType}
-                      metaChip={offer.responseRatePct ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0a2463] border border-[#ffbe00]/60 text-[11px] text-white font-semibold whitespace-nowrap shadow-xs">
-                          <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-[#ffbe00]" />
-                          <span>{offer.responseRatePct}% response rate</span>
-                        </span>
-                      ) : undefined}
+                      stats={[
+                        { value: `${offer.responseRatePct ?? 95}%`, label: 'Response' },
+                        { value: isCustodian ? 'Direct' : (offer.accessFeeUgx > 0 ? formatUGX(offer.accessFeeUgx) : 'Free'), label: isCustodian ? 'Approach' : 'Inspection Fee' },
+                        { value: hostel.area, label: 'Location' },
+                      ]}
                     />
 
                     {/* Card Body */}
