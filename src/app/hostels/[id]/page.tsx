@@ -256,7 +256,7 @@ export default function HostelDetailPage() {
                     ? `Landmark: ${hostel.landmark}`
                     : hasCustodian
                     ? 'Exact address revealed after UGX 5,000 connection fee'
-                    : 'Campus broker will trek and guide you directly to the rooms'}
+                    : 'Campus broker will guide your inspection directly to the rooms'}
                 </span>
               </p>
             </div>
@@ -265,12 +265,12 @@ export default function HostelDetailPage() {
             <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 bg-[#e8effc] p-4 rounded-xl border border-blue-200">
               <div className="text-right">
                 <div className="text-[10px] text-[#0f3a98] font-medium uppercase tracking-wider">
-                  {hasCustodian ? (isUnlocked ? 'Direct Contact Unlocked' : 'Custodian Upload') : 'Broker Trekking Guide'}
+                  {hasCustodian ? (isUnlocked ? 'Direct Contact Unlocked' : 'Custodian Upload') : 'Broker Inspection Guide'}
                 </div>
                 <div className="text-[#0f3a98] font-medium text-sm sm:text-base">
                   {hasCustodian
                     ? (isUnlocked ? 'Custodian Details Ready' : 'UGX 5,000 Connection Fee')
-                    : 'Trek to Hostel with Broker'}
+                    : 'Inspect Hostel with Broker'}
                 </div>
               </div>
               <button
@@ -283,7 +283,7 @@ export default function HostelDetailPage() {
                 />
                 {hasCustodian
                   ? (isUnlocked ? 'View Custodian Contact' : 'Book Now (Custodian)')
-                  : 'Trek with Broker'}
+                  : 'Inspect with Broker'}
               </button>
             </div>
           </div>

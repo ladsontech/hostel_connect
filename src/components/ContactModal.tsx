@@ -868,7 +868,7 @@ export default function ContactModal({
     } else {
       const msg = offer.userRole === 'custodian'
         ? `Hello ${offer.userName}, I saw your official listing for student rooms in ${hostel.area} near ${hostel.campus} on Hostel Connect Uganda. Is there an available room?`
-        : `Hello ${offer.userName}, I saw the student rooms in ${hostel.area} near ${hostel.campus} on Hostel Connect Uganda. Can you trek with me for an in-person room viewing?`;
+        : `Hello ${offer.userName}, I saw the student rooms in ${hostel.area} near ${hostel.campus} on Hostel Connect Uganda. Can you guide me for an in-person room inspection?`;
       window.open(getWhatsAppDeepLink(offer.whatsapp, msg), '_blank');
     }
   };
@@ -904,7 +904,7 @@ export default function ContactModal({
             <p className="text-xs text-slate-500 font-normal mt-0.5 text-center max-w-md">
               {hasCustodian
                 ? 'Direct connection to official hostel management desk. 100% money-back guarantee.'
-                : 'A verified campus broker will physically trek with you to inspect rooms and introduce you to the caretaker desk.'}
+                : 'A verified campus broker will physically guide your inspection of the rooms and introduce you to the caretaker desk.'}
             </p>
           </div>
         </div>
@@ -918,7 +918,7 @@ export default function ContactModal({
                 <div>
                   <h4 className="font-semibold text-sm text-[#0f3a98]">Important Broker Notice</h4>
                   <p className="text-xs text-slate-700 mt-1 leading-relaxed">
-                    This broker charges a viewing / trekking fee of{' '}
+                    This broker charges a viewing / inspection fee of{' '}
                     <strong className="font-semibold text-[#0f3a98]">
                       {brokerNoticePending.accessFeeUgx > 0
                         ? formatUGX(brokerNoticePending.accessFeeUgx)
@@ -1151,7 +1151,7 @@ export default function ContactModal({
                     </PriceBarButton>
                     <PriceBarButton label="Broker Viewing Fee">
                       <span>{formatUGX(activeScout.accessFeeUgx)}</span>
-                      <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Trek</span>
+                      <span className="px-1.5 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98] text-[9px] font-semibold">Inspection</span>
                     </PriceBarButton>
                   </div>
 
@@ -1181,7 +1181,7 @@ export default function ContactModal({
                       <span>Direct Key Access & Viewing Guarantee</span>
                     </div>
                     <p className="text-[11px] text-slate-500 font-normal leading-relaxed">
-                      This verified scout will trek with you to inspect available rooms and introduce you directly to the hostel desk with transparent pricing.
+                      This verified scout will guide your inspection of available rooms and introduce you directly to the hostel desk with transparent pricing.
                     </p>
                   </div>
 
