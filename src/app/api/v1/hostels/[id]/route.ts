@@ -66,8 +66,12 @@ export async function PUT(
     rooms,
     approvalStatus,
     status,
+    accessFeeUgx,
     userId,
-    userRole
+    userRole,
+    userName,
+    userPhone,
+    userAvatarUrl
   } = body;
 
   const db = getDatabase();
@@ -77,15 +81,6 @@ export async function PUT(
   }
 
   const isClaimed = hostel.status === 'claimed';
-  const isUploaderBroker = userRole === 'broker' && hostel.scoutUserId === userId;
-
-  // Only allow edits if Custodian/Admin, the uploading Broker, or any Broker editing an unclaimed listing
-  if (userRole === 'broker' && isClaimed && !isUploaderBroker) {
-    return NextResponse.json(
-      { success: false, error: 'You can only edit hostels you uploaded or unclaimed listings.' },
-      { status: 403 }
-    );
-  }
 
   // Detail & media updates
   if (typeof name === 'string' && name.trim()) {
@@ -163,7 +158,7 @@ export async function PUT(
   // Room rent / vacancy updates (BR-1: blocked only when a broker attempts to overwrite a custodian-claimed hostel's rooms)
   if (rooms && Array.isArray(rooms)) {
     if (isClaimed && userRole === 'broker') {
-      if (!name && !description && !photos) {
+      if (!name && !description && !photos && accessFeeUgx === undefined) {
         return NextResponse.json(
           { success: false, error: 'Brokers cannot modify rent or availability for a claimed hostel. Custodian owns these values.' },
           { status: 403 }
@@ -186,9 +181,39 @@ export async function PUT(
     }
   }
 
+  // Update or create the broker's inspection price (accessFeeUgx) on this hostel
+  let updatedOffer = db.offers.find(o => o.hostelId === id && o.userId === userId) || null;
+  if (userRole === 'broker' && accessFeeUgx !== undefined && accessFeeUgx !== null && accessFeeUgx !== '') {
+    const parsedFee = Math.max(0, parseInt(String(accessFeeUgx), 10) || 0);
+    if (updatedOffer) {
+      updatedOffer.accessFeeUgx = parsedFee;
+    } else if (userId) {
+      updatedOffer = {
+        id: `off_${id}_${Date.now()}`,
+        hostelId: id,
+        userId,
+        userName: userName || 'Campus Broker',
+        userRole: 'broker',
+        isVerified: true,
+        isAuthorised: false,
+        accessFeeUgx: parsedFee,
+        contactPhone: userPhone || '+256755888999',
+        whatsapp: userPhone || '+256755888999',
+        status: 'active',
+        notes: 'Can guide you to available rooms and introduce to caretaker.',
+        avatarUrl: userAvatarUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+        residentType: 'communal',
+        createdAt: new Date().toISOString(),
+        responseRatePct: 90,
+      };
+      db.offers.push(updatedOffer);
+    }
+  }
+
   return NextResponse.json({
     success: true,
     message: 'Hostel updated successfully',
-    hostel
+    hostel,
+    offer: updatedOffer
   });
 }

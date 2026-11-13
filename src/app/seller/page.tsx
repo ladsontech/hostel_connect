@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/auth-context';
-import { Hostel, HostelPhoto, SubscriptionPlan, UserSubscription } from '@/types';
+import { Hostel, HostelPhoto, Offer, SubscriptionPlan, UserSubscription } from '@/types';
 import { formatUGX } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
 
@@ -23,34 +23,73 @@ function HostelMediaEditor({
   const [captionInput, setCaptionInput] = useState('');
   const [mediaNotice, setMediaNotice] = useState('');
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    setMediaNotice('');
-
-    Array.from(files).forEach((file) => {
+  const readMediaFile = (file: File): Promise<HostelPhoto | null> =>
+    new Promise((resolve) => {
       if (file.size > 12 * 1024 * 1024) {
-        setMediaNotice(`${file.name} exceeds 12MB. Try a smaller clip or paste a video URL.`);
+        setMediaNotice(`${file.name} exceeds 12MB. Try a smaller file or paste a URL.`);
+        resolve(null);
         return;
       }
       const isVideo = file.type.startsWith('video/');
       const reader = new FileReader();
       reader.onload = () => {
         const result = typeof reader.result === 'string' ? reader.result : '';
-        if (!result) return;
-        const newItem: HostelPhoto = {
+        if (!result) {
+          resolve(null);
+          return;
+        }
+        resolve({
           id: `media_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
           url: result,
           caption: file.name.replace(/\.[^.]+$/, ''),
-          isCover: !isVideo && items.every(i => !i.isCover || i.mediaType === 'video'),
+          isCover: false,
           order: items.length + 1,
           mediaType: isVideo ? 'video' : 'image',
-        };
-        onChange([...items, newItem]);
+        });
       };
+      reader.onerror = () => resolve(null);
       reader.readAsDataURL(file);
     });
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setMediaNotice('');
+
+    const loaded = (await Promise.all(Array.from(files).map(readMediaFile))).filter(
+      (x): x is HostelPhoto => x !== null
+    );
+    if (loaded.length > 0) {
+      const merged = [...items, ...loaded].map((item, idx) => ({ ...item, order: idx + 1 }));
+      if (!merged.some(i => i.isCover && i.mediaType !== 'video')) {
+        const firstImg = merged.find(i => i.mediaType !== 'video');
+        if (firstImg) firstImg.isCover = true;
+      }
+      onChange(merged);
+    }
+
+    e.target.value = '';
+  };
+
+  const handleReplaceFile = async (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setMediaNotice('');
+    const replacement = await readMediaFile(file);
+    if (replacement) {
+      onChange(
+        items.map(item =>
+          item.id === id
+            ? {
+                ...replacement,
+                id: item.id,
+                order: item.order,
+                isCover: replacement.mediaType !== 'video' ? item.isCover : false,
+              }
+            : item
+        )
+      );
+    }
     e.target.value = '';
   };
 
@@ -131,6 +170,12 @@ function HostelMediaEditor({
           placeholder={urlKind === 'video' ? 'https://.../room-tour.mp4' : 'https://.../hostel-photo.jpg'}
           value={urlInput}
           onChange={e => setUrlInput(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleAddUrl();
+            }
+          }}
           className="sm:col-span-5 px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white"
         />
         <input
@@ -182,22 +227,33 @@ function HostelMediaEditor({
                     onChange={e => handleCaptionChange(item.id, e.target.value)}
                     className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-slate-50"
                   />
-                  <div className="flex items-center justify-between gap-1">
-                    {!isVideo ? (
-                      <button
-                        type="button"
-                        onClick={() => handleSetCover(item.id)}
-                        className={`text-[10px] font-semibold px-2 py-0.5 rounded transition ${
-                          item.isCover
-                            ? 'bg-[#0f3a98] text-white'
-                            : 'bg-[#e8effc] text-[#0f3a98] hover:bg-blue-100'
-                        }`}
-                      >
-                        {item.isCover ? 'Cover Photo' : 'Set Cover'}
-                      </button>
-                    ) : (
-                      <span className="text-[10px] font-medium text-slate-500">Video Tour</span>
-                    )}
+                  <div className="flex items-center justify-between gap-1 flex-wrap">
+                    <div className="flex items-center gap-1">
+                      {!isVideo ? (
+                        <button
+                          type="button"
+                          onClick={() => handleSetCover(item.id)}
+                          className={`text-[10px] font-semibold px-2 py-0.5 rounded transition ${
+                            item.isCover
+                              ? 'bg-[#0f3a98] text-white'
+                              : 'bg-[#e8effc] text-[#0f3a98] hover:bg-blue-100'
+                          }`}
+                        >
+                          {item.isCover ? 'Cover' : 'Set Cover'}
+                        </button>
+                      ) : (
+                        <span className="text-[10px] font-medium text-slate-500">Video Tour</span>
+                      )}
+                      <label className="cursor-pointer text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+                        Change
+                        <input
+                          type="file"
+                          accept="image/*,video/*"
+                          onChange={e => handleReplaceFile(item.id, e)}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
                     <button
                       type="button"
                       onClick={() => handleRemove(item.id)}
@@ -228,6 +284,7 @@ export default function SellerPortalPage() {
 
   // Data states
   const [hostels, setHostels] = useState<Hostel[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [analyticsTimeframe, setAnalyticsTimeframe] = useState<'today' | '7days' | 'semester'>('semester');
@@ -262,6 +319,7 @@ export default function SellerPortalPage() {
   const [editDescription, setEditDescription] = useState('');
   const [editMedia, setEditMedia] = useState<HostelPhoto[]>([]);
   const [editRooms, setEditRooms] = useState<Hostel['rooms']>([]);
+  const [editAccessFee, setEditAccessFee] = useState<string>('15000');
   const [editSaving, setEditSaving] = useState(false);
 
   // Duplicate Check Modal State
@@ -296,7 +354,10 @@ export default function SellerPortalPage() {
       ]);
       const hData = await hostelsRes.json();
       const sData = await subRes.json();
-      if (hData.success) setHostels(hData.hostels);
+      if (hData.success) {
+        setHostels(hData.hostels);
+        if (Array.isArray(hData.offers)) setOffers(hData.offers);
+      }
       if (sData.success) {
         setPlans(sData.plans);
         setSubscription(sData.subscription);
@@ -375,6 +436,7 @@ export default function SellerPortalPage() {
             : `Hostel "${data.hostel.name}" published! You can edit its details, photos, and videos anytime below.`
         );
         setHostels(prev => [data.hostel, ...prev]);
+        if (data.offer) setOffers(prev => [...prev, data.offer]);
         setActiveTab('listings');
         setFormName('');
         setFormDescription('');
@@ -402,6 +464,8 @@ export default function SellerPortalPage() {
     setEditDescription(hostel.description);
     setEditMedia(hostel.photos || []);
     setEditRooms(hostel.rooms || []);
+    const existingOffer = offers.find(o => o.hostelId === hostel.id && o.userId === currentUser?.id);
+    setEditAccessFee(existingOffer ? String(existingOffer.accessFeeUgx) : '15000');
   };
 
   const handleSaveHostelEdit = async (e: React.FormEvent) => {
@@ -419,6 +483,9 @@ export default function SellerPortalPage() {
         body: JSON.stringify({
           userId: currentUser?.id,
           userRole: currentUser?.role,
+          userName: currentUser?.name,
+          userPhone: currentUser?.phone,
+          userAvatarUrl: currentUser?.avatarUrl,
           name: editName,
           campus: editCampus,
           area: editArea,
@@ -428,13 +495,22 @@ export default function SellerPortalPage() {
           genderPolicy: editGender,
           description: editDescription,
           photos: editMedia,
+          ...(currentUser?.role === 'broker' ? { accessFeeUgx: parseInt(editAccessFee, 10) || 0 } : {}),
           ...(canEditRooms ? { rooms: editRooms } : {}),
         }),
       });
       const data = await res.json();
       if (data.success) {
         setHostels(prev => prev.map(h => (h.id === editingHostel.id ? data.hostel : h)));
-        setUpdateMsg(`Updated "${data.hostel.name}" details and media successfully.`);
+        if (data.offer) {
+          setOffers(prev => {
+            const exists = prev.some(o => o.id === data.offer.id);
+            return exists
+              ? prev.map(o => (o.id === data.offer.id ? data.offer : o))
+              : [...prev, data.offer];
+          });
+        }
+        setUpdateMsg(`Updated "${data.hostel.name}" photos, details, and pricing successfully.`);
         setTimeout(() => setUpdateMsg(''), 4000);
         setEditingHostel(null);
       } else {
@@ -669,7 +745,13 @@ export default function SellerPortalPage() {
                 const isUploadedByMe = hostel.scoutUserId === currentUser?.id;
                 const approval = hostel.approvalStatus || 'approved';
                 const canEditHostel =
-                  currentUser?.role === 'custodian' || isUploadedByMe || hostel.status === 'unclaimed';
+                  currentUser?.role === 'custodian' ||
+                  currentUser?.role === 'broker' ||
+                  isUploadedByMe ||
+                  hostel.status === 'unclaimed';
+                const myOffer = offers.find(
+                  o => o.hostelId === hostel.id && o.userId === currentUser?.id
+                );
                 const coverPhoto =
                   hostel.photos.find(p => p.mediaType !== 'video' && p.isCover) ||
                   hostel.photos.find(p => p.mediaType !== 'video');
@@ -744,6 +826,62 @@ export default function SellerPortalPage() {
                         </div>
                       </div>
 
+                      {/* Visible Uploaded Photos & Videos Gallery Strip */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="font-semibold text-[#0f3a98]">
+                            Uploaded Media ({photoCount} {photoCount === 1 ? 'Photo' : 'Photos'}, {videoCount} {videoCount === 1 ? 'Video' : 'Videos'})
+                          </span>
+                          {canEditHostel && (
+                            <button
+                              type="button"
+                              onClick={() => openEditHostelModal(hostel)}
+                              className="text-[#0f3a98] hover:underline font-medium"
+                            >
+                              Change Photos
+                            </button>
+                          )}
+                        </div>
+                        {hostel.photos.length > 0 ? (
+                          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                            {hostel.photos.map((media, mIdx) => {
+                              const isVid = media.mediaType === 'video';
+                              return (
+                                <button
+                                  key={media.id || mIdx}
+                                  type="button"
+                                  onClick={() => canEditHostel && openEditHostelModal(hostel)}
+                                  title={media.caption || (isVid ? 'Change video' : 'Change photo')}
+                                  className="relative w-20 h-14 rounded-lg overflow-hidden border border-slate-200 bg-slate-900 shrink-0 group"
+                                >
+                                  {isVid ? (
+                                    <video src={media.url} className="w-full h-full object-cover" muted playsInline />
+                                  ) : (
+                                    <img
+                                      src={media.url}
+                                      alt={media.caption || hostel.name}
+                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                    />
+                                  )}
+                                  {media.isCover && !isVid && (
+                                    <span className="absolute top-1 left-1 px-1 py-0.5 rounded bg-[#0f3a98] text-white text-[9px] font-semibold leading-none">
+                                      Cover
+                                    </span>
+                                  )}
+                                  {isVid && (
+                                    <span className="absolute bottom-1 right-1 px-1 py-0.5 rounded bg-black/75 text-white text-[9px] font-semibold leading-none">
+                                      Video
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="text-[11px] text-slate-400 italic">No photos uploaded yet.</div>
+                        )}
+                      </div>
+
                       {/* Clean Room Inventory Section */}
                       <div className="bg-slate-50/90 p-3 sm:p-3.5 rounded-xl border border-slate-200/70 space-y-2.5">
                         <div className="flex items-center justify-between gap-2 text-xs">
@@ -806,17 +944,22 @@ export default function SellerPortalPage() {
                       </div>
                     </div>
 
-                    {/* Clean Action & Media Footer */}
+                    {/* Clean Action & Fee Footer */}
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-                      <div className="flex items-center gap-2 text-[11px] text-[#0f3a98] font-medium">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#edf2fc]">
-                          <FaIcon icon="fa-solid fa-image" className="text-[10px]" />
-                          {photoCount} {photoCount === 1 ? 'Photo' : 'Photos'}
-                        </span>
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#edf2fc]">
-                          <FaIcon icon="fa-solid fa-video" className="text-[10px]" />
-                          {videoCount} {videoCount === 1 ? 'Video' : 'Videos'}
-                        </span>
+                      <div className="flex items-center gap-2 text-[11px] font-medium">
+                        {currentUser?.role === 'broker' ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#fff8dc] border border-[#ffbe00] text-[#0f3a98] font-semibold whitespace-nowrap">
+                            <FaIcon icon="fa-solid fa-tag" className="text-[10px]" />
+                            {myOffer
+                              ? `Inspection Fee: ${formatUGX(myOffer.accessFeeUgx)}`
+                              : 'Inspection Fee: Not Set'}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#edf2fc] text-[#0f3a98]">
+                            <FaIcon icon="fa-solid fa-image" className="text-[10px]" />
+                            {photoCount} Photos • {videoCount} Videos
+                          </span>
+                        )}
                       </div>
 
                       <div className="flex items-center gap-2">
@@ -834,7 +977,9 @@ export default function SellerPortalPage() {
                             className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-[11px] font-medium inline-flex items-center gap-1.5 shadow-xs transition whitespace-nowrap"
                           >
                             <FaIcon icon="fa-solid fa-pen-to-square" className="text-[10px] text-[#ffbe00]" />
-                            <span>Edit Details &amp; Media</span>
+                            <span>
+                              {currentUser?.role === 'broker' ? 'Edit Photos & Fee' : 'Edit Details & Media'}
+                            </span>
                           </button>
                         )}
                       </div>
@@ -1434,6 +1579,28 @@ export default function SellerPortalPage() {
                   className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200"
                 />
               </div>
+
+              {currentUser?.role === 'broker' && (
+                <div className="p-3.5 rounded-xl bg-[#fff8dc] border border-[#ffbe00] space-y-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <label className="text-xs font-semibold text-[#0f3a98]">
+                      Your Broker Inspection Price (UGX)
+                    </label>
+                    <span className="text-[11px] font-medium text-[#0f3a98]">
+                      Shown to students when booking inspection
+                    </span>
+                  </div>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1000"
+                    value={editAccessFee}
+                    onChange={e => setEditAccessFee(e.target.value)}
+                    placeholder="e.g. 15000"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#ffbe00] bg-white font-semibold text-[#0f3a98]"
+                  />
+                </div>
+              )}
 
               {(currentUser?.role === 'custodian' || editingHostel.status === 'unclaimed') && editRooms.length > 0 && (
                 <div className="p-3.5 rounded-xl bg-[#edf2fc]/70 border border-blue-100 space-y-2.5">

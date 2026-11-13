@@ -98,7 +98,8 @@ export async function GET(request: Request) {
   return NextResponse.json({
     success: true,
     total: results.length,
-    hostels: results
+    hostels: results,
+    ...(includeUnapproved ? { offers: db.offers } : {})
   });
 }
 
@@ -183,15 +184,27 @@ export async function POST(request: Request) {
       ratingCount: 1,
       genderPolicy: genderPolicy || 'mixed',
       amenities: amenities || ['water', 'security'],
-      photos: photos && photos.length ? photos : [
-        {
-          id: 'p_default',
-          url: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1000&q=80',
-          caption: 'Hostel Exterior',
-          isCover: true,
-          order: 1
-        }
-      ],
+      photos: Array.isArray(photos) && photos.filter((p: any) => p && typeof p.url === 'string' && p.url.trim()).length > 0
+        ? photos
+            .filter((p: any) => p && typeof p.url === 'string' && p.url.trim())
+            .map((p: any, idx: number) => ({
+              id: p.id || `media_${newHostelId}_${idx}`,
+              url: p.url.trim(),
+              caption: typeof p.caption === 'string' ? p.caption : '',
+              isCover: Boolean(p.isCover),
+              order: idx + 1,
+              mediaType: (p.mediaType === 'video' ? 'video' : 'image') as 'image' | 'video'
+            }))
+        : [
+            {
+              id: 'p_default',
+              url: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1000&q=80',
+              caption: 'Hostel Exterior',
+              isCover: true,
+              order: 1,
+              mediaType: 'image' as const
+            }
+          ],
       rooms: (rooms || []).map((r: any, idx: number) => ({
         id: `rm_${newHostelId}_${idx}`,
         hostelId: newHostelId,
