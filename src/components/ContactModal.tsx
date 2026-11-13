@@ -85,31 +85,42 @@ function ResidentTypeBadge({ residentType }: { residentType?: 'student' | 'commu
 /** Centered profile hero header shared across matched scout and offer cards. */
 function BrokerProfileHeader({
   name,
+  subtitle,
   avatarUrl,
   isCustodian = false,
   residentType,
   metaChip,
 }: {
   name: string;
+  subtitle?: string;
   avatarUrl?: string;
   isCustodian?: boolean;
   residentType?: 'student' | 'communal';
   metaChip?: React.ReactNode;
 }) {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-[#0f3a98] to-[#0a2b75] px-4 pt-5 pb-4 text-white flex flex-col items-center text-center">
+    <div
+      className="relative overflow-hidden bg-[#0f3a98] px-4 pt-5 pb-4 text-white flex flex-col items-center text-center border-b-2 border-[#ffbe00]/40"
+      style={{ background: 'linear-gradient(180deg, #0f3a98 0%, #0a2b75 100%)' }}
+    >
       <div className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-[#ffbe00]/10 blur-xl" />
 
       <BrokerAvatar name={name} avatarUrl={avatarUrl} isCustodian={isCustodian} />
 
-      <h4 className="mt-2.5 font-semibold text-white text-base leading-snug text-center">
+      <h4 className="relative z-10 mt-3 font-bold text-white text-base sm:text-lg leading-snug text-center">
         {name}
       </h4>
 
-      <div className="mt-1.5 flex items-center justify-center gap-2 flex-wrap">
+      {subtitle && (
+        <p className="relative z-10 mt-0.5 text-xs text-blue-100 font-medium text-center">
+          {subtitle}
+        </p>
+      )}
+
+      <div className="relative z-10 mt-2.5 flex items-center justify-center gap-2 flex-wrap">
         {isCustodian ? (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#ffbe00] text-[#0f3a98] whitespace-nowrap">
-            <FaIcon icon="fa-solid fa-circle-check" className="text-[9px]" />
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#ffbe00] text-[#0f3a98] whitespace-nowrap shadow-xs">
+            <FaIcon icon="fa-solid fa-circle-check" className="text-[10px]" />
             <span>Official Custodian</span>
           </span>
         ) : (
@@ -937,11 +948,12 @@ export default function ContactModal({
                 {/* Centered Profile Header */}
                 <BrokerProfileHeader
                   name={activeScout.name}
+                  subtitle={`${activeScout.title} • ${activeScout.campus}`}
                   avatarUrl={activeScout.avatarUrl}
                   residentType={activeScout.residentType}
                   metaChip={(
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/15 border border-white/20 text-[10px] text-[#ffbe00] font-medium whitespace-nowrap">
-                      <FaIcon icon="fa-solid fa-star" className="text-[9px]" />
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0a2463] border border-[#ffbe00]/60 text-[11px] text-[#ffbe00] font-semibold whitespace-nowrap shadow-xs">
+                      <FaIcon icon="fa-solid fa-star" className="text-[10px]" />
                       <span>{activeScout.rating} ({activeScout.reviews} tours)</span>
                     </span>
                   )}
@@ -1153,12 +1165,13 @@ export default function ContactModal({
                     {/* Centered Profile Hero Header */}
                     <BrokerProfileHeader
                       name={offer.userName}
+                      subtitle={isCustodian ? `Verified Management • ${hostel.area}` : `Verified Area Broker • ${hostel.area}`}
                       avatarUrl={offer.avatarUrl || (!isCustodian ? DEFAULT_BROKER_AVATARS[0] : undefined)}
                       isCustodian={isCustodian}
                       residentType={offer.residentType}
                       metaChip={offer.responseRatePct ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/15 border border-white/20 text-[10px] text-blue-100 font-medium whitespace-nowrap">
-                          <FaIcon icon="fa-solid fa-bolt" className="text-[9px] text-[#ffbe00]" />
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0a2463] border border-[#ffbe00]/60 text-[11px] text-white font-semibold whitespace-nowrap shadow-xs">
+                          <FaIcon icon="fa-solid fa-bolt" className="text-[10px] text-[#ffbe00]" />
                           <span>{offer.responseRatePct}% response rate</span>
                         </span>
                       ) : undefined}
