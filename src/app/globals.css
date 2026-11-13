@@ -68,3 +68,36 @@ b, strong {
     width: 100%;
   }
 }
+
+@keyframes wave-morph-a {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    border-radius: 46% 54% 51% 49% / 48% 43% 57% 52%;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.06);
+    border-radius: 54% 46% 44% 56% / 55% 51% 49% 45%;
+  }
+}
+
+@keyframes wave-morph-b {
+  0%, 100% {
+    transform: rotate(360deg) scale(1.02);
+    border-radius: 52% 48% 45% 55% / 44% 56% 48% 52%;
+  }
+  50% {
+    transform: rotate(180deg) scale(0.96);
+    border-radius: 44% 56% 53% 47% / 53% 45% 55% 47%;
+  }
+}
+
+@keyframes light-aura {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.95;
+  }
+}

@@ -613,7 +613,7 @@ export default function ContactModal({
   // Broker / Connection searching animation state (runs for EVERY hostel before revealing price & contact)
   const [brokerSearchState, setBrokerSearchState] = useState<'searching' | 'matched'>('searching');
   const [searchStep, setSearchStep] = useState(0);
-  const [searchRunId, setSearchRunId] = useState(0);
+  const [searchProgress, setSearchProgress] = useState(0);
   const [matchedBrokerIndex, setMatchedBrokerIndex] = useState(0);
 
   const verifiedBrokers = [
@@ -715,23 +715,42 @@ export default function ContactModal({
   // Minimum duration for the live broker search screen before displaying matched results & price
   const BROKER_SEARCH_MIN_DURATION_MS = 10000;
   const searchTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const searchIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const clearSearchTimers = () => {
     searchTimersRef.current.forEach(clearTimeout);
     searchTimersRef.current = [];
+    if (searchIntervalRef.current) {
+      clearInterval(searchIntervalRef.current);
+      searchIntervalRef.current = null;
+    }
   };
 
   const runBrokerSearchSequence = () => {
     clearSearchTimers();
     setBrokerSearchState('searching');
     setSearchStep(0);
-    setSearchRunId((prev) => prev + 1);
+    setSearchProgress(4);
+
+    const startedAt = Date.now();
+    searchIntervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startedAt;
+      const pct = Math.min(100, Math.max(4, Math.round((elapsed / BROKER_SEARCH_MIN_DURATION_MS) * 100)));
+      setSearchProgress(pct);
+      if (pct >= 100 && searchIntervalRef.current) {
+        clearInterval(searchIntervalRef.current);
+        searchIntervalRef.current = null;
+      }
+    }, 80);
 
     searchTimersRef.current = [
       setTimeout(() => setSearchStep(1), 2500),
       setTimeout(() => setSearchStep(2), 5200),
       setTimeout(() => setSearchStep(3), 8000),
-      setTimeout(() => setBrokerSearchState('matched'), BROKER_SEARCH_MIN_DURATION_MS),
+      setTimeout(() => {
+        setSearchProgress(100);
+        setBrokerSearchState('matched');
+      }, BROKER_SEARCH_MIN_DURATION_MS),
     ];
   };
 
@@ -931,24 +950,58 @@ export default function ContactModal({
 
           {/* STEP 1: Live Broker / Connection Search Animation (Shown for EVERY hostel before displaying price) */}
           {brokerSearchState === 'searching' ? (
-            <div className="py-5 px-2 text-center space-y-5 flex flex-col items-center justify-center font-sans">
-              {/* Smooth Campus Radar Scanner with Orbiting Scout Pings */}
+            <div className="py-3 px-2 text-center space-y-4 flex flex-col items-center justify-center font-sans">
+              {/* Wavy Light-Wave Campus Radar Scanner */}
               <div className="relative w-36 h-36 flex items-center justify-center">
-                {/* Smooth outward sonar ripples */}
+                {/* Soft glowing ambient light aura */}
+                <div
+                  className="absolute inset-1 rounded-full blur-md"
+                  style={{
+                    background:
+                      'radial-gradient(circle, rgba(255, 190, 0, 0.34) 0%, rgba(15, 58, 152, 0.22) 55%, rgba(15, 58, 152, 0) 75%)',
+                    animation: 'light-aura 2.8s ease-in-out infinite',
+                  }}
+                />
+
+                {/* Smooth outward wavy light ripples */}
                 <span
-                  className="absolute inset-0 rounded-full border-2 border-[#0f3a98]/25 bg-[#e8effc]/30"
+                  className="absolute inset-0 rounded-full border-2 border-[#ffbe00]/60 shadow-[0_0_16px_rgba(255,190,0,0.4)]"
                   style={{ animation: 'radar-ripple 2.4s cubic-bezier(0.2, 0.7, 0.4, 1) infinite' }}
                 />
                 <span
-                  className="absolute inset-0 rounded-full border border-[#ffbe00]/55"
+                  className="absolute inset-0 rounded-full border-2 border-[#0f3a98]/35 shadow-[0_0_18px_rgba(15,58,152,0.28)]"
                   style={{ animation: 'radar-ripple 2.4s cubic-bezier(0.2, 0.7, 0.4, 1) 1.2s infinite' }}
                 />
 
+                {/* Wavy morphing light-wave halo rings */}
+                <span
+                  className="absolute w-[132px] h-[132px] border-2 border-[#ffbe00]/75 bg-[#ffbe00]/10 shadow-[0_0_20px_rgba(255,190,0,0.45)]"
+                  style={{ animation: 'wave-morph-a 5.5s linear infinite' }}
+                />
+                <span
+                  className="absolute w-[124px] h-[124px] border-2 border-[#1d54c8]/55 bg-[#0f3a98]/10 shadow-[0_0_18px_rgba(29,84,200,0.38)]"
+                  style={{ animation: 'wave-morph-b 4.5s linear infinite' }}
+                />
+
+                {/* Rotating harmonic wavy SVG ring around the core */}
+                <svg
+                  viewBox="0 0 140 140"
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  style={{ animation: 'radar-sweep 7s linear infinite' }}
+                >
+                  <path
+                    d="M70,8 C83,8 90,17 101,21 C112,25 123,23 128,34 C133,45 124,56 126,68 C128,80 136,89 130,100 C124,111 112,108 102,115 C92,122 85,132 72,132 C59,132 52,122 41,117 C30,112 18,116 12,105 C6,94 16,83 14,71 C12,59 5,48 11,37 C17,26 29,30 39,23 C49,16 57,8 70,8 Z"
+                    fill="none"
+                    stroke="rgba(255, 190, 0, 0.7)"
+                    strokeWidth="2"
+                  />
+                </svg>
+
                 {/* Concentric radar grid & crosshair */}
-                <div className="relative w-32 h-32 rounded-full bg-gradient-to-b from-[#e8effc] to-white border border-blue-200 shadow-inner overflow-hidden flex items-center justify-center">
+                <div className="relative w-28 h-28 rounded-full bg-gradient-to-b from-[#e8effc] to-white border border-blue-200 shadow-inner overflow-hidden flex items-center justify-center z-10">
                   {/* Inner rings */}
-                  <span className="absolute w-24 h-24 rounded-full border border-blue-200/70" />
-                  <span className="absolute w-14 h-14 rounded-full border border-blue-200/80" />
+                  <span className="absolute w-20 h-20 rounded-full border border-blue-200/75" />
+                  <span className="absolute w-12 h-12 rounded-full border border-blue-200/80" />
                   {/* Crosshairs */}
                   <span className="absolute inset-x-0 h-px bg-blue-200/60" />
                   <span className="absolute inset-y-0 w-px bg-blue-200/60" />
@@ -958,8 +1011,8 @@ export default function ContactModal({
                     className="absolute inset-0 rounded-full"
                     style={{
                       background:
-                        'conic-gradient(from 0deg, rgba(15, 58, 152, 0) 225deg, rgba(15, 58, 152, 0.22) 325deg, rgba(255, 190, 0, 0.6) 360deg)',
-                      animation: 'radar-sweep 2.4s linear infinite',
+                        'conic-gradient(from 0deg, rgba(15, 58, 152, 0) 220deg, rgba(15, 58, 152, 0.25) 320deg, rgba(255, 190, 0, 0.65) 360deg)',
+                      animation: 'radar-sweep 2.2s linear infinite',
                     }}
                   />
 
@@ -967,34 +1020,34 @@ export default function ContactModal({
                   <img
                     src={DEFAULT_BROKER_AVATARS[0]}
                     alt="Scout ping"
-                    className={`absolute top-2.5 right-4 w-5 h-5 rounded-full object-cover border border-[#ffbe00] shadow-xs transition-all duration-500 ${
+                    className={`absolute top-2 right-3 w-5 h-5 rounded-full object-cover border border-[#ffbe00] shadow-xs transition-all duration-500 ${
                       searchStep >= 1 ? 'opacity-100 scale-100' : 'opacity-40 scale-75'
                     }`}
                   />
                   <img
                     src={DEFAULT_BROKER_AVATARS[1]}
                     alt="Scout ping"
-                    className={`absolute bottom-3 left-3 w-5 h-5 rounded-full object-cover border border-[#0f3a98] shadow-xs transition-all duration-500 ${
+                    className={`absolute bottom-2.5 left-2.5 w-5 h-5 rounded-full object-cover border border-[#0f3a98] shadow-xs transition-all duration-500 ${
                       searchStep >= 2 ? 'opacity-100 scale-100' : 'opacity-30 scale-75'
                     }`}
                   />
                   <img
                     src={DEFAULT_BROKER_AVATARS[2]}
                     alt="Scout ping"
-                    className={`absolute bottom-4 right-3 w-4 h-4 rounded-full object-cover border border-[#ffbe00] shadow-xs transition-all duration-500 ${
+                    className={`absolute bottom-3 right-2.5 w-4 h-4 rounded-full object-cover border border-[#ffbe00] shadow-xs transition-all duration-500 ${
                       searchStep >= 3 ? 'opacity-100 scale-110' : 'opacity-25 scale-75'
                     }`}
                   />
 
                   {/* Center Campus Beacon */}
-                  <div className="relative w-12 h-12 rounded-full bg-[#0f3a98] text-white flex items-center justify-center shadow-md border-2 border-[#ffbe00] z-10">
-                    <FaIcon icon="fa-solid fa-location-crosshairs" className="text-lg text-[#ffbe00] animate-pulse" />
+                  <div className="relative w-11 h-11 rounded-full bg-[#0f3a98] text-white flex items-center justify-center shadow-md border-2 border-[#ffbe00] z-10">
+                    <FaIcon icon="fa-solid fa-location-crosshairs" className="text-base text-[#ffbe00] animate-pulse" />
                   </div>
                 </div>
               </div>
 
               {/* Status Headline & Smooth 10s Progress Bar */}
-              <div className="w-full max-w-sm space-y-2.5">
+              <div className="w-full max-w-sm space-y-2">
                 <div className="space-y-1">
                   <h4 className="text-base font-semibold text-[#0f3a98]">
                     Searching Most Suitable & Nearest Broker...
@@ -1004,18 +1057,23 @@ export default function ContactModal({
                   </p>
                 </div>
 
-                {/* Progress Track */}
+                {/* Moving Progress Track (state-driven 0-100% over 10s) */}
                 <div className="space-y-1">
-                  <div className="w-full h-2 rounded-full bg-[#e8effc] overflow-hidden border border-blue-200/70">
+                  <div className="w-full h-2.5 rounded-full bg-[#e8effc] overflow-hidden border border-blue-200/80 p-0.5">
                     <div
-                      key={searchRunId}
-                      className="h-full rounded-full bg-gradient-to-r from-[#0f3a98] via-[#1d54c8] to-[#ffbe00]"
-                      style={{ animation: `search-progress ${BROKER_SEARCH_MIN_DURATION_MS}ms linear forwards` }}
+                      className="h-full rounded-full transition-[width] duration-100 ease-linear"
+                      style={{
+                        width: `${searchProgress}%`,
+                        background: 'linear-gradient(90deg, #0f3a98 0%, #1d54c8 60%, #ffbe00 100%)',
+                        boxShadow: '0 0 8px rgba(15, 58, 152, 0.35)',
+                      }}
                     />
                   </div>
-                  <div className="flex items-center justify-between text-[10px] font-medium text-[#0f3a98]/75 px-0.5">
+                  <div className="flex items-center justify-between text-[11px] font-semibold text-[#0f3a98]/80 px-0.5">
                     <span>Scanning {hostel.campus}</span>
-                    <span>Step {Math.min(searchStep + 1, 4)} of 4</span>
+                    <span>
+                      {searchProgress}% &bull; Step {Math.min(searchStep + 1, 4)} of 4
+                    </span>
                   </div>
                 </div>
               </div>
