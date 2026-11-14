@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FaIcon from '@/components/FaIcon';
+import BoundedSelect from '@/components/BoundedSelect';
 import { formatUGX } from '@/lib/utils';
 import { BusinessFlyer } from '@/components/UniMarketCarousel';
 
@@ -287,22 +288,23 @@ export default function AdvertisePage() {
                   <label className="block text-slate-700 font-medium mb-1">
                     Business Category <span className="text-rose-500">*</span>
                   </label>
-                  <select
+                  <BoundedSelect
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-hidden focus:border-[#0f3a98] text-slate-800 bg-white"
-                  >
-                    <option value="Laundry & Dry Cleaning">Laundry & Dry Cleaning</option>
-                    <option value="Student Cafe & Meals">Student Cafe & Meals</option>
-                    <option value="Laptop & Phone Repair">Laptop & Phone Repair</option>
-                    <option value="Printing & Binding">Printing & Binding</option>
-                    <option value="Campus Transit & Boda">Campus Transit & Boda</option>
-                    <option value="Gym & Student Wellness">Gym & Student Wellness</option>
-                    <option value="Supermarket & Essentials">Supermarket & Essentials</option>
-                    <option value="Salon & Grooming">Salon & Grooming</option>
-                    <option value="Hostel Furnishing & Decor">Hostel Furnishing & Decor</option>
-                    <option value="Campus Services">Campus Services</option>
-                  </select>
+                    onChange={setCategory}
+                    className="text-xs"
+                    options={[
+                      { value: 'Laundry & Dry Cleaning', label: 'Laundry & Dry Cleaning' },
+                      { value: 'Student Cafe & Meals', label: 'Student Cafe & Meals' },
+                      { value: 'Laptop & Phone Repair', label: 'Laptop & Phone Repair' },
+                      { value: 'Printing & Binding', label: 'Printing & Binding' },
+                      { value: 'Campus Transit & Boda', label: 'Campus Transit & Boda' },
+                      { value: 'Gym & Student Wellness', label: 'Gym & Student Wellness' },
+                      { value: 'Supermarket & Essentials', label: 'Supermarket & Essentials' },
+                      { value: 'Salon & Grooming', label: 'Salon & Grooming' },
+                      { value: 'Hostel Furnishing & Decor', label: 'Hostel Furnishing & Decor' },
+                      { value: 'Campus Services', label: 'Campus Services' },
+                    ]}
+                  />
                 </div>
 
                 <div>
@@ -367,15 +369,16 @@ export default function AdvertisePage() {
                   <label className="block text-xs text-slate-700 font-medium mb-1">
                     Action Type
                   </label>
-                  <select
+                  <BoundedSelect<'whatsapp' | 'call' | 'link'>
                     value={contactType}
-                    onChange={(e) => setContactType(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-hidden focus:border-[#0f3a98] text-xs text-slate-800 bg-white"
-                  >
-                    <option value="whatsapp">WhatsApp Chat</option>
-                    <option value="call">Phone Call</option>
-                    <option value="link">Website Link</option>
-                  </select>
+                    onChange={setContactType}
+                    className="text-xs"
+                    options={[
+                      { value: 'whatsapp', label: 'WhatsApp Chat' },
+                      { value: 'call', label: 'Phone Call' },
+                      { value: 'link', label: 'Website Link' },
+                    ]}
+                  />
                 </div>
 
                 <div>

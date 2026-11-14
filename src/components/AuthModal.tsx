@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { UserRole } from '@/types';
 import FaIcon from './FaIcon';
+import BoundedSelect from './BoundedSelect';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -544,17 +545,19 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">University & Course</label>
                   <div className="space-y-2">
-                    <select
+                    <BoundedSelect
                       value={university}
-                      onChange={e => setUniversity(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0f3a98] font-normal bg-white"
-                    >
-                      <option>Makerere University</option>
-                      <option>MUBS (Makerere Business School)</option>
-                      <option>Kyambogo University</option>
-                      <option>Uganda Christian University (UCU)</option>
-                      <option>KIU (Kampala International University)</option>
-                    </select>
+                      onChange={setUniversity}
+                      className="text-sm"
+                      buttonClassName="rounded-xl border-slate-300"
+                      options={[
+                        { value: 'Makerere University', label: 'Makerere University' },
+                        { value: 'MUBS (Makerere Business School)', label: 'MUBS (Makerere Business School)' },
+                        { value: 'Kyambogo University', label: 'Kyambogo University' },
+                        { value: 'Uganda Christian University (UCU)', label: 'Uganda Christian University (UCU)' },
+                        { value: 'KIU (Kampala International University)', label: 'KIU (Kampala International University)' },
+                      ]}
+                    />
                     <input
                       type="text"
                       placeholder="Course name (e.g. B. Education)"

@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/auth-context';
 import { Hostel } from '@/types';
 import FaIcon from '@/components/FaIcon';
+import BoundedSelect from '@/components/BoundedSelect';
 
 export default function AdminPanelPage() {
   const { currentUser, switchRole } = useAuth();
@@ -331,17 +332,16 @@ export default function AdminPanelPage() {
                     </span>
                     <FaIcon icon="fa-solid fa-shield-halved" className="text-sm text-[#0f3a98]" />
                   </div>
-                  <select
+                  <BoundedSelect
                     value={primaryHostelId}
-                    onChange={e => setPrimaryHostelId(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-blue-300 bg-white font-medium text-[#0f3a98]"
-                  >
-                    {hostels.map(h => (
-                      <option key={h.id} value={h.id}>
-                        {h.name} ({h.area} - {h.campus})
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setPrimaryHostelId}
+                    className="text-sm"
+                    buttonClassName="border-blue-300"
+                    options={hostels.map(h => ({
+                      value: h.id,
+                      label: `${h.name} (${h.area} - ${h.campus})`,
+                    }))}
+                  />
                   <p className="text-[11px] text-slate-500 font-medium">
                     This building entry will be retained as the primary physical listing.
                   </p>
@@ -355,17 +355,16 @@ export default function AdminPanelPage() {
                     </span>
                     <FaIcon icon="fa-solid fa-triangle-exclamation" className="text-sm text-rose-600" />
                   </div>
-                  <select
+                  <BoundedSelect
                     value={duplicateHostelId}
-                    onChange={e => setDuplicateHostelId(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-rose-300 bg-white font-medium text-rose-900"
-                  >
-                    {hostels.map(h => (
-                      <option key={h.id} value={h.id}>
-                        {h.name} ({h.area} - {h.campus})
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setDuplicateHostelId}
+                    className="text-sm"
+                    buttonClassName="border-rose-300"
+                    options={hostels.map(h => ({
+                      value: h.id,
+                      label: `${h.name} (${h.area} - ${h.campus})`,
+                    }))}
+                  />
                   <p className="text-[11px] text-slate-500 font-medium">
                     All offers, reviews, photos, and leads from this entry will be transferred to Master.
                   </p>

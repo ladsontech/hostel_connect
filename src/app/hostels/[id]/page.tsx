@@ -10,6 +10,7 @@ import { Hostel, Offer, Review } from '@/types';
 import { formatUGX, formatDateEAT } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
 import FaIcon from '@/components/FaIcon';
+import BoundedSelect from '@/components/BoundedSelect';
 
 export default function HostelDetailPage() {
   const params = useParams();
@@ -554,18 +555,19 @@ export default function HostelDetailPage() {
               <form onSubmit={handleReport} className="space-y-3">
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">Reason</label>
-                  <select
+                  <BoundedSelect
                     value={reportReason}
-                    onChange={e => setReportReason(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border text-xs font-medium"
-                  >
-                    <option value="fake_listing">Fake or non-existent listing</option>
-                    <option value="wrong_price">Wrong price or misleading rent</option>
-                    <option value="wrong_photos">Photos don't match building</option>
-                    <option value="already_taken">Already full / taken</option>
-                    <option value="duplicate">Duplicate building listing</option>
-                    <option value="scam">Scam / fraudulent agent</option>
-                  </select>
+                    onChange={setReportReason}
+                    className="text-xs"
+                    options={[
+                      { value: 'fake_listing', label: 'Fake or non-existent listing' },
+                      { value: 'wrong_price', label: 'Wrong price or misleading rent' },
+                      { value: 'wrong_photos', label: "Photos don't match building" },
+                      { value: 'already_taken', label: 'Already full / taken' },
+                      { value: 'duplicate', label: 'Duplicate building listing' },
+                      { value: 'scam', label: 'Scam / fraudulent agent' },
+                    ]}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">Details</label>
