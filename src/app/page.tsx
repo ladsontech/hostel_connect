@@ -13,7 +13,7 @@ import UniMarketCarousel from '@/components/UniMarketCarousel';
 import HeroCarousel from '@/components/HeroCarousel';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
-import { formatUGX } from '@/lib/utils';
+import { formatUGX, matchesIndividualRoomType, matchesRoomTypeFilter } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
 
 export default function HomePage() {
@@ -151,12 +151,17 @@ export default function HomePage() {
       }
 
       if (h.rooms && h.rooms.length > 0) {
+        if (filters.roomType && !matchesRoomTypeFilter(h.rooms, filters.roomType)) {
+          return false;
+        }
         const matchingRooms = h.rooms.filter(r => {
-          const matchesType = !filters.roomType || r.type === filters.roomType;
+          const matchesType = matchesIndividualRoomType(r, filters.roomType);
           const matchesPrice = r.rentUgx <= filters.maxPrice;
           return matchesType && matchesPrice;
         });
         if (matchingRooms.length === 0) return false;
+      } else if (filters.roomType) {
+        return false;
       }
 
       return true;
@@ -205,7 +210,14 @@ export default function HomePage() {
 
     hostels.forEach(h => {
       if (h.rooms && h.rooms.length > 0) {
-        const room = h.rooms.find(r => r.roomsAvailable > 0 && r.type.includes('single')) || h.rooms[0];
+        if (filters.roomType && !matchesRoomTypeFilter(h.rooms, filters.roomType)) {
+          return;
+        }
+        const room =
+          (filters.roomType
+            ? h.rooms.find(r => r.roomsAvailable > 0 && matchesIndividualRoomType(r, filters.roomType)) ||
+              h.rooms.find(r => matchesIndividualRoomType(r, filters.roomType))
+            : h.rooms.find(r => r.roomsAvailable > 0 && r.type.includes('single')) || h.rooms[0]);
         if (room) {
           const photo = h.photos.find(p => !p.isCover)?.url || h.photos[0]?.url;
           list.push({
@@ -222,7 +234,7 @@ export default function HomePage() {
     });
 
     return list.slice(0, 4);
-  }, [hostels]);
+  }, [hostels, filters.roomType]);
 
   return (
     <div className="min-h-screen flex flex-col font-sans">

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Hostel } from '@/types';
-import { formatUGX } from '@/lib/utils';
+import { formatUGX, getRoomOfferingSummary } from '@/lib/utils';
 import FaIcon from './FaIcon';
 
 interface HostelCardProps {
@@ -27,6 +27,7 @@ export default function HostelCard({
   const minRent = rents.length ? Math.min(...rents) : 0;
   const maxRent = rents.length ? Math.max(...rents) : 0;
   const totalAvailable = hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
+  const roomOffering = getRoomOfferingSummary(hostel.rooms);
   const coverPhoto =
     hostel.photos.find(p => p.isCover && p.mediaType !== 'video') ||
     hostel.photos.find(p => p.mediaType !== 'video') ||
@@ -157,6 +158,12 @@ export default function HostelCard({
                 <span className="truncate">{hostel.distanceCampusApprox}</span>
               </div>
             )}
+            <div className="pt-0.5">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#e8effc] text-[#0f3a98] text-[10px] font-semibold border border-blue-200">
+                <FaIcon icon="fa-solid fa-bed" className="text-[9px] text-[#0f3a98]" />
+                <span>{roomOffering.label}</span>
+              </span>
+            </div>
           </div>
 
           {/* Key Amenities row */}
@@ -187,7 +194,9 @@ export default function HostelCard({
         {/* Pricing & CTA */}
         <div className="mt-3.5 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <div className="text-xs text-black font-medium tracking-normal">Per Semester</div>
+            <div className="text-xs text-black font-medium tracking-normal">
+              {maxRent > minRent ? 'From / Semester' : 'Per Semester'}
+            </div>
             <div className="text-[#0f3a98] font-medium text-xs sm:text-sm truncate">
               {formatUGX(minRent)}
             </div>

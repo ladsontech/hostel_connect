@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/data-store';
 import { checkForDuplicates, normalizeHostelName } from '@/lib/duplicate-detector';
+import { matchesIndividualRoomType, matchesRoomTypeFilter } from '@/lib/utils';
 import { Hostel } from '@/types';
 
 // GET /api/v1/hostels
@@ -67,12 +68,17 @@ export async function GET(request: Request) {
 
     // Price range & room type filter
     if (hostel.rooms && hostel.rooms.length > 0) {
+      if (roomType && !matchesRoomTypeFilter(hostel.rooms, roomType)) {
+        return false;
+      }
       const matchingRooms = hostel.rooms.filter(room => {
-        const matchesType = !roomType || room.type === roomType;
+        const matchesType = matchesIndividualRoomType(room, roomType);
         const matchesPrice = room.rentUgx >= minPrice && room.rentUgx <= maxPrice;
         return matchesType && matchesPrice;
       });
       if (matchingRooms.length === 0) return false;
+    } else if (roomType) {
+      return false;
     }
 
     return true;
@@ -212,9 +218,9 @@ export async function POST(request: Request) {
         hostelId: newHostelId,
         name: r.name || 'Standard Room',
         type: r.type || 'single',
-        rentUgx: parseInt(r.rentUgx) || 800000,
-        roomsTotal: parseInt(r.roomsTotal) || 10,
-        roomsAvailable: parseInt(r.roomsAvailable) || 2,
+        rentUgx: Number.isFinite(Number(r.rentUgx)) ? Math.max(0, Math.round(Number(r.rentUgx))) : 800000,
+        roomsTotal: Number.isFinite(Number(r.roomsTotal)) ? Math.max(1, Math.round(Number(r.roomsTotal))) : 10,
+        roomsAvailable: Number.isFinite(Number(r.roomsAvailable)) ? Math.max(0, Math.round(Number(r.roomsAvailable))) : 2,
         updatedAt: new Date().toISOString(),
         updatedBy: sellerId
       })),

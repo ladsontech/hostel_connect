@@ -7,7 +7,7 @@ import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/auth-context';
 import { Hostel, HostelPhoto, Offer, SubscriptionPlan, UserSubscription } from '@/types';
-import { formatUGX } from '@/lib/utils';
+import { formatUGX, getRoomOfferingSummary } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
 import BoundedSelect from '@/components/BoundedSelect';
 import HostelLocationFinder from '@/components/HostelLocationFinder';
@@ -314,8 +314,13 @@ export default function SellerPortalPage() {
   const [formDistance, setFormDistance] = useState('');
   const [formAccessFee, setFormAccessFee] = useState('20000');
   const [formPhone, setFormPhone] = useState('+256 700 123 456');
+  const [formRoomOffering, setFormRoomOffering] = useState<'both' | 'single_only' | 'double_only'>('both');
+  const [formSingleStyle, setFormSingleStyle] = useState<'single' | 'self_contained_single'>('single');
+  const [formDoubleStyle, setFormDoubleStyle] = useState<'double' | 'self_contained_double'>('double');
   const [formSingleRent, setFormSingleRent] = useState('1200000');
   const [formDoubleRent, setFormDoubleRent] = useState('850000');
+  const [formSingleAvailable, setFormSingleAvailable] = useState('5');
+  const [formDoubleAvailable, setFormDoubleAvailable] = useState('12');
   const [formMedia, setFormMedia] = useState<HostelPhoto[]>([]);
   const [formSubmitting, setFormSubmitting] = useState(false);
 
@@ -353,9 +358,8 @@ export default function SellerPortalPage() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [paymentSuccessMsg, setPaymentSuccessMsg] = useState('');
 
-  // Editing rooms
-  const [editSingleRoomsAvailable, setEditSingleRoomsAvailable] = useState<number>(5);
-  const [editDoubleRoomsAvailable, setEditDoubleRoomsAvailable] = useState<number>(10);
+  // Editing rooms (per-hostel, per-room quick vacancy inputs keyed by `${hostelId}:${roomId}`)
+  const [quickVacancies, setQuickVacancies] = useState<Record<string, number>>({});
   const [updateMsg, setUpdateMsg] = useState('');
 
   useEffect(() => {
@@ -434,8 +438,28 @@ export default function SellerPortalPage() {
       accessFeeUgx: parseInt(formAccessFee) || 0,
       photos: formMedia.length > 0 ? formMedia : undefined,
       rooms: [
-        { name: 'Single Room', type: 'single', rentUgx: parseInt(formSingleRent) || 1000000, roomsTotal: 30, roomsAvailable: 5 },
-        { name: 'Double Shared', type: 'double', rentUgx: parseInt(formDoubleRent) || 750000, roomsTotal: 50, roomsAvailable: 12 }
+        ...(formRoomOffering === 'both' || formRoomOffering === 'single_only'
+          ? [
+              {
+                name: formSingleStyle === 'self_contained_single' ? 'Single Self-Contained' : 'Single Room',
+                type: formSingleStyle,
+                rentUgx: parseInt(formSingleRent, 10) || 1000000,
+                roomsTotal: Math.max(parseInt(formSingleAvailable, 10) || 0, 30),
+                roomsAvailable: Math.max(0, parseInt(formSingleAvailable, 10) || 0),
+              },
+            ]
+          : []),
+        ...(formRoomOffering === 'both' || formRoomOffering === 'double_only'
+          ? [
+              {
+                name: formDoubleStyle === 'self_contained_double' ? 'Double Self-Contained' : 'Double Shared',
+                type: formDoubleStyle,
+                rentUgx: parseInt(formDoubleRent, 10) || 750000,
+                roomsTotal: Math.max(parseInt(formDoubleAvailable, 10) || 0, 50),
+                roomsAvailable: Math.max(0, parseInt(formDoubleAvailable, 10) || 0),
+              },
+            ]
+          : []),
       ],
       forceCreate: forceBypass,
       duplicateBypassReason: bypassReason
@@ -466,6 +490,9 @@ export default function SellerPortalPage() {
         setFormAddress('');
         setFormLandmark('');
         setFormDistance('');
+        setFormRoomOffering('both');
+        setFormSingleAvailable('5');
+        setFormDoubleAvailable('12');
         setFormMedia([]);
         setBypassReason('');
       } else {
@@ -596,19 +623,27 @@ export default function SellerPortalPage() {
     }
   };
 
-  const handleUpdateRooms = async (hostelId: string) => {
+  const handleUpdateRooms = async (hostel: Hostel) => {
+    const updatedRooms = hostel.rooms.map((room) => {
+      const key = `${hostel.id}:${room.id}`;
+      const nextAvailable =
+        quickVacancies[key] !== undefined ? Math.max(0, quickVacancies[key]) : room.roomsAvailable;
+      return {
+        ...room,
+        roomsAvailable: nextAvailable,
+        roomsTotal: Math.max(room.roomsTotal || 0, nextAvailable),
+      };
+    });
+
     try {
-      const res = await fetch(`/api/v1/hostels/${hostelId}`, {
+      const res = await fetch(`/api/v1/hostels/${hostel.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: currentUser?.id,
           userRole: currentUser?.role,
-          rooms: [
-            { name: 'Single Room', type: 'single', rentUgx: 1200000, roomsTotal: 30, roomsAvailable: editSingleRoomsAvailable },
-            { name: 'Double Room', type: 'double', rentUgx: 850000, roomsTotal: 50, roomsAvailable: editDoubleRoomsAvailable }
-          ]
-        })
+          rooms: updatedRooms,
+        }),
       });
       const data = await res.json();
       if (data.success) {
@@ -1108,8 +1143,13 @@ export default function SellerPortalPage() {
 
                       {/* Clean Room Inventory Section */}
                       <div className="bg-slate-50/90 p-3 sm:p-3.5 rounded-xl border border-slate-200/70 space-y-2.5">
-                        <div className="flex items-center justify-between gap-2 text-xs">
-                          <span className="font-semibold text-slate-800">Rooms &amp; Rates</span>
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-slate-800">Rooms &amp; Rates</span>
+                            <span className="px-2 py-0.5 rounded-full bg-[#e8effc] text-[#0f3a98] text-[10px] font-semibold border border-blue-200">
+                              {getRoomOfferingSummary(hostel.rooms).label}
+                            </span>
+                          </div>
                           <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap flex items-center gap-1">
                             <FaIcon
                               icon={hostel.status === 'claimed' && currentUser?.role === 'broker' ? 'fa-solid fa-lock' : 'fa-solid fa-pen'}
@@ -1141,24 +1181,37 @@ export default function SellerPortalPage() {
                           ))}
                         </div>
 
-                        {currentUser?.role === 'custodian' && (
+                        {currentUser?.role === 'custodian' && hostel.rooms.length > 0 && (
                           <div className="pt-1.5 flex flex-wrap items-center gap-2">
-                            <input
-                              type="number"
-                              min="0"
-                              placeholder="Single vacant"
-                              className="w-28 px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-medium"
-                              onChange={e => setEditSingleRoomsAvailable(parseInt(e.target.value) || 0)}
-                            />
-                            <input
-                              type="number"
-                              min="0"
-                              placeholder="Double vacant"
-                              className="w-28 px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-medium"
-                              onChange={e => setEditDoubleRoomsAvailable(parseInt(e.target.value) || 0)}
-                            />
+                            {hostel.rooms.map((room) => {
+                              const qKey = `${hostel.id}:${room.id}`;
+                              const val =
+                                quickVacancies[qKey] !== undefined ? quickVacancies[qKey] : '';
+                              return (
+                                <input
+                                  key={room.id}
+                                  type="number"
+                                  min="0"
+                                  value={val}
+                                  placeholder={`${room.name} vacant (${room.roomsAvailable})`}
+                                  onChange={e => {
+                                    const parsed = parseInt(e.target.value, 10);
+                                    setQuickVacancies(prev => {
+                                      if (e.target.value === '' || isNaN(parsed)) {
+                                        const next = { ...prev };
+                                        delete next[qKey];
+                                        return next;
+                                      }
+                                      return { ...prev, [qKey]: Math.max(0, parsed) };
+                                    });
+                                  }}
+                                  className="w-36 px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-medium"
+                                />
+                              );
+                            })}
                             <button
-                              onClick={() => handleUpdateRooms(hostel.id)}
+                              type="button"
+                              onClick={() => handleUpdateRooms(hostel)}
                               className="px-3 py-1.5 bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium rounded-lg transition whitespace-nowrap"
                             >
                               Update Vacancy
@@ -1725,38 +1778,158 @@ export default function SellerPortalPage() {
                 </div>
               </div>
 
-              {/* Room Rent & Broker access fee fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">Single Room Rent (UGX)</label>
-                  <input
-                    type="number"
-                    value={formSingleRent}
-                    onChange={e => setFormSingleRent(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium"
-                  />
+              {/* Room Offering & Rates */}
+              <div className="p-4 rounded-xl bg-[#edf2fc]/70 border border-blue-100 space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#0f3a98]">
+                      Room Types Available at This Hostel
+                    </label>
+                    <p className="text-[11px] text-slate-500">
+                      Upload Single rooms alone, Double rooms alone, or both room categories.
+                    </p>
+                  </div>
+                  <div className="inline-flex rounded-xl bg-white p-1 border border-blue-200 gap-1 self-start">
+                    {[
+                      { value: 'both', label: 'Single & Double' },
+                      { value: 'single_only', label: 'Single Only' },
+                      { value: 'double_only', label: 'Double Only' },
+                    ].map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setFormRoomOffering(opt.value as 'both' | 'single_only' | 'double_only')}
+                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition whitespace-nowrap ${
+                          formRoomOffering === opt.value
+                            ? 'bg-[#0f3a98] text-white shadow-sm'
+                            : 'text-slate-600 hover:text-[#0f3a98] hover:bg-slate-50'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">Double Room Rent (UGX)</label>
-                  <input
-                    type="number"
-                    value={formDoubleRent}
-                    onChange={e => setFormDoubleRent(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium"
-                  />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {(formRoomOffering === 'both' || formRoomOffering === 'single_only') && (
+                    <div className="p-3 rounded-xl bg-white border border-blue-100 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-semibold text-[#0f3a98]">Single Room Details</span>
+                        <div className="inline-flex rounded-lg bg-slate-100 p-0.5 text-[10px] font-semibold">
+                          <button
+                            type="button"
+                            onClick={() => setFormSingleStyle('single')}
+                            className={`px-2 py-0.5 rounded-md transition ${
+                              formSingleStyle === 'single' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
+                            }`}
+                          >
+                            Standard
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFormSingleStyle('self_contained_single')}
+                            className={`px-2 py-0.5 rounded-md transition ${
+                              formSingleStyle === 'self_contained_single' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
+                            }`}
+                          >
+                            Self-Contained
+                          </button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="col-span-2">
+                          <label className="block text-[11px] font-medium text-slate-600 mb-1">Rent / Sem (UGX)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            required
+                            value={formSingleRent}
+                            onChange={e => setFormSingleRent(e.target.value)}
+                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-slate-200 font-medium"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-medium text-slate-600 mb-1">Vacant</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={formSingleAvailable}
+                            onChange={e => setFormSingleAvailable(e.target.value)}
+                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-slate-200 font-medium text-center"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {(formRoomOffering === 'both' || formRoomOffering === 'double_only') && (
+                    <div className="p-3 rounded-xl bg-white border border-blue-100 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-semibold text-[#0f3a98]">Double Room Details</span>
+                        <div className="inline-flex rounded-lg bg-slate-100 p-0.5 text-[10px] font-semibold">
+                          <button
+                            type="button"
+                            onClick={() => setFormDoubleStyle('double')}
+                            className={`px-2 py-0.5 rounded-md transition ${
+                              formDoubleStyle === 'double' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
+                            }`}
+                          >
+                            Shared
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFormDoubleStyle('self_contained_double')}
+                            className={`px-2 py-0.5 rounded-md transition ${
+                              formDoubleStyle === 'self_contained_double' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
+                            }`}
+                          >
+                            Self-Contained
+                          </button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="col-span-2">
+                          <label className="block text-[11px] font-medium text-slate-600 mb-1">Rent / Sem (UGX)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            required
+                            value={formDoubleRent}
+                            onChange={e => setFormDoubleRent(e.target.value)}
+                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-slate-200 font-medium"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-medium text-slate-600 mb-1">Vacant</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={formDoubleAvailable}
+                            onChange={e => setFormDoubleAvailable(e.target.value)}
+                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-slate-200 font-medium text-center"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
-                    Broker Inspection Fee (UGX)
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="0 or positive UGX"
-                    value={formAccessFee}
-                    onChange={e => setFormAccessFee(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium"
-                  />
-                </div>
+
+                {currentUser?.role !== 'custodian' && (
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                      Broker Inspection Fee (UGX)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0 or positive UGX"
+                      value={formAccessFee}
+                      onChange={e => setFormAccessFee(e.target.value)}
+                      className="w-full sm:max-w-xs px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white font-medium"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Hostel Photos & Videos Uploader */}
@@ -1975,47 +2148,103 @@ export default function SellerPortalPage() {
 
               {(currentUser?.role === 'custodian' || editingHostel.status === 'unclaimed') ? (
                 <div className="p-3.5 rounded-xl bg-[#edf2fc]/70 border border-blue-100 space-y-2.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-semibold text-[#0f3a98]">Room Rates &amp; Availability</span>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setEditRooms(prev => [
-                          ...prev,
-                          {
-                            id: `rm_${editingHostel.id}_${Date.now()}`,
-                            hostelId: editingHostel.id,
-                            name: 'Self-Contained Room',
-                            type: 'self_contained_single',
-                            rentUgx: 900000,
-                            roomsTotal: 20,
-                            roomsAvailable: 5,
-                            updatedAt: new Date().toISOString(),
-                            updatedBy: currentUser?.id || 'seller',
-                          },
-                        ])
-                      }
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#0f3a98] text-[#ffbe00] text-[11px] font-medium hover:bg-[#0a2666] transition"
-                    >
-                      <FaIcon icon="fa-solid fa-plus" className="text-[9px]" />
-                      <span>Add Room</span>
-                    </button>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-[#0f3a98]">Room Rates &amp; Availability</span>
+                      <span className="px-2 py-0.5 rounded-full bg-white text-[#0f3a98] text-[10px] font-semibold border border-blue-200">
+                        {getRoomOfferingSummary(editRooms).label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEditRooms(prev => [
+                            ...prev,
+                            {
+                              id: `rm_${editingHostel.id}_${Date.now()}`,
+                              hostelId: editingHostel.id,
+                              name: 'Single Room',
+                              type: 'single',
+                              rentUgx: 1100000,
+                              roomsTotal: 20,
+                              roomsAvailable: 5,
+                              updatedAt: new Date().toISOString(),
+                              updatedBy: currentUser?.id || 'seller',
+                            },
+                          ])
+                        }
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#0f3a98] text-white text-[11px] font-medium hover:bg-[#0a2666] transition"
+                      >
+                        <FaIcon icon="fa-solid fa-plus" className="text-[9px]" />
+                        <span>Single Room</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEditRooms(prev => [
+                            ...prev,
+                            {
+                              id: `rm_${editingHostel.id}_${Date.now()}_d`,
+                              hostelId: editingHostel.id,
+                              name: 'Double Shared',
+                              type: 'double',
+                              rentUgx: 800000,
+                              roomsTotal: 30,
+                              roomsAvailable: 8,
+                              updatedAt: new Date().toISOString(),
+                              updatedBy: currentUser?.id || 'seller',
+                            },
+                          ])
+                        }
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white text-[#0f3a98] border border-blue-200 text-[11px] font-medium hover:bg-blue-50 transition"
+                      >
+                        <FaIcon icon="fa-solid fa-plus" className="text-[9px]" />
+                        <span>Double Room</span>
+                      </button>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     {editRooms.map((room, rIdx) => (
                       <div key={room.id} className="grid grid-cols-12 gap-1.5 items-center bg-white p-2 rounded-lg border border-blue-100 text-xs">
+                        <div className="col-span-12 sm:col-span-3">
+                          <BoundedSelect
+                            value={room.type}
+                            onChange={(val) =>
+                              setEditRooms(prev =>
+                                prev.map((r, i) =>
+                                  i === rIdx
+                                    ? {
+                                        ...r,
+                                        type: val as Hostel['rooms'][number]['type'],
+                                      }
+                                    : r
+                                )
+                              )
+                            }
+                            options={[
+                              { value: 'single', label: 'Single' },
+                              { value: 'self_contained_single', label: 'Single S/C' },
+                              { value: 'double', label: 'Double' },
+                              { value: 'self_contained_double', label: 'Double S/C' },
+                              { value: 'triple', label: 'Triple' },
+                              { value: 'quad', label: 'Quad' },
+                            ]}
+                            buttonClassName="px-2 py-1 rounded border border-slate-200 text-[11px] font-medium"
+                          />
+                        </div>
                         <input
                           type="text"
                           value={room.name}
                           onChange={e => setEditRooms(prev => prev.map((r, i) => i === rIdx ? { ...r, name: e.target.value } : r))}
-                          placeholder="Room type"
-                          className="col-span-5 px-2 py-1 rounded border border-slate-200 font-medium"
+                          placeholder="Room label"
+                          className="col-span-5 sm:col-span-4 px-2 py-1 rounded border border-slate-200 font-medium"
                         />
                         <input
                           type="number"
                           value={room.rentUgx}
                           onChange={e => setEditRooms(prev => prev.map((r, i) => i === rIdx ? { ...r, rentUgx: parseInt(e.target.value) || 0 } : r))}
-                          className="col-span-4 px-2 py-1 rounded border border-slate-200 font-medium"
+                          className="col-span-4 sm:col-span-3 px-2 py-1 rounded border border-slate-200 font-medium"
                           title="Rent (UGX)"
                         />
                         <input
@@ -2023,7 +2252,7 @@ export default function SellerPortalPage() {
                           min="0"
                           value={room.roomsAvailable}
                           onChange={e => setEditRooms(prev => prev.map((r, i) => i === rIdx ? { ...r, roomsAvailable: parseInt(e.target.value) || 0 } : r))}
-                          className="col-span-2 px-1.5 py-1 rounded border border-slate-200 font-medium text-center"
+                          className="col-span-2 sm:col-span-1 px-1.5 py-1 rounded border border-slate-200 font-medium text-center"
                           title="Vacant rooms"
                         />
                         <button

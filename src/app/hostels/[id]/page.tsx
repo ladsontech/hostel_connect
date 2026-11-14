@@ -7,7 +7,7 @@ import ContactModal from '@/components/ContactModal';
 import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
 import { Hostel, Offer, Review } from '@/types';
-import { formatUGX, formatDateEAT } from '@/lib/utils';
+import { formatUGX, formatDateEAT, getRoomOfferingSummary } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
 import FaIcon from '@/components/FaIcon';
 import BoundedSelect from '@/components/BoundedSelect';
@@ -337,9 +337,14 @@ export default function HostelDetailPage() {
 
         {/* Room Types & Live Availability */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h3 className="text-base font-medium text-[#0f3a98]">Room Types & Semester Rates</h3>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-base font-medium text-[#0f3a98]">Room Types & Semester Rates</h3>
+                <span className="px-2.5 py-0.5 rounded-full bg-[#e8effc] text-[#0f3a98] text-[11px] font-semibold border border-blue-200">
+                  {getRoomOfferingSummary(hostel.rooms).label}
+                </span>
+              </div>
               <p className="text-xs text-slate-500 font-medium">Official rents set directly by hostel management</p>
             </div>
             <div className="text-xs text-slate-400 font-medium">
@@ -347,7 +352,7 @@ export default function HostelDetailPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className={`grid grid-cols-1 ${hostel.rooms.length > 1 ? 'sm:grid-cols-2' : ''} gap-4`}>
             {hostel.rooms.map(room => (
               <div
                 key={room.id}
