@@ -911,9 +911,9 @@ export default function SellerPortalPage() {
                           : 'border-slate-200'
                     }`}
                   >
-                    {/* Top Card Header with Thumbnail + Status + Vacancy Box */}
+                    {/* Top Card Header: Thumbnail + Roomy Title & Location + Separate Status/Vacancy Bar */}
                     <div className="space-y-3">
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start gap-3.5">
                         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-[#edf2fc] border border-slate-200 shrink-0 flex items-center justify-center">
                           {coverPhoto ? (
                             <img
@@ -926,45 +926,46 @@ export default function SellerPortalPage() {
                           )}
                         </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="min-w-0">
-                              <h3 className="text-base sm:text-lg font-semibold text-[#0f3a98] leading-snug truncate">
-                                {hostel.name}
-                              </h3>
-                              <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
-                                {hostel.area} • {hostel.distanceCampusApprox}
-                              </p>
-                            </div>
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <h3 className="text-base sm:text-lg font-semibold text-[#0f3a98] leading-snug">
+                            {hostel.name}
+                          </h3>
+                          <p className="text-xs text-slate-600 font-medium">
+                            {hostel.area} • {hostel.campus}
+                          </p>
+                          <p className="text-[11px] text-slate-500 font-medium flex items-start gap-1.5 leading-snug">
+                            <FaIcon icon="fa-solid fa-location-dot" className="text-[#0f3a98] text-[10px] mt-0.5 shrink-0" />
+                            <span>{hostel.distanceCampusApprox}</span>
+                          </p>
+                        </div>
+                      </div>
 
-                            <div className="px-2.5 py-1.5 rounded-xl bg-[#edf2fc] border border-blue-100 text-center shrink-0 whitespace-nowrap">
-                              <div className="text-xs sm:text-sm font-semibold text-[#0f3a98] leading-none">
-                                {availableRooms}/{totalRooms}
-                              </div>
-                              <div className="text-[10px] text-slate-500 font-medium mt-0.5">Vacant</div>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                            <span className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-[#e8effc] text-[#0f3a98] whitespace-nowrap">
-                              {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
+                      {/* Roomy Full-Width Status Badges & Vacancy Summary Row */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-md bg-[#e8effc] text-[#0f3a98] whitespace-nowrap">
+                            {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
+                          </span>
+                          {approval === 'pending' && (
+                            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 whitespace-nowrap">
+                              Pending Approval
                             </span>
-                            {approval === 'pending' && (
-                              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 whitespace-nowrap">
-                                Pending Approval
-                              </span>
-                            )}
-                            {approval === 'rejected' && (
-                              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 border border-rose-200 whitespace-nowrap">
-                                Rejected
-                              </span>
-                            )}
-                            {isUploadedByMe && (
-                              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#ffbe00] text-[#0f3a98] whitespace-nowrap">
-                                Uploaded by You
-                              </span>
-                            )}
-                          </div>
+                          )}
+                          {approval === 'rejected' && (
+                            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-rose-100 text-rose-800 border border-rose-200 whitespace-nowrap">
+                              Rejected
+                            </span>
+                          )}
+                          {isUploadedByMe && (
+                            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-[#ffbe00] text-[#0f3a98] whitespace-nowrap">
+                              Uploaded by You
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0f3a98] text-white text-[11px] font-semibold whitespace-nowrap shrink-0">
+                          <span className="text-[#ffbe00] tabular-nums">{availableRooms}/{totalRooms}</span>
+                          <span>Vacant</span>
                         </div>
                       </div>
 
