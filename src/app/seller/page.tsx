@@ -906,8 +906,8 @@ export default function SellerPortalPage() {
             </div>
 
             {pendingHostelsCount > 0 && (
-              <div className="p-3.5 bg-amber-50 border border-amber-200 text-amber-950 text-xs font-medium rounded-xl flex items-start gap-2.5">
-                <FaIcon icon="fa-solid fa-hourglass-half" className="text-amber-700 mt-0.5 shrink-0" />
+              <div className="p-3.5 sm:p-4 bg-[#0f3a98] border border-[#0f3a98] text-white text-xs font-medium rounded-xl flex items-start gap-2.5 shadow-xs">
+                <FaIcon icon="fa-solid fa-hourglass-half" className="text-[#ffbe00] mt-0.5 shrink-0" />
                 <span>
                   Hostels uploaded by brokers require Admin approval before appearing in public student search. Unapproved submissions remain visible below so you can inspect or edit their details, photos, and videos while awaiting approval.
                 </span>
