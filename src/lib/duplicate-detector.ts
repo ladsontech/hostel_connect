@@ -1,4 +1,5 @@
 import { Hostel, Offer } from '@/types';
+import { isDoubleRoomType, isSingleRoomType } from './utils';
 
 // Normalization stopwords commonly found in Uganda hostel names
 const STOP_WORDS = new Set([
@@ -118,11 +119,27 @@ export function checkForDuplicates(
     lat: number;
     lng: number;
     custodianPhone?: string;
+    roomTypes?: string[];
   },
   existingHostels: Hostel[],
   existingOffers: Offer[]
 ): DuplicateCheckResult {
+  const candTypes = candidate.roomTypes || [];
+  const candHasSingle = candTypes.some(t => isSingleRoomType(t));
+  const candHasDouble = candTypes.some(t => isDoubleRoomType(t));
+
   for (const hostel of existingHostels) {
+    // Allow uploading Single rooms alone or Double rooms alone as separate cards for the same hostel
+    if (candTypes.length > 0 && hostel.rooms.length > 0) {
+      const existHasSingle = hostel.rooms.some(r => isSingleRoomType(r.type));
+      const existHasDouble = hostel.rooms.some(r => isDoubleRoomType(r.type));
+      const isComplementarySingleOnly = candHasSingle && !candHasDouble && !existHasSingle;
+      const isComplementaryDoubleOnly = candHasDouble && !candHasSingle && !existHasDouble;
+      if (isComplementarySingleOnly || isComplementaryDoubleOnly) {
+        continue;
+      }
+    }
+
     const reasons: string[] = [];
 
     // 1. Trigram Name Similarity

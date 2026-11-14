@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import type { Hostel, HostelPhoto, RoomType } from '@/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -109,4 +110,83 @@ export function matchesIndividualRoomType(room: { type?: string }, roomType?: st
   if (roomType === 'any_double' || roomType === 'double_only') return isDoubleRoomType(room.type);
   if (roomType === 'both') return isSingleRoomType(room.type) || isDoubleRoomType(room.type);
   return room.type === roomType;
+}
+
+export interface RoomCardEntry {
+  cardKey: string;
+  hostel: Hostel;
+  room?: RoomType;
+  roomIndex: number;
+}
+
+/**
+ * Picks a distinct photo for a single or double room card when multiple images exist,
+ * matching caption keywords first, then alternating by room index, falling back to cover.
+ */
+export function pickRoomCardPhoto(
+  photos: HostelPhoto[] = [],
+  room?: Pick<RoomType, 'type' | 'name'>,
+  roomIndex = 0
+): HostelPhoto | undefined {
+  if (!photos || photos.length === 0) return undefined;
+  const imagePhotos = photos.filter((p) => p.mediaType !== 'video');
+  const pool = imagePhotos.length > 0 ? imagePhotos : photos;
+
+  if (room) {
+    const keyword = isDoubleRoomType(room.type)
+      ? 'double'
+      : isSingleRoomType(room.type)
+        ? 'single'
+        : '';
+    if (keyword) {
+      const captionMatch = pool.find((p) => (p.caption || '').toLowerCase().includes(keyword));
+      if (captionMatch) return captionMatch;
+    }
+    if (roomIndex > 0 && pool.length > 1) {
+      return pool[roomIndex % pool.length];
+    }
+  }
+
+  return pool.find((p) => p.isCover) || pool[0];
+}
+
+/**
+ * Expands each hostel into one card entry per matching room so Single rooms and Double rooms
+ * render on separate cards even when they belong to the same hostel.
+ */
+export function expandHostelsToRoomCards(
+  hostels: Hostel[],
+  filters?: { roomType?: string | null; maxPrice?: number; minPrice?: number }
+): RoomCardEntry[] {
+  const entries: RoomCardEntry[] = [];
+  const roomType = filters?.roomType || '';
+  const maxPrice = filters?.maxPrice ?? Infinity;
+  const minPrice = filters?.minPrice ?? 0;
+
+  for (const hostel of hostels) {
+    const rooms = hostel.rooms || [];
+    if (rooms.length === 0) {
+      if (!roomType) {
+        entries.push({ cardKey: hostel.id, hostel, room: undefined, roomIndex: 0 });
+      }
+      continue;
+    }
+
+    if (roomType && !matchesRoomTypeFilter(rooms, roomType)) {
+      continue;
+    }
+
+    rooms.forEach((room, roomIndex) => {
+      if (!matchesIndividualRoomType(room, roomType)) return;
+      if (room.rentUgx < minPrice || room.rentUgx > maxPrice) return;
+      entries.push({
+        cardKey: `${hostel.id}::${room.id}`,
+        hostel,
+        room,
+        roomIndex,
+      });
+    });
+  }
+
+  return entries;
 }

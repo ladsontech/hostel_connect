@@ -148,7 +148,8 @@ export async function POST(request: Request) {
           name,
           lat: parseFloat(lat),
           lng: parseFloat(lng),
-          custodianPhone: sellerRole === 'custodian' ? contactPhone : undefined
+          custodianPhone: sellerRole === 'custodian' ? contactPhone : undefined,
+          roomTypes: Array.isArray(rooms) ? rooms.map((r: any) => r?.type).filter(Boolean) : undefined
         },
         db.hostels,
         db.offers

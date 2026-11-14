@@ -2,12 +2,14 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Hostel } from '@/types';
-import { formatUGX, getRoomOfferingSummary } from '@/lib/utils';
+import { Hostel, RoomType } from '@/types';
+import { formatUGX, getRoomOfferingSummary, isDoubleRoomType, isSingleRoomType, pickRoomCardPhoto } from '@/lib/utils';
 import FaIcon from './FaIcon';
 
 interface HostelCardProps {
   hostel: Hostel;
+  room?: RoomType;
+  roomIndex?: number;
   isShortlisted?: boolean;
   onToggleShortlist?: (hostel: Hostel) => void;
   isComparing?: boolean;
@@ -17,6 +19,8 @@ interface HostelCardProps {
 
 export default function HostelCard({
   hostel,
+  room,
+  roomIndex = 0,
   isShortlisted = false,
   onToggleShortlist,
   isComparing = false,
@@ -24,14 +28,21 @@ export default function HostelCard({
   onContactClick
 }: HostelCardProps) {
   const rents = hostel.rooms.map(r => r.rentUgx);
-  const minRent = rents.length ? Math.min(...rents) : 0;
-  const maxRent = rents.length ? Math.max(...rents) : 0;
-  const totalAvailable = hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
+  const minRent = room ? room.rentUgx : (rents.length ? Math.min(...rents) : 0);
+  const maxRent = room ? room.rentUgx : (rents.length ? Math.max(...rents) : 0);
+  const totalAvailable = room
+    ? room.roomsAvailable
+    : hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
   const roomOffering = getRoomOfferingSummary(hostel.rooms);
-  const coverPhoto =
-    hostel.photos.find(p => p.isCover && p.mediaType !== 'video') ||
-    hostel.photos.find(p => p.mediaType !== 'video') ||
-    hostel.photos[0];
+  const roomCategoryBadge = room
+    ? (isSingleRoomType(room.type)
+        ? 'Single Room'
+        : isDoubleRoomType(room.type)
+          ? 'Double Room'
+          : room.name)
+    : roomOffering.label;
+  const detailHref = room ? `/hostels/${hostel.id}?room=${encodeURIComponent(room.id)}` : `/hostels/${hostel.id}`;
+  const coverPhoto = pickRoomCardPhoto(hostel.photos, room, roomIndex);
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-[#0f3a98] transition-all flex flex-col font-sans w-[285px] max-w-[295px] shrink-0 snap-start mx-auto">
@@ -133,9 +144,11 @@ export default function HostelCard({
           </div>
 
           {/* Anonymized Listing Title - Protects hostel name to prevent platform bypass */}
-          <Link href={`/hostels/${hostel.id}`}>
+          <Link href={detailHref}>
             <h3 className="font-medium text-slate-900 text-base group-hover:text-[#0f3a98] transition line-clamp-1">
-              {`Verified ${hostel.genderPolicy === 'girls_only' ? "Girls' " : hostel.genderPolicy === 'boys_only' ? "Boys' " : ''}Student Hostel`}
+              {room
+                ? room.name
+                : `Verified ${hostel.genderPolicy === 'girls_only' ? "Girls' " : hostel.genderPolicy === 'boys_only' ? "Boys' " : ''}Student Hostel`}
             </h3>
           </Link>
 
@@ -158,11 +171,19 @@ export default function HostelCard({
                 <span className="truncate">{hostel.distanceCampusApprox}</span>
               </div>
             )}
-            <div className="pt-0.5">
+            <div className="pt-0.5 flex flex-wrap items-center gap-1.5">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#e8effc] text-[#0f3a98] text-[10px] font-semibold border border-blue-200">
-                <FaIcon icon="fa-solid fa-bed" className="text-[9px] text-[#0f3a98]" />
-                <span>{roomOffering.label}</span>
+                <FaIcon
+                  icon={isDoubleRoomType(room?.type) ? 'fa-solid fa-user-group' : 'fa-solid fa-bed'}
+                  className="text-[9px] text-[#0f3a98]"
+                />
+                <span>{roomCategoryBadge}</span>
               </span>
+              {room && hostel.genderPolicy !== 'mixed' && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-medium">
+                  {hostel.genderPolicy === 'girls_only' ? 'Girls Only' : 'Boys Only'}
+                </span>
+              )}
             </div>
           </div>
 
@@ -213,7 +234,7 @@ export default function HostelCard({
               </button>
             ) : (
               <Link
-                href={`/hostels/${hostel.id}`}
+                href={detailHref}
                 className="px-3.5 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
               >
                 <FaIcon icon="fa-solid fa-calendar-check" className="text-xs text-[#ffbe00]" />

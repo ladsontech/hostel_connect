@@ -7,7 +7,7 @@ import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/auth-context';
 import { Hostel, HostelPhoto, Offer, SubscriptionPlan, UserSubscription } from '@/types';
-import { formatUGX, getRoomOfferingSummary } from '@/lib/utils';
+import { expandHostelsToRoomCards, formatUGX, getRoomOfferingSummary, isDoubleRoomType, pickRoomCardPhoto } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
 import BoundedSelect from '@/components/BoundedSelect';
 import HostelLocationFinder from '@/components/HostelLocationFinder';
@@ -989,17 +989,18 @@ export default function SellerPortalPage() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[...visibleHostels]
-                .sort((a, b) => {
+              {expandHostelsToRoomCards(
+                [...visibleHostels].sort((a, b) => {
                   const aPending = a.approvalStatus === 'pending' ? 2 : 0;
                   const bPending = b.approvalStatus === 'pending' ? 2 : 0;
                   const aMine = a.scoutUserId === currentUser?.id ? 1 : 0;
                   const bMine = b.scoutUserId === currentUser?.id ? 1 : 0;
                   return (bPending + bMine) - (aPending + aMine);
                 })
-                .map(hostel => {
-                const totalRooms = hostel.rooms.reduce((acc, r) => acc + r.roomsTotal, 0);
-                const availableRooms = hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
+              ).map(({ cardKey, hostel, room, roomIndex }) => {
+                const roomsToShow = room ? [room] : hostel.rooms;
+                const totalRooms = room ? room.roomsTotal : hostel.rooms.reduce((acc, r) => acc + r.roomsTotal, 0);
+                const availableRooms = room ? room.roomsAvailable : hostel.rooms.reduce((acc, r) => acc + r.roomsAvailable, 0);
                 const isUploadedByMe = hostel.scoutUserId === currentUser?.id;
                 const approval = hostel.approvalStatus || 'approved';
                 const canEditHostel =
@@ -1010,15 +1011,16 @@ export default function SellerPortalPage() {
                 const myOffer = offers.find(
                   o => o.hostelId === hostel.id && o.userId === currentUser?.id
                 );
-                const coverPhoto =
-                  hostel.photos.find(p => p.mediaType !== 'video' && p.isCover) ||
-                  hostel.photos.find(p => p.mediaType !== 'video');
+                const coverPhoto = pickRoomCardPhoto(hostel.photos, room, roomIndex);
                 const photoCount = hostel.photos.filter(p => p.mediaType !== 'video').length;
                 const videoCount = hostel.photos.filter(p => p.mediaType === 'video').length;
+                const roomDetailHref = room
+                  ? `/hostels/${hostel.id}?room=${encodeURIComponent(room.id)}`
+                  : `/hostels/${hostel.id}`;
 
                 return (
                   <div
-                    key={hostel.id}
+                    key={cardKey}
                     className={`bg-white rounded-2xl border p-4 sm:p-5 space-y-4 shadow-sm transition hover:shadow-md flex flex-col justify-between ${
                       approval === 'pending'
                         ? 'border-amber-300 ring-1 ring-amber-200/70'
@@ -1034,7 +1036,7 @@ export default function SellerPortalPage() {
                           {coverPhoto ? (
                             <img
                               src={coverPhoto.url}
-                              alt={hostel.name}
+                              alt={room ? `${hostel.name} - ${room.name}` : hostel.name}
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -1043,9 +1045,20 @@ export default function SellerPortalPage() {
                         </div>
 
                         <div className="flex-1 min-w-0 space-y-1">
-                          <h3 className="text-base sm:text-lg font-semibold text-[#0f3a98] leading-snug">
-                            {hostel.name}
-                          </h3>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="text-base sm:text-lg font-semibold text-[#0f3a98] leading-snug">
+                              {hostel.name}
+                            </h3>
+                            {room && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#0f3a98] text-white text-[10px] font-semibold whitespace-nowrap">
+                                <FaIcon
+                                  icon={isDoubleRoomType(room.type) ? 'fa-solid fa-user-group' : 'fa-solid fa-bed'}
+                                  className="text-[9px] text-[#ffbe00]"
+                                />
+                                <span>{room.name}</span>
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-slate-600 font-medium">
                             {hostel.area} • {hostel.campus}
                           </p>
@@ -1145,9 +1158,13 @@ export default function SellerPortalPage() {
                       <div className="bg-slate-50/90 p-3 sm:p-3.5 rounded-xl border border-slate-200/70 space-y-2.5">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-slate-800">Rooms &amp; Rates</span>
+                            <span className="font-semibold text-slate-800">
+                              {room ? 'Room Rate & Vacancy' : 'Rooms & Rates'}
+                            </span>
                             <span className="px-2 py-0.5 rounded-full bg-[#e8effc] text-[#0f3a98] text-[10px] font-semibold border border-blue-200">
-                              {getRoomOfferingSummary(hostel.rooms).label}
+                              {room
+                                ? (isDoubleRoomType(room.type) ? 'Double Room Card' : 'Single Room Card')
+                                : getRoomOfferingSummary(hostel.rooms).label}
                             </span>
                           </div>
                           <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap flex items-center gap-1">
@@ -1162,38 +1179,38 @@ export default function SellerPortalPage() {
                         </div>
 
                         <div className="space-y-1.5">
-                          {hostel.rooms.map(room => (
+                          {roomsToShow.map(r => (
                             <div
-                              key={room.id}
+                              key={r.id}
                               className="flex items-center justify-between gap-3 py-2 px-3 rounded-xl bg-white border border-slate-200/80"
                             >
                               <div className="min-w-0">
-                                <div className="text-xs font-medium text-slate-900 truncate">{room.name}</div>
+                                <div className="text-xs font-medium text-slate-900 truncate">{r.name}</div>
                                 <div className="text-[11px] font-semibold text-[#0f3a98] mt-0.5 whitespace-nowrap">
-                                  {formatUGX(room.rentUgx)}{' '}
+                                  {formatUGX(r.rentUgx)}{' '}
                                   <span className="font-normal text-slate-400">/ sem</span>
                                 </div>
                               </div>
                               <span className="px-2.5 py-1 rounded-lg bg-[#0f3a98] text-white text-[11px] font-semibold shrink-0 whitespace-nowrap">
-                                {room.roomsAvailable} left
+                                {r.roomsAvailable} left
                               </span>
                             </div>
                           ))}
                         </div>
 
-                        {currentUser?.role === 'custodian' && hostel.rooms.length > 0 && (
+                        {currentUser?.role === 'custodian' && roomsToShow.length > 0 && (
                           <div className="pt-1.5 flex flex-wrap items-center gap-2">
-                            {hostel.rooms.map((room) => {
-                              const qKey = `${hostel.id}:${room.id}`;
+                            {roomsToShow.map((r) => {
+                              const qKey = `${hostel.id}:${r.id}`;
                               const val =
                                 quickVacancies[qKey] !== undefined ? quickVacancies[qKey] : '';
                               return (
                                 <input
-                                  key={room.id}
+                                  key={r.id}
                                   type="number"
                                   min="0"
                                   value={val}
-                                  placeholder={`${room.name} vacant (${room.roomsAvailable})`}
+                                  placeholder={`${r.name} vacant (${r.roomsAvailable})`}
                                   onChange={e => {
                                     const parsed = parseInt(e.target.value, 10);
                                     setQuickVacancies(prev => {
@@ -1205,7 +1222,7 @@ export default function SellerPortalPage() {
                                       return { ...prev, [qKey]: Math.max(0, parsed) };
                                     });
                                   }}
-                                  className="w-36 px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-medium"
+                                  className="w-44 px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-medium"
                                 />
                               );
                             })}
@@ -1223,7 +1240,7 @@ export default function SellerPortalPage() {
 
                     {/* Clean Action & Fee Footer */}
                     <div className="pt-2 border-t border-slate-100 space-y-2.5">
-                      {currentUser?.role === 'broker' && quickFeeHostelId === hostel.id && (
+                      {currentUser?.role === 'broker' && quickFeeHostelId === cardKey && (
                         <form
                           onSubmit={e => handleSaveQuickFee(e, hostel)}
                           className="p-2.5 rounded-xl bg-[#0f3a98] text-white flex flex-wrap items-center gap-2 shadow-xs"
@@ -1268,7 +1285,7 @@ export default function SellerPortalPage() {
                             <button
                               type="button"
                               onClick={() => {
-                                setQuickFeeHostelId(hostel.id);
+                                setQuickFeeHostelId(cardKey);
                                 setQuickFeeValue(myOffer ? String(myOffer.accessFeeUgx) : '');
                               }}
                               title="Tap to edit inspection fee immediately"
@@ -1299,7 +1316,7 @@ export default function SellerPortalPage() {
 
                         <div className="flex items-center gap-2">
                           <Link
-                            href={`/hostels/${hostel.id}`}
+                            href={roomDetailHref}
                             className="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-[11px] font-medium inline-flex items-center gap-1 transition whitespace-nowrap"
                           >
                             <FaIcon icon="fa-solid fa-eye" className="text-[10px]" />
@@ -1786,7 +1803,7 @@ export default function SellerPortalPage() {
                       Room Types Available at This Hostel
                     </label>
                     <p className="text-[11px] text-slate-500">
-                      Upload Single rooms alone, Double rooms alone, or both room categories.
+                      Upload Single rooms alone, Double rooms alone, or both (each appears on its own card).
                     </p>
                   </div>
                   <div className="inline-flex rounded-xl bg-white p-1 border border-blue-200 gap-1 self-start">

@@ -32,13 +32,16 @@ export default function HostelDetailPage() {
   const [reportDetails, setReportDetails] = useState('');
   const [reportSuccess, setReportSuccess] = useState(false);
 
-  // Unlocked hostels state
+  // Unlocked hostels & pre-selected room state
   const [unlockedHostels, setUnlockedHostels] = useState<string[]>([]);
+  const [highlightedRoomId, setHighlightedRoomId] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem('hostel_connect_unlocked');
       if (saved) setUnlockedHostels(JSON.parse(saved));
+      const roomParam = new URLSearchParams(window.location.search).get('room');
+      if (roomParam) setHighlightedRoomId(roomParam);
     } catch (e) {}
   }, [isContactOpen]);
 
@@ -353,14 +356,27 @@ export default function HostelDetailPage() {
           </div>
 
           <div className={`grid grid-cols-1 ${hostel.rooms.length > 1 ? 'sm:grid-cols-2' : ''} gap-4`}>
-            {hostel.rooms.map(room => (
+            {hostel.rooms.map(room => {
+              const isSelectedRoom = highlightedRoomId === room.id;
+              return (
               <div
                 key={room.id}
-                className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between"
+                className={`p-4 rounded-xl border flex flex-col justify-between transition ${
+                  isSelectedRoom
+                    ? 'border-[#0f3a98] ring-2 ring-[#0f3a98]/20 bg-[#edf2fc]/60'
+                    : 'border-slate-200 bg-slate-50'
+                }`}
               >
                 <div>
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-slate-900 text-sm">{room.name}</h4>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <h4 className="font-medium text-slate-900 text-sm truncate">{room.name}</h4>
+                      {isSelectedRoom && (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#0f3a98] text-white shrink-0">
+                          Selected
+                        </span>
+                      )}
+                    </div>
                     {room.roomsAvailable > 0 ? (
                       <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#ffbe00] text-[#0f3a98]">
                         {room.roomsAvailable} Left
@@ -383,7 +399,7 @@ export default function HostelDetailPage() {
                   </span>
                 </div>
               </div>
-            ))}
+            );})}
           </div>
         </div>
 

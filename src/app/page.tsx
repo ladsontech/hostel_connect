@@ -13,7 +13,7 @@ import UniMarketCarousel from '@/components/UniMarketCarousel';
 import HeroCarousel from '@/components/HeroCarousel';
 import { Hostel, Offer } from '@/types';
 import { useAuth } from '@/lib/auth-context';
-import { formatUGX, matchesIndividualRoomType, matchesRoomTypeFilter } from '@/lib/utils';
+import { expandHostelsToRoomCards, formatUGX, matchesIndividualRoomType, matchesRoomTypeFilter } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
 
 export default function HomePage() {
@@ -183,7 +183,7 @@ export default function HomePage() {
     });
   }, [hostels, filters]);
 
-  // Split into broker-guided hostels (All Ugandan Campuses) & custodian-added hostels
+  // Split into broker-guided & custodian-added room cards (Single and Double get separate cards per hostel)
   const campusBrokerHostels = useMemo(() => {
     return filteredHostels.filter(h => h.status !== 'claimed');
   }, [filteredHostels]);
@@ -191,6 +191,32 @@ export default function HomePage() {
   const custodianAddedHostels = useMemo(() => {
     return filteredHostels.filter(h => h.status === 'claimed');
   }, [filteredHostels]);
+
+  const campusBrokerRoomCards = useMemo(() => {
+    const cards = expandHostelsToRoomCards(campusBrokerHostels, {
+      roomType: filters.roomType,
+      maxPrice: filters.maxPrice,
+    });
+    if (filters.sort === 'price_asc') {
+      cards.sort((a, b) => (a.room?.rentUgx ?? Infinity) - (b.room?.rentUgx ?? Infinity));
+    } else if (filters.sort === 'price_desc') {
+      cards.sort((a, b) => (b.room?.rentUgx ?? 0) - (a.room?.rentUgx ?? 0));
+    }
+    return cards;
+  }, [campusBrokerHostels, filters.roomType, filters.maxPrice, filters.sort]);
+
+  const custodianAddedRoomCards = useMemo(() => {
+    const cards = expandHostelsToRoomCards(custodianAddedHostels, {
+      roomType: filters.roomType,
+      maxPrice: filters.maxPrice,
+    });
+    if (filters.sort === 'price_asc') {
+      cards.sort((a, b) => (a.room?.rentUgx ?? Infinity) - (b.room?.rentUgx ?? Infinity));
+    } else if (filters.sort === 'price_desc') {
+      cards.sort((a, b) => (b.room?.rentUgx ?? 0) - (a.room?.rentUgx ?? 0));
+    }
+    return cards;
+  }, [custodianAddedHostels, filters.roomType, filters.maxPrice, filters.sort]);
 
   const compareHostels = useMemo(() => {
     return hostels.filter(h => compareList.includes(h.id));
@@ -331,7 +357,7 @@ export default function HomePage() {
                       </div>
 
                       {/* Room Name */}
-                      <Link href={`/hostels/${item.hostel.id}`}>
+                      <Link href={`/hostels/${item.hostel.id}?room=${encodeURIComponent(item.roomId)}`}>
                         <h3 className="font-medium text-slate-900 text-base group-hover:text-[#0f3a98] transition line-clamp-1">
                           {item.roomName}
                         </h3>
@@ -401,7 +427,7 @@ export default function HomePage() {
         )}
 
         {/* Hostel List: All Ugandan Campuses (Broker-Guided Hostels) */}
-        {(loading || campusBrokerHostels.length > 0 || filteredHostels.length === 0) && (
+        {(loading || campusBrokerRoomCards.length > 0 || filteredHostels.length === 0) && (
           <div id="explore">
             <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3 mb-4">
               <div className="min-w-0 flex flex-col items-center sm:items-start">
@@ -409,13 +435,13 @@ export default function HomePage() {
                   {filters.campus || 'All Ugandan Campuses'}
                 </h2>
                 <p className="text-xs text-slate-500 font-normal mt-0.5 text-center sm:text-left">
-                  {campusBrokerHostels.length} broker-guided hostels matching your criteria
+                  {campusBrokerRoomCards.length} broker-guided room cards matching your criteria
                 </p>
               </div>
 
               <div className="flex items-center justify-center sm:justify-end gap-2">
                 {/* Mobile swipe hint */}
-                {campusBrokerHostels.length > 0 && (
+                {campusBrokerRoomCards.length > 0 && (
                   <div className="sm:hidden flex items-center gap-1.5 text-[11px] text-white font-medium bg-[#0f3a98] px-3 py-1 rounded-full shrink-0 border border-[#0a2666] shadow-xs whitespace-nowrap">
                     <span>Swipe</span>
                     <FaIcon icon="fa-solid fa-arrow-right" className="text-[10px] text-[#ffbe00]" />
@@ -467,13 +493,15 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
-                {campusBrokerHostels.map(hostel => (
+                {campusBrokerRoomCards.map(entry => (
                   <HostelCard
-                    key={hostel.id}
-                    hostel={hostel}
-                    isShortlisted={shortlist.includes(hostel.id)}
+                    key={entry.cardKey}
+                    hostel={entry.hostel}
+                    room={entry.room}
+                    roomIndex={entry.roomIndex}
+                    isShortlisted={shortlist.includes(entry.hostel.id)}
                     onToggleShortlist={handleToggleShortlist}
-                    isComparing={compareList.includes(hostel.id)}
+                    isComparing={compareList.includes(entry.hostel.id)}
                     onToggleCompare={handleToggleCompare}
                     onContactClick={handleContactClick}
                   />
@@ -484,7 +512,7 @@ export default function HomePage() {
         )}
 
         {/* Hostels Added by Custodians (Below All Ugandan Campuses) */}
-        {(loading || custodianAddedHostels.length > 0) && (
+        {(loading || custodianAddedRoomCards.length > 0) && (
           <div id="custodian-hostels" className="pt-2">
             <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3 mb-4">
               <div className="min-w-0 flex flex-col items-center sm:items-start">
@@ -495,7 +523,7 @@ export default function HomePage() {
                   Hostels Added by Custodians
                 </h2>
                 <p className="text-xs text-slate-500 font-normal mt-0.5 line-clamp-1 sm:line-clamp-none max-w-2xl text-center sm:text-left">
-                  {custodianAddedHostels.length} official hostel management listings — unlock direct custodian phone, WhatsApp & walk-in address with no broker
+                  {custodianAddedRoomCards.length} official room cards — unlock direct custodian phone, WhatsApp & walk-in address with no broker
                 </p>
               </div>
 
@@ -514,13 +542,15 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="flex overflow-x-auto gap-4 pb-4 pt-1 px-3 sm:px-0 sm:pb-0 sm:overflow-visible sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:justify-items-center snap-x snap-mandatory scroll-smooth">
-                {custodianAddedHostels.map(hostel => (
+                {custodianAddedRoomCards.map(entry => (
                   <HostelCard
-                    key={hostel.id}
-                    hostel={hostel}
-                    isShortlisted={shortlist.includes(hostel.id)}
+                    key={entry.cardKey}
+                    hostel={entry.hostel}
+                    room={entry.room}
+                    roomIndex={entry.roomIndex}
+                    isShortlisted={shortlist.includes(entry.hostel.id)}
                     onToggleShortlist={handleToggleShortlist}
-                    isComparing={compareList.includes(hostel.id)}
+                    isComparing={compareList.includes(entry.hostel.id)}
                     onToggleCompare={handleToggleCompare}
                     onContactClick={handleContactClick}
                   />
