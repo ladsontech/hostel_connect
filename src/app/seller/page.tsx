@@ -1089,15 +1089,15 @@ export default function SellerPortalPage() {
             </div>
 
             {/* Weekly Summary Banner */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-[#edf2fc] border border-blue-200 flex items-start sm:items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-[#0f3a98] text-[#ffbe00] flex items-center justify-center shrink-0">
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#0f3a98] border border-[#0f3a98] text-white flex flex-col items-center justify-center text-center gap-2.5 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-white/15 text-[#ffbe00] flex items-center justify-center shrink-0">
                 <FaIcon icon="fa-solid fa-chart-line" className="text-sm" />
               </div>
-              <div>
-                <h4 className="font-semibold text-sm text-[#0f3a98]">Weekly Performance Summary</h4>
-                <p className="text-xs text-slate-700 mt-0.5 font-medium leading-relaxed">
-                  This listing received <strong>{analyticsData?.views || 1420} views</strong> and{' '}
-                  <strong>{(analyticsData?.whatsAppTaps || 48) + (analyticsData?.calls || 26)} direct student enquiries</strong>.
+              <div className="max-w-lg">
+                <h4 className="font-semibold text-sm text-white">Weekly Performance Summary</h4>
+                <p className="text-xs text-white/90 mt-1 font-medium leading-relaxed">
+                  This listing received <strong className="text-white">{analyticsData?.views || 1420} views</strong> and{' '}
+                  <strong className="text-white">{(analyticsData?.whatsAppTaps || 48) + (analyticsData?.calls || 26)} direct student enquiries</strong>.
                 </p>
               </div>
             </div>
