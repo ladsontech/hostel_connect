@@ -654,6 +654,30 @@ export default function SellerPortalPage() {
     }
   };
 
+  const portalHostels = hostels.filter(h => {
+    if (h.status === 'suspended') return false;
+    if (currentUser?.role === 'custodian') {
+      const isOwner = h.verifiedOwnerId === currentUser.id;
+      const isMySubmission = h.scoutUserId === currentUser.id;
+      const hasMyCustodianOffer = offers.some(
+        o => o.hostelId === h.id && o.userId === currentUser.id && o.userRole === 'custodian'
+      );
+      return isOwner || isMySubmission || hasMyCustodianOffer;
+    }
+    const approval = h.approvalStatus || 'approved';
+    if (approval === 'approved') return true;
+    return h.scoutUserId === currentUser?.id;
+  });
+
+  useEffect(() => {
+    if (
+      portalHostels.length > 0 &&
+      !portalHostels.some(h => h.id === selectedHostelForAnalytics)
+    ) {
+      setSelectedHostelForAnalytics(portalHostels[0].id);
+    }
+  }, [currentUser?.id, currentUser?.role, hostels, offers, selectedHostelForAnalytics]);
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Navbar onOpenAuth={(mode) => {
@@ -715,13 +739,12 @@ export default function SellerPortalPage() {
         <>
         {/* Top Seller Profile Card (Editorial Cover + Overlapping Avatar + Metrics + Portal Tabs) */}
         {(() => {
-          const activeHostels = hostels.filter(h => h.status !== 'suspended');
-          const totalViews = activeHostels.reduce((sum, h) => sum + (h.viewCount || 0), 0);
-          const totalSaves = activeHostels.reduce((sum, h) => sum + (h.saveCount || 0), 0);
+          const totalViews = portalHostels.reduce((sum, h) => sum + (h.viewCount || 0), 0);
+          const totalSaves = portalHostels.reduce((sum, h) => sum + (h.saveCount || 0), 0);
           const formattedViews =
             totalViews >= 1000 ? `${(totalViews / 1000).toFixed(1)}K` : String(totalViews);
           const myOffersCount = offers.filter(o => o.userId === currentUser?.id).length;
-          const totalVacantRooms = activeHostels.reduce(
+          const totalVacantRooms = portalHostels.reduce(
             (sum, h) => sum + h.rooms.reduce((rSum, r) => rSum + (r.roomsAvailable || 0), 0),
             0
           );
@@ -818,9 +841,11 @@ export default function SellerPortalPage() {
               <div className="mt-4 max-w-xl mx-auto w-full bg-slate-50 border border-slate-200/80 rounded-2xl grid grid-cols-3 divide-x divide-slate-200/80 py-3 px-2 text-center">
                 <div className="px-2">
                   <div className="text-base sm:text-lg font-semibold text-slate-900 tabular-nums">
-                    {activeHostels.length}
+                    {portalHostels.length}
                   </div>
-                  <div className="text-[11px] font-medium text-slate-500 mt-0.5">Listings</div>
+                  <div className="text-[11px] font-medium text-slate-500 mt-0.5">
+                    {currentUser?.role === 'custodian' ? 'My Property' : 'Listings'}
+                  </div>
                 </div>
                 <div className="px-2">
                   <div className="text-base sm:text-lg font-semibold text-slate-900 tabular-nums">
@@ -886,18 +911,25 @@ export default function SellerPortalPage() {
 
         {/* TAB 1: LISTINGS & INVENTORY MANAGEMENT */}
         {activeTab === 'listings' && (() => {
-          const visibleHostels = hostels.filter(h => h.status !== 'suspended');
-          const pendingHostelsCount = visibleHostels.filter(h => h.approvalStatus === 'pending').length;
+          const visibleHostels = portalHostels;
+          const isBroker = currentUser?.role === 'broker';
+          const pendingHostelsCount = isBroker
+            ? visibleHostels.filter(h => h.approvalStatus === 'pending').length
+            : 0;
           return (
           <div className="space-y-4">
             <div className="flex flex-col items-center justify-center text-center gap-2">
               <div className="max-w-lg">
-                <h2 className="text-lg font-medium text-[#0f3a98]">Active Accommodations</h2>
+                <h2 className="text-lg font-medium text-[#0f3a98]">
+                  {isBroker ? 'Active Accommodations' : 'My Hostel Properties'}
+                </h2>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Update vacancy numbers, edit hostel details &amp; media, or track unapproved submissions
+                  {isBroker
+                    ? 'Set inspection fees, edit hostel details & media, or track your unapproved submissions'
+                    : 'Manage your hostel vacancy numbers, room rates, amenities, photos & videos'}
                 </p>
               </div>
-              {pendingHostelsCount > 0 && (
+              {isBroker && pendingHostelsCount > 0 && (
                 <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-[#ffbe00] text-white border border-[#ffbe00] flex items-center gap-1.5 shadow-xs">
                   <FaIcon icon="fa-solid fa-clock" className="text-[11px] text-white" />
                   <span>{pendingHostelsCount} Pending Admin Approval</span>
@@ -905,7 +937,7 @@ export default function SellerPortalPage() {
               )}
             </div>
 
-            {pendingHostelsCount > 0 && (
+            {isBroker && pendingHostelsCount > 0 && (
               <div className="p-3.5 sm:p-4 bg-[#0f3a98] border border-[#0f3a98] text-white text-xs font-medium rounded-xl flex items-start gap-2.5 shadow-xs">
                 <FaIcon icon="fa-solid fa-hourglass-half" className="text-[#ffbe00] mt-0.5 shrink-0" />
                 <span>
@@ -1257,7 +1289,7 @@ export default function SellerPortalPage() {
                   value={selectedHostelForAnalytics}
                   onChange={setSelectedHostelForAnalytics}
                   className="w-full sm:w-auto sm:min-w-[190px] text-xs"
-                  options={hostels.map(h => ({ value: h.id, label: h.name }))}
+                  options={portalHostels.map(h => ({ value: h.id, label: h.name }))}
                 />
 
                 <div className="grid grid-cols-3 sm:inline-flex items-center bg-slate-100 border border-slate-200 p-1 rounded-xl text-xs font-medium w-full sm:w-auto">
