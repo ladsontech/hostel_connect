@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/data-store';
 import { checkForDuplicates, normalizeHostelName } from '@/lib/duplicate-detector';
-import { matchesIndividualRoomType, matchesRoomTypeFilter } from '@/lib/utils';
+import { isDoubleRoomType, matchesIndividualRoomType, matchesRoomTypeFilter } from '@/lib/utils';
 import { Hostel } from '@/types';
 
 // GET /api/v1/hostels
@@ -217,7 +217,7 @@ export async function POST(request: Request) {
       rooms: (rooms || []).map((r: any, idx: number) => ({
         id: `rm_${newHostelId}_${idx}`,
         hostelId: newHostelId,
-        name: r.name || 'Standard Room',
+        name: r.name || (isDoubleRoomType(r.type) ? 'Double Room' : 'Single Room'),
         type: r.type || 'single',
         rentUgx: Number.isFinite(Number(r.rentUgx)) ? Math.max(0, Math.round(Number(r.rentUgx))) : 800000,
         roomsTotal: Number.isFinite(Number(r.roomsTotal)) ? Math.max(1, Math.round(Number(r.roomsTotal))) : 10,

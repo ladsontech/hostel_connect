@@ -452,7 +452,7 @@ export default function SellerPortalPage() {
         ...(formRoomOffering === 'both' || formRoomOffering === 'double_only'
           ? [
               {
-                name: formDoubleStyle === 'self_contained_double' ? 'Double Self-Contained' : 'Double Shared',
+                name: formDoubleStyle === 'self_contained_double' ? 'Double Self-Contained' : 'Double Room',
                 type: formDoubleStyle,
                 rentUgx: parseInt(formDoubleRent, 10) || 750000,
                 roomsTotal: Math.max(parseInt(formDoubleAvailable, 10) || 0, 50),
@@ -1841,7 +1841,7 @@ export default function SellerPortalPage() {
                               formSingleStyle === 'single' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
                             }`}
                           >
-                            Standard
+                            Single Room
                           </button>
                           <button
                             type="button"
@@ -1892,7 +1892,7 @@ export default function SellerPortalPage() {
                               formDoubleStyle === 'double' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
                             }`}
                           >
-                            Shared
+                            Double Room
                           </button>
                           <button
                             type="button"
@@ -2204,7 +2204,7 @@ export default function SellerPortalPage() {
                             {
                               id: `rm_${editingHostel.id}_${Date.now()}_d`,
                               hostelId: editingHostel.id,
-                              name: 'Double Shared',
+                              name: 'Double Room',
                               type: 'double',
                               rentUgx: 800000,
                               roomsTotal: 30,
@@ -2240,10 +2240,10 @@ export default function SellerPortalPage() {
                               )
                             }
                             options={[
-                              { value: 'single', label: 'Single' },
-                              { value: 'self_contained_single', label: 'Single S/C' },
-                              { value: 'double', label: 'Double' },
-                              { value: 'self_contained_double', label: 'Double S/C' },
+                              { value: 'single', label: 'Single Room' },
+                              { value: 'self_contained_single', label: 'Single Self-Contained' },
+                              { value: 'double', label: 'Double Room' },
+                              { value: 'self_contained_double', label: 'Double Self-Contained' },
                               { value: 'triple', label: 'Triple' },
                               { value: 'quad', label: 'Quad' },
                             ]}

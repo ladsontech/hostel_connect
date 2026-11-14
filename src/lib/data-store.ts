@@ -239,7 +239,7 @@ export const INITIAL_HOSTELS: Hostel[] = [
       {
         id: 'rm_doug_single',
         hostelId: 'hst_douglas',
-        name: 'Single Non-Self Contained',
+        name: 'Single Room',
         type: 'single',
         rentUgx: 1100000,
         roomsTotal: 40,
@@ -250,7 +250,7 @@ export const INITIAL_HOSTELS: Hostel[] = [
       {
         id: 'rm_doug_double',
         hostelId: 'hst_douglas',
-        name: 'Double Shared Room',
+        name: 'Double Room',
         type: 'double',
         rentUgx: 850000,
         roomsTotal: 90,
@@ -378,7 +378,7 @@ export const INITIAL_HOSTELS: Hostel[] = [
       {
         id: 'rm_bas_single',
         hostelId: 'hst_baskon',
-        name: 'Single Standard',
+        name: 'Single Room',
         type: 'single',
         rentUgx: 800000,
         roomsTotal: 25,
@@ -389,7 +389,7 @@ export const INITIAL_HOSTELS: Hostel[] = [
       {
         id: 'rm_bas_double',
         hostelId: 'hst_baskon',
-        name: 'Double Standard',
+        name: 'Double Room',
         type: 'double',
         rentUgx: 600000,
         roomsTotal: 50,
@@ -440,7 +440,7 @@ export const INITIAL_HOSTELS: Hostel[] = [
       {
         id: 'rm_muk_single',
         hostelId: 'hst_mukono_haven',
-        name: 'Single Standard',
+        name: 'Single Room',
         type: 'single',
         rentUgx: 900000,
         roomsTotal: 32,
@@ -451,7 +451,7 @@ export const INITIAL_HOSTELS: Hostel[] = [
       {
         id: 'rm_muk_double',
         hostelId: 'hst_mukono_haven',
-        name: 'Double Shared',
+        name: 'Double Room',
         type: 'double',
         rentUgx: 650000,
         roomsTotal: 40,
@@ -513,7 +513,7 @@ export const INITIAL_HOSTELS: Hostel[] = [
       {
         id: 'rm_kan_double',
         hostelId: 'hst_kansanga_heights',
-        name: 'Double Standard',
+        name: 'Double Room',
         type: 'double',
         rentUgx: 700000,
         roomsTotal: 36,
@@ -639,7 +639,7 @@ export const INITIAL_HOSTELS: Hostel[] = [
       {
         id: 'rm_nak_double',
         hostelId: 'hst_nakawa_royal',
-        name: 'Double Shared',
+        name: 'Double Room',
         type: 'double',
         rentUgx: 800000,
         roomsTotal: 48,

@@ -57,14 +57,14 @@ export default function FilterBar({
 
   const roomTypeOptions: SelectOption[] = [
     { id: '', label: 'All Room Types', icon: 'fa-solid fa-door-open' },
-    { id: 'any_single', label: 'Any Single Room (Standard / S/C)', icon: 'fa-solid fa-bed' },
-    { id: 'any_double', label: 'Any Double Room (Shared / S/C)', icon: 'fa-solid fa-user-group' },
+    { id: 'any_single', label: 'All Single Rooms', icon: 'fa-solid fa-bed' },
+    { id: 'any_double', label: 'All Double Rooms', icon: 'fa-solid fa-user-group' },
     { id: 'single_only', label: 'Single Rooms Only Hostels', icon: 'fa-solid fa-person' },
     { id: 'double_only', label: 'Double Rooms Only Hostels', icon: 'fa-solid fa-people-arrows' },
-    { id: 'single', label: 'Single Non-Self Contained', icon: 'fa-solid fa-bed' },
-    { id: 'double', label: 'Double Shared Room', icon: 'fa-solid fa-user-group' },
-    { id: 'self_contained_single', label: 'Self-Contained Single', icon: 'fa-solid fa-bath' },
-    { id: 'self_contained_double', label: 'Self-Contained Double', icon: 'fa-solid fa-bath' }
+    { id: 'single', label: 'Single Room', icon: 'fa-solid fa-bed' },
+    { id: 'double', label: 'Double Room', icon: 'fa-solid fa-user-group' },
+    { id: 'self_contained_single', label: 'Single Self-Contained', icon: 'fa-solid fa-bath' },
+    { id: 'self_contained_double', label: 'Double Self-Contained', icon: 'fa-solid fa-bath' }
   ];
 
   const genderOptions: SelectOption[] = [
@@ -147,8 +147,8 @@ export default function FilterBar({
           { id: '', label: 'All Rooms' },
           { id: 'any_single', label: 'Single Rooms' },
           { id: 'any_double', label: 'Double Rooms' },
-          { id: 'single_only', label: 'Single Only Hostels' },
-          { id: 'double_only', label: 'Double Only Hostels' },
+          { id: 'single_only', label: 'Single Rooms Only' },
+          { id: 'double_only', label: 'Double Rooms Only' },
         ].map((chip) => {
           const isSelected = filters.roomType === chip.id;
           return (
