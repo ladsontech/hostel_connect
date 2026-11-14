@@ -136,14 +136,14 @@ function HostelMediaEditor({
 
   return (
     <div className="space-y-3 p-4 rounded-xl bg-slate-50 border border-slate-200">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
+      <div className="flex flex-col items-center justify-center text-center gap-2.5">
+        <div className="max-w-sm">
           <div className="text-xs font-semibold text-[#0f3a98]">Hostel Photos &amp; Videos</div>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-[11px] text-slate-500 mt-0.5">
             Upload photos/videos from your device or paste links. Photos can be set as the cover image.
           </p>
         </div>
-        <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium flex items-center gap-1.5 shadow-xs transition">
+        <label className="cursor-pointer px-4 py-2 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-medium inline-flex items-center justify-center gap-1.5 shadow-xs transition">
           <FaIcon icon="fa-solid fa-cloud-arrow-up" className="text-xs text-[#ffbe00]" />
           <span>Upload Photo / Video</span>
           <input
