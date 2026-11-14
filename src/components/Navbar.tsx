@@ -190,41 +190,70 @@ export default function Navbar({ onOpenAuth, shortlistCount = 0, onOpenCompare }
         <div className="md:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-2.5 shadow-md animate-in fade-in slide-in-from-top-2 duration-150">
           {currentUser ? (
             <div className="space-y-2.5">
-              <div className="p-3 rounded-xl bg-[#e8effc]/60 border border-blue-200/70 flex items-center justify-between gap-2">
-                <div>
-                  <div className="text-xs font-semibold text-[#0f3a98] flex items-center gap-1.5">
-                    <span>{currentUser.name}</span>
-                    {currentUser.isVerified && (
-                      <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98]" />
+              <div className="p-3.5 rounded-2xl bg-[#edf2fc]/70 border border-blue-200/80 space-y-3">
+                {/* Identity Header (Avatar + Centered/Clean Name & Role) */}
+                <div className="flex items-center gap-3">
+                  <div className="relative w-11 h-11 rounded-full bg-[#0f3a98] border-2 border-white shadow-xs overflow-hidden flex items-center justify-center shrink-0">
+                    {currentUser.avatarUrl ? (
+                      <img
+                        src={currentUser.avatarUrl}
+                        alt={currentUser.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-xs font-semibold text-white">
+                        {(currentUser.name || 'HC')
+                          .split(' ')
+                          .map(n => n[0])
+                          .slice(0, 2)
+                          .join('')
+                          .toUpperCase()}
+                      </span>
                     )}
                   </div>
-                  <div className="text-[11px] text-slate-600 capitalize mt-0.5">
-                    <span className="text-[#0f3a98] font-medium">{currentUser.role}</span>
-                    {currentUser.university && (
-                      <span className="text-slate-500"> • {currentUser.university}</span>
-                    )}
+
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs sm:text-sm font-semibold text-[#0f3a98] flex items-center gap-1.5 min-w-0">
+                      <span className="truncate">{currentUser.name}</span>
+                      {currentUser.isVerified && (
+                        <FaIcon icon="fa-solid fa-circle-check" className="text-xs text-[#0f3a98] shrink-0" />
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5 mt-0.5 text-[11px]">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-white text-[#0f3a98] border border-blue-200 font-semibold capitalize">
+                        {currentUser.role}
+                      </span>
+                      {currentUser.university && (
+                        <span className="text-slate-500 font-medium truncate">
+                          {currentUser.university}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5">
+                {/* Balanced 2-Column Account Actions */}
+                <div className={`grid gap-2 ${onOpenAuth ? 'grid-cols-2' : 'grid-cols-1'}`}>
                   {onOpenAuth && (
                     <button
+                      type="button"
                       onClick={() => {
                         setMobileMenuOpen(false);
                         onOpenAuth('login');
                       }}
-                      className="px-2.5 py-1.5 rounded-lg bg-[#0f3a98] text-white text-xs font-medium flex items-center gap-1 hover:bg-[#0a2666] transition"
+                      className="w-full py-2 px-3 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-semibold flex items-center justify-center gap-1.5 whitespace-nowrap shadow-xs transition"
                     >
                       <FaIcon icon="fa-solid fa-repeat" className="text-[11px] text-[#ffbe00]" />
-                      <span>Switch</span>
+                      <span>Switch Account</span>
                     </button>
                   )}
                   <button
+                    type="button"
                     onClick={() => {
                       logout();
                       setMobileMenuOpen(false);
                     }}
-                    className="px-2.5 py-1.5 rounded-lg border border-blue-200 bg-white text-[#0f3a98] text-xs font-medium flex items-center gap-1 hover:bg-blue-50 transition"
+                    className="w-full py-2 px-3 rounded-xl border border-blue-200 bg-white hover:bg-slate-50 text-[#0f3a98] text-xs font-semibold flex items-center justify-center gap-1.5 whitespace-nowrap transition"
                   >
                     <FaIcon icon="fa-solid fa-right-from-bracket" className="text-xs" />
                     <span>Log out</span>
