@@ -914,7 +914,7 @@ export default function SellerPortalPage() {
                                   <span className="font-normal text-slate-400">/ sem</span>
                                 </div>
                               </div>
-                              <span className="px-2.5 py-1 rounded-lg bg-[#edf2fc] text-[#0f3a98] text-[11px] font-semibold shrink-0 whitespace-nowrap">
+                              <span className="px-2.5 py-1 rounded-lg bg-[#0f3a98] text-white text-[11px] font-semibold shrink-0 whitespace-nowrap">
                                 {room.roomsAvailable} left
                               </span>
                             </div>
