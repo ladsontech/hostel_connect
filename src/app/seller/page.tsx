@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import AuthModal from '@/components/AuthModal';
@@ -9,6 +9,79 @@ import { useAuth } from '@/lib/auth-context';
 import { Hostel, HostelPhoto, Offer, SubscriptionPlan, UserSubscription } from '@/types';
 import { formatUGX } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
+
+/** Bounded custom dropdown that stays cleanly inside mobile modals without native OS popup overflow. */
+function PortalSelect<T extends string>({
+  value,
+  options,
+  onChange,
+  className = '',
+}: {
+  value: T;
+  options: { value: T; label: string }[];
+  onChange: (next: T) => void;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    if (open) {
+      document.addEventListener('mousedown', handleOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [open]);
+
+  const currentLabel = options.find(o => o.value === value)?.label || value;
+
+  return (
+    <div ref={rootRef} className={`relative w-full ${className}`}>
+      <button
+        type="button"
+        onClick={() => setOpen(prev => !prev)}
+        aria-expanded={open}
+        className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white flex items-center justify-between gap-2 text-left transition hover:border-[#0f3a98] focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+      >
+        <span className="truncate font-medium text-[#0f3a98]">{currentLabel}</span>
+        <FaIcon
+          icon="fa-solid fa-chevron-down"
+          className={`text-[10px] text-slate-400 shrink-0 transition-transform ${open ? 'rotate-180 text-[#0f3a98]' : ''}`}
+        />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 right-0 mt-1 rounded-xl border border-slate-200 bg-white shadow-xl z-40 overflow-hidden py-1">
+          {options.map(opt => {
+            const active = opt.value === value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  onChange(opt.value);
+                  setOpen(false);
+                }}
+                className={`w-full px-3 py-2 text-left text-xs transition flex items-center justify-between gap-2 ${
+                  active
+                    ? 'bg-[#0f3a98] text-white font-semibold'
+                    : 'text-slate-700 hover:bg-[#edf2fc] hover:text-[#0f3a98] font-medium'
+                }`}
+              >
+                <span className="truncate">{opt.label}</span>
+                {active && <FaIcon icon="fa-solid fa-check" className="text-[10px] text-[#ffbe00] shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 /** Reusable image & video gallery manager for creating or editing hostel listings. */
 function HostelMediaEditor({
@@ -157,14 +230,17 @@ function HostelMediaEditor({
 
       {/* Add via URL */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
-        <select
-          value={urlKind}
-          onChange={e => setUrlKind(e.target.value as 'image' | 'video')}
-          className="sm:col-span-2 px-2.5 py-2 text-xs rounded-lg border border-slate-200 bg-white font-medium text-[#0f3a98]"
-        >
-          <option value="image">Photo URL</option>
-          <option value="video">Video URL</option>
-        </select>
+        <div className="sm:col-span-3">
+          <PortalSelect<'image' | 'video'>
+            value={urlKind}
+            onChange={setUrlKind}
+            className="text-xs"
+            options={[
+              { value: 'image', label: 'Photo URL' },
+              { value: 'video', label: 'Video URL' },
+            ]}
+          />
+        </div>
         <input
           type="url"
           placeholder={urlKind === 'video' ? 'https://.../room-tour.mp4' : 'https://.../hostel-photo.jpg'}
@@ -176,7 +252,7 @@ function HostelMediaEditor({
               handleAddUrl();
             }
           }}
-          className="sm:col-span-5 px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white"
+          className="sm:col-span-4 px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white"
         />
         <input
           type="text"
@@ -1004,15 +1080,12 @@ export default function SellerPortalPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 w-full lg:w-auto">
-                <select
+                <PortalSelect
                   value={selectedHostelForAnalytics}
-                  onChange={e => setSelectedHostelForAnalytics(e.target.value)}
-                  className="w-full sm:w-auto sm:min-w-[190px] px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-medium bg-white text-[#0f3a98] focus:ring-2 focus:ring-[#0f3a98]"
-                >
-                  {hostels.map(h => (
-                    <option key={h.id} value={h.id}>{h.name}</option>
-                  ))}
-                </select>
+                  onChange={setSelectedHostelForAnalytics}
+                  className="w-full sm:w-auto sm:min-w-[190px] text-xs"
+                  options={hostels.map(h => ({ value: h.id, label: h.name }))}
+                />
 
                 <div className="grid grid-cols-3 sm:inline-flex items-center bg-slate-100 border border-slate-200 p-1 rounded-xl text-xs font-medium w-full sm:w-auto">
                   {(['today', '7days', 'semester'] as const).map(t => (
@@ -1514,17 +1587,18 @@ export default function SellerPortalPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">University Campus</label>
-                  <select
+                  <PortalSelect
                     value={editCampus}
-                    onChange={e => setEditCampus(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white"
-                  >
-                    <option>Makerere University</option>
-                    <option>MUBS</option>
-                    <option>Kyambogo University</option>
-                    <option>Uganda Christian University</option>
-                    <option>KIU</option>
-                  </select>
+                    onChange={setEditCampus}
+                    className="text-sm"
+                    options={[
+                      { value: 'Makerere University', label: 'Makerere University' },
+                      { value: 'MUBS', label: 'MUBS' },
+                      { value: 'Kyambogo University', label: 'Kyambogo University' },
+                      { value: 'Uganda Christian University', label: 'Uganda Christian University' },
+                      { value: 'KIU', label: 'KIU' },
+                    ]}
+                  />
                 </div>
               </div>
 
@@ -1550,15 +1624,16 @@ export default function SellerPortalPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">Gender Policy</label>
-                  <select
+                  <PortalSelect<'mixed' | 'girls_only' | 'boys_only'>
                     value={editGender}
-                    onChange={e => setEditGender(e.target.value as 'mixed' | 'girls_only' | 'boys_only')}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white"
-                  >
-                    <option value="mixed">Mixed</option>
-                    <option value="girls_only">Girls Only</option>
-                    <option value="boys_only">Boys Only</option>
-                  </select>
+                    onChange={setEditGender}
+                    className="text-sm"
+                    options={[
+                      { value: 'mixed', label: 'Mixed' },
+                      { value: 'girls_only', label: 'Girls Only' },
+                      { value: 'boys_only', label: 'Boys Only' },
+                    ]}
+                  />
                 </div>
               </div>
 
