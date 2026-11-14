@@ -1161,7 +1161,7 @@ export default function SellerPortalPage() {
                             <span className="font-semibold text-slate-800">
                               {room ? 'Room Rate & Vacancy' : 'Rooms & Rates'}
                             </span>
-                            <span className="px-2 py-0.5 rounded-full bg-[#e8effc] text-[#0f3a98] text-[10px] font-semibold border border-blue-200">
+                            <span className="px-2.5 py-0.5 rounded-full bg-[#0f3a98] text-white text-[10px] font-semibold border border-[#0f3a98]">
                               {room
                                 ? (isDoubleRoomType(room.type) ? 'Double Room Card' : 'Single Room Card')
                                 : getRoomOfferingSummary(hostel.rooms).label}
