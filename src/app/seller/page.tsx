@@ -795,9 +795,9 @@ export default function SellerPortalPage() {
                     setAvatarError('');
                     setAvatarModalOpen(true);
                   }}
-                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#edf2fc] hover:bg-[#0f3a98] text-[#0f3a98] hover:text-white border border-blue-200 text-[11px] font-medium transition"
+                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0f3a98] hover:bg-[#0a2666] text-white border border-[#0f3a98] text-[11px] font-medium shadow-xs transition"
                 >
-                  <FaIcon icon="fa-solid fa-camera" className="text-[10px]" />
+                  <FaIcon icon="fa-solid fa-camera" className="text-[10px] text-[#ffbe00]" />
                   <span>{currentUser?.avatarUrl ? 'Edit Profile Photo' : 'Add Profile Photo'}</span>
                 </button>
               </div>
