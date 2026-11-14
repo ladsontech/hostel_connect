@@ -996,7 +996,7 @@ export default function SellerPortalPage() {
                             {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
                           </span>
                           {approval === 'pending' && (
-                            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300 whitespace-nowrap">
+                            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-[#ffbe00] text-white border border-[#ffbe00] whitespace-nowrap">
                               Pending Approval
                             </span>
                           )}

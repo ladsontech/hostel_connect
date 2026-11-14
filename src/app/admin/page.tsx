@@ -474,7 +474,7 @@ export default function AdminPanelPage() {
                       >
                         <div>
                           <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-[#ffbe00] text-white border border-[#ffbe00]">
                               Pending Approval
                             </span>
                             <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#e8effc] text-[#0f3a98]">
@@ -537,7 +537,7 @@ export default function AdminPanelPage() {
                         <span
                           className={`text-[11px] font-medium px-2 py-0.5 rounded ${
                             approval === 'pending'
-                              ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                              ? 'bg-[#ffbe00] text-white border border-[#ffbe00]'
                               : approval === 'rejected'
                                 ? 'bg-rose-100 text-rose-800'
                                 : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
