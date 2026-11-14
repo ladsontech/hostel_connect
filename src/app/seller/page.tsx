@@ -898,8 +898,8 @@ export default function SellerPortalPage() {
                 </p>
               </div>
               {pendingHostelsCount > 0 && (
-                <span className="text-xs font-medium px-3 py-1.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5">
-                  <FaIcon icon="fa-solid fa-clock" className="text-[11px]" />
+                <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-[#ffbe00] text-white border border-[#ffbe00] flex items-center gap-1.5 shadow-xs">
+                  <FaIcon icon="fa-solid fa-clock" className="text-[11px] text-white" />
                   <span>{pendingHostelsCount} Pending Admin Approval</span>
                 </span>
               )}
