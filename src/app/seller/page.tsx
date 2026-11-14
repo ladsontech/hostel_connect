@@ -1373,9 +1373,9 @@ export default function SellerPortalPage() {
         {/* TAB 4: ADD HOSTEL WITH DUPLICATE DETECTION */}
         {activeTab === 'add' && (
           <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm max-w-3xl mx-auto space-y-6">
-            <div>
+            <div className="text-center max-w-xl mx-auto space-y-1.5">
               <h2 className="text-xl font-medium text-[#0f3a98]">List a New Campus Hostel</h2>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-500 font-medium leading-relaxed">
                 {currentUser?.role === 'broker'
                   ? 'New broker uploads are sent for Admin approval before appearing in student search, and stay visible in your portal so you can edit details, photos, or videos anytime.'
                   : 'A hostel exists once per physical building. If an existing building matches your submission, you will attach as an offer.'}
