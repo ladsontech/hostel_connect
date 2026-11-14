@@ -992,7 +992,7 @@ export default function SellerPortalPage() {
                       {/* Roomy Full-Width Status Badges & Vacancy Summary Row */}
                       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200/80">
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-md bg-[#e8effc] text-[#0f3a98] whitespace-nowrap">
+                          <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-[#0f3a98] text-white border border-[#0f3a98] whitespace-nowrap">
                             {hostel.status === 'claimed' ? 'Verified Owner' : 'Unclaimed'}
                           </span>
                           {approval === 'pending' && (
