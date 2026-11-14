@@ -952,8 +952,17 @@ export default function SellerPortalPage() {
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
                       <div className="flex items-center gap-2 text-[11px] font-medium">
                         {currentUser?.role === 'broker' ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0f3a98] border border-[#0f3a98] text-white font-semibold whitespace-nowrap">
-                            <FaIcon icon="fa-solid fa-tag" className="text-[10px] text-[#ffbe00]" />
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-white font-semibold whitespace-nowrap ${
+                              myOffer
+                                ? 'bg-[#0f3a98] border-[#0f3a98]'
+                                : 'bg-red-600 border-red-600'
+                            }`}
+                          >
+                            <FaIcon
+                              icon="fa-solid fa-tag"
+                              className={`text-[10px] ${myOffer ? 'text-[#ffbe00]' : 'text-white'}`}
+                            />
                             {myOffer
                               ? `Inspection Fee: ${formatUGX(myOffer.accessFeeUgx)}`
                               : 'Inspection Fee: Not Set'}
