@@ -644,58 +644,147 @@ export default function SellerPortalPage() {
           </div>
         ) : (
         <>
-        {/* Top Seller Banner */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 shadow-sm">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-medium text-[#0f3a98]">
-              {currentUser?.businessName || currentUser?.name || 'Seller Hub'}
-            </h1>
-            <p className="text-xs text-slate-500 font-medium mt-0.5">
-              {currentUser?.role === 'custodian'
-                ? 'Authoritative owner portal: control room vacancy, approve brokers, and view direct inquiries.'
-                : 'Campus scout portal: attach verified offers, disclose viewing fees, and track student leads.'}
-            </p>
-          </div>
+        {/* Top Seller Profile Card (Editorial Cover + Overlapping Avatar + Metrics + Portal Tabs) */}
+        {(() => {
+          const activeHostels = hostels.filter(h => h.status !== 'suspended');
+          const totalViews = activeHostels.reduce((sum, h) => sum + (h.viewCount || 0), 0);
+          const totalSaves = activeHostels.reduce((sum, h) => sum + (h.saveCount || 0), 0);
+          const formattedViews =
+            totalViews >= 1000 ? `${(totalViews / 1000).toFixed(1)}K` : String(totalViews);
+          const myOffersCount = offers.filter(o => o.userId === currentUser?.id).length;
+          const totalVacantRooms = activeHostels.reduce(
+            (sum, h) => sum + h.rooms.reduce((rSum, r) => rSum + (r.roomsAvailable || 0), 0),
+            0
+          );
 
-          {/* Quick tab switcher (brokers list free with 3 tabs; custodians see Subscription & MoMo too) */}
-          <div className="w-full lg:w-auto grid grid-cols-2 sm:inline-flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl text-xs font-medium shrink-0">
-            <button
-              onClick={() => setActiveTab('listings')}
-              className={`px-3 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
-                activeTab === 'listings' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              My Listings
-            </button>
-            <button
-              onClick={() => setActiveTab('analytics')}
-              className={`px-3 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
-                activeTab === 'analytics' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Lead Analytics
-            </button>
-            {currentUser?.role === 'custodian' && (
-              <button
-                onClick={() => setActiveTab('subscription')}
-                className={`px-3 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
-                  activeTab === 'subscription' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Subscription &amp; MoMo
-              </button>
-            )}
-            <button
-              onClick={() => setActiveTab('add')}
-              className={`px-3 py-2.5 sm:py-2 rounded-lg bg-[#ffbe00] hover:bg-[#e5aa00] text-[#0f3a98] font-semibold transition flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap ${
-                currentUser?.role === 'broker' ? 'col-span-2 sm:col-span-1' : ''
-              }`}
-            >
-              <FaIcon icon="fa-solid fa-plus" className="text-xs" />
-              <span>Add Hostel</span>
-            </button>
-          </div>
-        </div>
+          return (
+            <div className="bg-white rounded-[24px] border border-slate-200 p-3 sm:p-4 shadow-sm">
+              {/* Inset Solid Theme-Blue Cover Banner */}
+              <div className="relative h-28 sm:h-32 rounded-[18px] bg-[#0f3a98] overflow-hidden">
+                <span className="pointer-events-none absolute -top-10 -left-8 w-36 h-36 rounded-full bg-white/[0.06]" />
+                <span className="pointer-events-none absolute -bottom-12 right-12 w-44 h-44 rounded-full bg-white/[0.06]" />
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('add')}
+                  title="Add Hostel"
+                  aria-label="Add Hostel"
+                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white hover:bg-[#ffbe00] text-[#0f3a98] shadow-md flex items-center justify-center transition"
+                >
+                  <FaIcon icon="fa-solid fa-plus" className="text-sm" />
+                </button>
+              </div>
+
+              {/* Overlapping Centered Circular Avatar */}
+              <div className="relative z-10 -mt-11 sm:-mt-12 flex justify-center">
+                <div className="relative">
+                  <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full ring-4 ring-white border-2 border-[#0f3a98] bg-[#edf2fc] overflow-hidden shadow-md flex items-center justify-center">
+                    {currentUser?.avatarUrl ? (
+                      <img
+                        src={currentUser.avatarUrl}
+                        alt={currentUser.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-xl font-semibold text-[#0f3a98]">
+                        {(currentUser?.name || 'HC')
+                          .split(' ')
+                          .map(n => n[0])
+                          .slice(0, 2)
+                          .join('')
+                          .toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <span
+                    title="Verified Account"
+                    className="absolute bottom-0.5 right-0.5 w-6 h-6 rounded-full bg-[#ffbe00] border-2 border-white flex items-center justify-center text-[#0f3a98] shadow-xs"
+                  >
+                    <FaIcon icon="fa-solid fa-check" className="text-[10px]" />
+                  </span>
+                </div>
+              </div>
+
+              {/* Centered Name & Role Bio */}
+              <div className="text-center px-3 pt-3">
+                <h1 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] leading-tight">
+                  {currentUser?.businessName || currentUser?.name || 'Seller Hub'}
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 max-w-md mx-auto leading-relaxed">
+                  {currentUser?.role === 'custodian'
+                    ? 'Authoritative owner portal: control room vacancy, approve brokers, and view direct inquiries.'
+                    : 'Campus scout portal: attach verified offers, disclose viewing fees, and track student leads.'}
+                </p>
+              </div>
+
+              {/* 3-Column Metrics Tray */}
+              <div className="mt-4 max-w-xl mx-auto w-full bg-slate-50 border border-slate-200/80 rounded-2xl grid grid-cols-3 divide-x divide-slate-200/80 py-3 px-2 text-center">
+                <div className="px-2">
+                  <div className="text-base sm:text-lg font-semibold text-slate-900 tabular-nums">
+                    {activeHostels.length}
+                  </div>
+                  <div className="text-[11px] font-medium text-slate-500 mt-0.5">Listings</div>
+                </div>
+                <div className="px-2">
+                  <div className="text-base sm:text-lg font-semibold text-slate-900 tabular-nums">
+                    {currentUser?.role === 'custodian' ? totalVacantRooms : myOffersCount}
+                  </div>
+                  <div className="text-[11px] font-medium text-slate-500 mt-0.5">
+                    {currentUser?.role === 'custodian' ? 'Vacant Rooms' : 'Active Fees'}
+                  </div>
+                </div>
+                <div className="px-2">
+                  <div className="text-base sm:text-lg font-semibold text-slate-900 tabular-nums">
+                    {formattedViews}
+                  </div>
+                  <div className="text-[11px] font-medium text-slate-500 mt-0.5">
+                    Views • {totalSaves}
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Centered Portal Tabs */}
+              <div className="mt-4 pt-3 border-t border-slate-100 flex justify-center">
+                <div className="w-full sm:w-auto grid grid-cols-2 sm:inline-flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl text-xs font-medium">
+                  <button
+                    onClick={() => setActiveTab('listings')}
+                    className={`px-3.5 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
+                      activeTab === 'listings' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    My Listings
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('analytics')}
+                    className={`px-3.5 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
+                      activeTab === 'analytics' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Lead Analytics
+                  </button>
+                  {currentUser?.role === 'custodian' && (
+                    <button
+                      onClick={() => setActiveTab('subscription')}
+                      className={`px-3.5 py-2.5 sm:py-2 rounded-lg transition text-center whitespace-nowrap ${
+                        activeTab === 'subscription' ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Subscription &amp; MoMo
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setActiveTab('add')}
+                    className={`px-3.5 py-2.5 sm:py-2 rounded-lg bg-[#ffbe00] hover:bg-[#e5aa00] text-[#0f3a98] font-semibold transition flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap ${
+                      currentUser?.role === 'broker' ? 'col-span-2 sm:col-span-1' : ''
+                    }`}
+                  >
+                    <FaIcon icon="fa-solid fa-plus" className="text-xs" />
+                    <span>Add Hostel</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* TAB 1: LISTINGS & INVENTORY MANAGEMENT */}
         {activeTab === 'listings' && (() => {
