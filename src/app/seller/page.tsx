@@ -1169,7 +1169,7 @@ export default function SellerPortalPage() {
                             <button
                               type="button"
                               onClick={() => setQuickFeeHostelId(null)}
-                              className="px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[11px] font-medium transition"
+                              className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-[#0f3a98] text-[11px] font-semibold transition"
                             >
                               Cancel
                             </button>
