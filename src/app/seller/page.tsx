@@ -331,6 +331,7 @@ export default function SellerPortalPage() {
   const [editDistance, setEditDistance] = useState('');
   const [editGender, setEditGender] = useState<'mixed' | 'girls_only' | 'boys_only'>('mixed');
   const [editDescription, setEditDescription] = useState('');
+  const [editAmenities, setEditAmenities] = useState<string[]>([]);
   const [editMedia, setEditMedia] = useState<HostelPhoto[]>([]);
   const [editRooms, setEditRooms] = useState<Hostel['rooms']>([]);
   const [editAccessFee, setEditAccessFee] = useState<string>('15000');
@@ -484,6 +485,7 @@ export default function SellerPortalPage() {
     setEditDistance(hostel.distanceCampusApprox);
     setEditGender(hostel.genderPolicy);
     setEditDescription(hostel.description);
+    setEditAmenities(Array.isArray(hostel.amenities) ? hostel.amenities : []);
     setEditMedia(hostel.photos || []);
     setEditRooms(hostel.rooms || []);
     const existingOffer = offers.find(o => o.hostelId === hostel.id && o.userId === currentUser?.id);
@@ -518,6 +520,7 @@ export default function SellerPortalPage() {
           distanceCampusApprox: editDistance,
           genderPolicy: editGender,
           description: editDescription,
+          amenities: editAmenities,
           photos: editMedia,
           ...(currentUser?.role === 'broker' ? { accessFeeUgx: parseInt(editAccessFee, 10) || 0 } : {}),
           ...(canEditRooms ? { rooms: editRooms } : {}),
@@ -1126,12 +1129,10 @@ export default function SellerPortalPage() {
                           <button
                             type="button"
                             onClick={() => openEditHostelModal(hostel)}
-                            className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-[11px] font-medium inline-flex items-center gap-1.5 shadow-xs transition whitespace-nowrap"
+                            className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-[11px] font-semibold inline-flex items-center gap-1.5 shadow-xs transition whitespace-nowrap"
                           >
                             <FaIcon icon="fa-solid fa-pen-to-square" className="text-[10px] text-[#ffbe00]" />
-                            <span>
-                              {currentUser?.role === 'broker' ? 'Edit Photos & Fee' : 'Edit Details & Media'}
-                            </span>
+                            <span>Edit All Details</span>
                           </button>
                         )}
                       </div>
@@ -1654,10 +1655,10 @@ export default function SellerPortalPage() {
           <div className="bg-white w-full sm:max-w-2xl rounded-2xl shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col overflow-hidden">
             <div className="relative px-10 py-5 bg-[#0f3a98] text-white text-center flex flex-col items-center justify-center">
               <h3 className="font-semibold text-base sm:text-lg leading-tight">
-                Edit Hostel &amp; Media — {editingHostel.name}
+                Edit All Hostel Details — {editingHostel.name}
               </h3>
               <p className="text-[11px] text-blue-100 mt-1 max-w-md mx-auto">
-                Update listing details, upload photos or videos, and manage media gallery
+                Modify name, campus, location, amenities, rates, fees, photos, and videos
               </p>
               <button
                 type="button"
@@ -1782,6 +1783,46 @@ export default function SellerPortalPage() {
                 />
               </div>
 
+              {/* Editable Amenities Selector */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-slate-700">Hostel Amenities</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: 'water', label: '24/7 Water', icon: 'fa-solid fa-droplet' },
+                    { id: 'security', label: '24/7 Security', icon: 'fa-solid fa-shield-halved' },
+                    { id: 'wifi', label: 'WiFi', icon: 'fa-solid fa-wifi' },
+                    { id: 'power_backup', label: 'Generator / Solar', icon: 'fa-solid fa-bolt' },
+                    { id: 'meals', label: 'Meals / Canteen', icon: 'fa-solid fa-utensils' },
+                    { id: 'shuttle', label: 'Campus Shuttle', icon: 'fa-solid fa-van-shuttle' },
+                    { id: 'gym', label: 'Gym', icon: 'fa-solid fa-dumbbell' },
+                  ].map(amenity => {
+                    const selected = editAmenities.includes(amenity.id);
+                    return (
+                      <button
+                        key={amenity.id}
+                        type="button"
+                        onClick={() =>
+                          setEditAmenities(prev =>
+                            selected ? prev.filter(a => a !== amenity.id) : [...prev, amenity.id]
+                          )
+                        }
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium border transition ${
+                          selected
+                            ? 'bg-[#0f3a98] border-[#0f3a98] text-white'
+                            : 'bg-white border-slate-200 text-slate-600 hover:border-[#0f3a98]/40'
+                        }`}
+                      >
+                        <FaIcon
+                          icon={amenity.icon}
+                          className={`text-[10px] ${selected ? 'text-[#ffbe00]' : 'text-slate-400'}`}
+                        />
+                        <span>{amenity.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {currentUser?.role === 'broker' && (
                 <div className="p-4 rounded-xl bg-[#0f3a98] border border-[#0f3a98] text-white space-y-2 shadow-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1804,16 +1845,42 @@ export default function SellerPortalPage() {
                 </div>
               )}
 
-              {(currentUser?.role === 'custodian' || editingHostel.status === 'unclaimed') && editRooms.length > 0 && (
+              {(currentUser?.role === 'custodian' || editingHostel.status === 'unclaimed') ? (
                 <div className="p-3.5 rounded-xl bg-[#edf2fc]/70 border border-blue-100 space-y-2.5">
-                  <div className="text-xs font-semibold text-[#0f3a98]">Room Rates &amp; Availability</div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-semibold text-[#0f3a98]">Room Rates &amp; Availability</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditRooms(prev => [
+                          ...prev,
+                          {
+                            id: `rm_${editingHostel.id}_${Date.now()}`,
+                            hostelId: editingHostel.id,
+                            name: 'Self-Contained Room',
+                            type: 'self_contained_single',
+                            rentUgx: 900000,
+                            roomsTotal: 20,
+                            roomsAvailable: 5,
+                            updatedAt: new Date().toISOString(),
+                            updatedBy: currentUser?.id || 'seller',
+                          },
+                        ])
+                      }
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#0f3a98] text-[#ffbe00] text-[11px] font-medium hover:bg-[#0a2666] transition"
+                    >
+                      <FaIcon icon="fa-solid fa-plus" className="text-[9px]" />
+                      <span>Add Room</span>
+                    </button>
+                  </div>
                   <div className="space-y-2">
                     {editRooms.map((room, rIdx) => (
-                      <div key={room.id} className="grid grid-cols-12 gap-2 items-center bg-white p-2 rounded-lg border border-blue-100 text-xs">
+                      <div key={room.id} className="grid grid-cols-12 gap-1.5 items-center bg-white p-2 rounded-lg border border-blue-100 text-xs">
                         <input
                           type="text"
                           value={room.name}
                           onChange={e => setEditRooms(prev => prev.map((r, i) => i === rIdx ? { ...r, name: e.target.value } : r))}
+                          placeholder="Room type"
                           className="col-span-5 px-2 py-1 rounded border border-slate-200 font-medium"
                         />
                         <input
@@ -1828,12 +1895,28 @@ export default function SellerPortalPage() {
                           min="0"
                           value={room.roomsAvailable}
                           onChange={e => setEditRooms(prev => prev.map((r, i) => i === rIdx ? { ...r, roomsAvailable: parseInt(e.target.value) || 0 } : r))}
-                          className="col-span-3 px-2 py-1 rounded border border-slate-200 font-medium text-center"
+                          className="col-span-2 px-1.5 py-1 rounded border border-slate-200 font-medium text-center"
                           title="Vacant rooms"
                         />
+                        <button
+                          type="button"
+                          disabled={editRooms.length <= 1}
+                          onClick={() => setEditRooms(prev => prev.filter((_, i) => i !== rIdx))}
+                          title="Remove room row"
+                          className="col-span-1 flex items-center justify-center text-slate-400 hover:text-red-600 disabled:opacity-30 transition"
+                        >
+                          <FaIcon icon="fa-solid fa-trash" className="text-[11px]" />
+                        </button>
                       </div>
                     ))}
                   </div>
+                </div>
+              ) : (
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 flex items-center gap-2">
+                  <FaIcon icon="fa-solid fa-lock" className="text-[#0f3a98] text-xs shrink-0" />
+                  <span>
+                    Semester room rates &amp; vacancy on this claimed building are set by its verified Custodian. You can still edit description, location, amenities, inspection fee, photos, and videos above.
+                  </span>
                 </div>
               )}
 
