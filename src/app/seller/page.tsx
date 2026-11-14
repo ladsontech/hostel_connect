@@ -337,6 +337,11 @@ export default function SellerPortalPage() {
   const [editAccessFee, setEditAccessFee] = useState<string>('15000');
   const [editSaving, setEditSaving] = useState(false);
 
+  // Inline Quick Fee Editor State (tap Inspection Fee pill to edit immediately)
+  const [quickFeeHostelId, setQuickFeeHostelId] = useState<string | null>(null);
+  const [quickFeeValue, setQuickFeeValue] = useState<string>('');
+  const [quickFeeSaving, setQuickFeeSaving] = useState(false);
+
   // Duplicate Check Modal State
   const [duplicateWarning, setDuplicateWarning] = useState<any>(null);
   const [bypassReason, setBypassReason] = useState('');
@@ -547,6 +552,47 @@ export default function SellerPortalPage() {
       alert(err.message);
     } finally {
       setEditSaving(false);
+    }
+  };
+
+  const handleSaveQuickFee = async (e: React.FormEvent, hostel: Hostel) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    setQuickFeeSaving(true);
+    try {
+      const parsedFee = Math.max(0, parseInt(quickFeeValue, 10) || 0);
+      const res = await fetch(`/api/v1/hostels/${hostel.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUser.id,
+          userRole: currentUser.role,
+          userName: currentUser.name,
+          userPhone: currentUser.phone,
+          userAvatarUrl: currentUser.avatarUrl,
+          accessFeeUgx: parsedFee,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.offer) {
+        setOffers(prev => {
+          const exists = prev.some(o => o.id === data.offer.id);
+          return exists
+            ? prev.map(o => (o.id === data.offer.id ? data.offer : o))
+            : [...prev, data.offer];
+        });
+        setQuickFeeHostelId(null);
+        setUpdateMsg(
+          `Inspection fee for "${hostel.name}" updated to ${formatUGX(parsedFee)}.`
+        );
+        setTimeout(() => setUpdateMsg(''), 4000);
+      } else {
+        alert(data.error || 'Failed to save inspection fee');
+      }
+    } catch (err: any) {
+      alert(err?.message || 'Failed to save inspection fee');
+    } finally {
+      setQuickFeeSaving(false);
     }
   };
 
@@ -1091,50 +1137,100 @@ export default function SellerPortalPage() {
                     </div>
 
                     {/* Clean Action & Fee Footer */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-                      <div className="flex items-center gap-2 text-[11px] font-medium">
-                        {currentUser?.role === 'broker' ? (
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-white font-semibold whitespace-nowrap ${
-                              myOffer
-                                ? 'bg-[#0f3a98] border-[#0f3a98]'
-                                : 'bg-red-600 border-red-600'
-                            }`}
-                          >
-                            <FaIcon
-                              icon="fa-solid fa-tag"
-                              className={`text-[10px] ${myOffer ? 'text-[#ffbe00]' : 'text-white'}`}
-                            />
-                            {myOffer
-                              ? `Inspection Fee: ${formatUGX(myOffer.accessFeeUgx)}`
-                              : 'Inspection Fee: Not Set'}
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#edf2fc] text-[#0f3a98]">
-                            <FaIcon icon="fa-solid fa-image" className="text-[10px]" />
-                            {photoCount} Photos • {videoCount} Videos
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={`/hostels/${hostel.id}`}
-                          className="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-[11px] font-medium inline-flex items-center gap-1 transition whitespace-nowrap"
+                    <div className="pt-2 border-t border-slate-100 space-y-2.5">
+                      {currentUser?.role === 'broker' && quickFeeHostelId === hostel.id && (
+                        <form
+                          onSubmit={e => handleSaveQuickFee(e, hostel)}
+                          className="p-2.5 rounded-xl bg-[#0f3a98] text-white flex flex-wrap items-center gap-2 shadow-xs"
                         >
-                          <FaIcon icon="fa-solid fa-eye" className="text-[10px]" />
-                          <span>Preview</span>
-                        </Link>
-                        {canEditHostel && (
-                          <button
-                            type="button"
-                            onClick={() => openEditHostelModal(hostel)}
-                            className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-[11px] font-semibold inline-flex items-center gap-1.5 shadow-xs transition whitespace-nowrap"
+                          <label className="text-[11px] font-semibold text-white shrink-0">
+                            Fee (UGX):
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            step="1000"
+                            inputMode="numeric"
+                            autoFocus
+                            required
+                            placeholder="e.g. 15000"
+                            value={quickFeeValue}
+                            onChange={e => setQuickFeeValue(e.target.value)}
+                            className="flex-1 min-w-[110px] px-2.5 py-1.5 text-xs rounded-lg bg-white text-[#0f3a98] font-semibold focus:outline-none focus:ring-2 focus:ring-[#ffbe00]"
+                          />
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              type="submit"
+                              disabled={quickFeeSaving}
+                              className="px-3 py-1.5 rounded-lg bg-[#ffbe00] hover:bg-amber-400 text-[#0f3a98] text-[11px] font-semibold transition disabled:opacity-60"
+                            >
+                              {quickFeeSaving ? 'Saving...' : 'Save'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setQuickFeeHostelId(null)}
+                              className="px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[11px] font-medium transition"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      )}
+
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 text-[11px] font-medium">
+                          {currentUser?.role === 'broker' ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setQuickFeeHostelId(hostel.id);
+                                setQuickFeeValue(myOffer ? String(myOffer.accessFeeUgx) : '');
+                              }}
+                              title="Tap to edit inspection fee immediately"
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-white font-semibold whitespace-nowrap transition cursor-pointer shadow-xs ${
+                                myOffer
+                                  ? 'bg-[#0f3a98] hover:bg-[#0a2666] border-[#0f3a98]'
+                                  : 'bg-red-600 hover:bg-red-700 border-red-600'
+                              }`}
+                            >
+                              <FaIcon
+                                icon="fa-solid fa-tag"
+                                className={`text-[10px] ${myOffer ? 'text-[#ffbe00]' : 'text-white'}`}
+                              />
+                              <span>
+                                {myOffer
+                                  ? `Inspection Fee: ${formatUGX(myOffer.accessFeeUgx)}`
+                                  : 'Inspection Fee: Not Set'}
+                              </span>
+                              <FaIcon icon="fa-solid fa-pen" className="text-[9px] opacity-85" />
+                            </button>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#edf2fc] text-[#0f3a98]">
+                              <FaIcon icon="fa-solid fa-image" className="text-[10px]" />
+                              {photoCount} Photos • {videoCount} Videos
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={`/hostels/${hostel.id}`}
+                            className="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-[11px] font-medium inline-flex items-center gap-1 transition whitespace-nowrap"
                           >
-                            <FaIcon icon="fa-solid fa-pen-to-square" className="text-[10px] text-[#ffbe00]" />
-                            <span>Edit All Details</span>
-                          </button>
-                        )}
+                            <FaIcon icon="fa-solid fa-eye" className="text-[10px]" />
+                            <span>Preview</span>
+                          </Link>
+                          {canEditHostel && (
+                            <button
+                              type="button"
+                              onClick={() => openEditHostelModal(hostel)}
+                              className="px-3 py-1.5 rounded-lg bg-[#0f3a98] hover:bg-[#0a2666] text-white text-[11px] font-semibold inline-flex items-center gap-1.5 shadow-xs transition whitespace-nowrap"
+                            >
+                              <FaIcon icon="fa-solid fa-pen-to-square" className="text-[10px] text-[#ffbe00]" />
+                              <span>Edit All Details</span>
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
