@@ -10,7 +10,6 @@ import { Hostel, HostelPhoto, Offer, SubscriptionPlan, UserSubscription } from '
 import { expandHostelsToRoomCards, formatUGX, getRoomOfferingSummary, isDoubleRoomType, pickRoomCardPhoto } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
 import BoundedSelect from '@/components/BoundedSelect';
-import HostelLocationFinder from '@/components/HostelLocationFinder';
 
 /** Reusable image & video gallery manager for creating or editing hostel listings. */
 function HostelMediaEditor({
@@ -1731,23 +1730,16 @@ export default function SellerPortalPage() {
                 </div>
               </div>
 
-              <HostelLocationFinder
-                hostelName={formName}
-                campus={formCampus}
-                lat={formLat}
-                lng={formLng}
-                distanceLabel={formDistance}
-                autoLookupOnTyping
-                onApplyLocation={({ lat: nextLat, lng: nextLng, distanceLabel, area, address, landmark }) => {
-                  setFormLat(String(nextLat));
-                  setFormLng(String(nextLng));
-                  setFormDistance(distanceLabel);
-                  if (area) setFormArea(area);
-                  if (address) setFormAddress(address);
-                  if (landmark) setFormLandmark(landmark);
-                }}
-                onDistanceTextChange={setFormDistance}
-              />
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Campus Distance (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 5 min walk to Makerere Main Gate"
+                  value={formDistance}
+                  onChange={e => setFormDistance(e.target.value)}
+                  className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200"
+                />
+              </div>
 
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Description</label>
@@ -2072,23 +2064,6 @@ export default function SellerPortalPage() {
                   />
                 </div>
               </div>
-
-              <HostelLocationFinder
-                hostelName={editName}
-                campus={editCampus}
-                lat={editLat}
-                lng={editLng}
-                distanceLabel={editDistance}
-                onApplyLocation={({ lat: nextLat, lng: nextLng, distanceLabel, area, address, landmark }) => {
-                  setEditLat(String(nextLat));
-                  setEditLng(String(nextLng));
-                  setEditDistance(distanceLabel);
-                  if (area) setEditArea(area);
-                  if (address) setEditAddress(address);
-                  if (landmark) setEditLandmark(landmark);
-                }}
-                onDistanceTextChange={setEditDistance}
-              />
 
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Description</label>
