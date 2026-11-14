@@ -703,10 +703,10 @@ export default function SellerPortalPage() {
           const pendingHostelsCount = visibleHostels.filter(h => h.approvalStatus === 'pending').length;
           return (
           <div className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div>
+            <div className="flex flex-col items-center justify-center text-center gap-2">
+              <div className="max-w-lg">
                 <h2 className="text-lg font-medium text-[#0f3a98]">Active Accommodations</h2>
-                <p className="text-xs text-slate-500 font-medium">
+                <p className="text-xs text-slate-500 font-medium mt-0.5">
                   Update vacancy numbers, edit hostel details &amp; media, or track unapproved submissions
                 </p>
               </div>
