@@ -1788,17 +1788,17 @@ export default function SellerPortalPage() {
               </div>
 
               {/* Room Offering & Rates */}
-              <div className="p-4 rounded-xl bg-[#edf2fc]/70 border border-blue-100 space-y-3.5">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div className="p-3.5 sm:p-4 rounded-xl bg-[#edf2fc]/70 border border-blue-100 space-y-3.5">
+                <div className="space-y-2.5">
                   <div>
                     <label className="block text-xs font-semibold text-[#0f3a98]">
                       Room Types Available at This Hostel
                     </label>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
                       Upload Single rooms alone, Double rooms alone, or both (each appears on its own card).
                     </p>
                   </div>
-                  <div className="inline-flex rounded-xl bg-white p-1 border border-blue-200 gap-1 self-start">
+                  <div className="grid grid-cols-3 sm:inline-grid rounded-xl bg-white p-1 border border-blue-200 gap-1 w-full sm:w-auto">
                     {[
                       { value: 'both', label: 'Single & Double' },
                       { value: 'single_only', label: 'Single Only' },
@@ -1808,9 +1808,9 @@ export default function SellerPortalPage() {
                         key={opt.value}
                         type="button"
                         onClick={() => setFormRoomOffering(opt.value as 'both' | 'single_only' | 'double_only')}
-                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition whitespace-nowrap ${
+                        className={`px-1.5 sm:px-3 py-2 rounded-lg text-[11px] font-semibold transition text-center whitespace-nowrap ${
                           formRoomOffering === opt.value
-                            ? 'bg-[#0f3a98] text-white shadow-sm'
+                            ? 'bg-[#0f3a98] text-white shadow-xs'
                             : 'text-slate-600 hover:text-[#0f3a98] hover:bg-slate-50'
                         }`}
                       >
@@ -1820,33 +1820,42 @@ export default function SellerPortalPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className={`grid grid-cols-1 ${formRoomOffering === 'both' ? 'sm:grid-cols-2' : ''} gap-3`}>
                   {(formRoomOffering === 'both' || formRoomOffering === 'single_only') && (
-                    <div className="p-3 rounded-xl bg-white border border-blue-100 space-y-2.5">
-                      <div className="flex items-center justify-between gap-2">
+                    <div className="p-3.5 rounded-xl bg-white border border-blue-100 shadow-2xs space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-[#e8effc] text-[#0f3a98] flex items-center justify-center shrink-0">
+                          <FaIcon icon="fa-solid fa-bed" className="text-[11px]" />
+                        </span>
                         <span className="text-xs font-semibold text-[#0f3a98]">Single Room Details</span>
-                        <div className="inline-flex rounded-lg bg-slate-100 p-0.5 text-[10px] font-semibold">
-                          <button
-                            type="button"
-                            onClick={() => setFormSingleStyle('single')}
-                            className={`px-2 py-0.5 rounded-md transition ${
-                              formSingleStyle === 'single' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
-                            }`}
-                          >
-                            Single Room
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setFormSingleStyle('self_contained_single')}
-                            className={`px-2 py-0.5 rounded-md transition ${
-                              formSingleStyle === 'self_contained_single' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
-                            }`}
-                          >
-                            Self-Contained
-                          </button>
-                        </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-2">
+
+                      <div className="grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1">
+                        <button
+                          type="button"
+                          onClick={() => setFormSingleStyle('single')}
+                          className={`py-1.5 px-2 rounded-md text-[11px] font-semibold transition text-center whitespace-nowrap ${
+                            formSingleStyle === 'single'
+                              ? 'bg-[#0f3a98] text-white shadow-2xs'
+                              : 'text-slate-600 hover:text-[#0f3a98]'
+                          }`}
+                        >
+                          Single Room
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormSingleStyle('self_contained_single')}
+                          className={`py-1.5 px-2 rounded-md text-[11px] font-semibold transition text-center whitespace-nowrap ${
+                            formSingleStyle === 'self_contained_single'
+                              ? 'bg-[#0f3a98] text-white shadow-2xs'
+                              : 'text-slate-600 hover:text-[#0f3a98]'
+                          }`}
+                        >
+                          Self-Contained
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2.5">
                         <div className="col-span-2">
                           <label className="block text-[11px] font-medium text-slate-600 mb-1">Rent / Sem (UGX)</label>
                           <input
@@ -1855,7 +1864,7 @@ export default function SellerPortalPage() {
                             required
                             value={formSingleRent}
                             onChange={e => setFormSingleRent(e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-slate-200 font-medium"
+                            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                           />
                         </div>
                         <div>
@@ -1865,7 +1874,7 @@ export default function SellerPortalPage() {
                             min="0"
                             value={formSingleAvailable}
                             onChange={e => setFormSingleAvailable(e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-slate-200 font-medium text-center"
+                            className="w-full px-2.5 py-2 text-sm rounded-lg border border-slate-200 font-medium text-center focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                           />
                         </div>
                       </div>
@@ -1873,31 +1882,40 @@ export default function SellerPortalPage() {
                   )}
 
                   {(formRoomOffering === 'both' || formRoomOffering === 'double_only') && (
-                    <div className="p-3 rounded-xl bg-white border border-blue-100 space-y-2.5">
-                      <div className="flex items-center justify-between gap-2">
+                    <div className="p-3.5 rounded-xl bg-white border border-blue-100 shadow-2xs space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-[#e8effc] text-[#0f3a98] flex items-center justify-center shrink-0">
+                          <FaIcon icon="fa-solid fa-user-group" className="text-[11px]" />
+                        </span>
                         <span className="text-xs font-semibold text-[#0f3a98]">Double Room Details</span>
-                        <div className="inline-flex rounded-lg bg-slate-100 p-0.5 text-[10px] font-semibold">
-                          <button
-                            type="button"
-                            onClick={() => setFormDoubleStyle('double')}
-                            className={`px-2 py-0.5 rounded-md transition ${
-                              formDoubleStyle === 'double' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
-                            }`}
-                          >
-                            Double Room
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setFormDoubleStyle('self_contained_double')}
-                            className={`px-2 py-0.5 rounded-md transition ${
-                              formDoubleStyle === 'self_contained_double' ? 'bg-[#0f3a98] text-white' : 'text-slate-600'
-                            }`}
-                          >
-                            Self-Contained
-                          </button>
-                        </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-2">
+
+                      <div className="grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1">
+                        <button
+                          type="button"
+                          onClick={() => setFormDoubleStyle('double')}
+                          className={`py-1.5 px-2 rounded-md text-[11px] font-semibold transition text-center whitespace-nowrap ${
+                            formDoubleStyle === 'double'
+                              ? 'bg-[#0f3a98] text-white shadow-2xs'
+                              : 'text-slate-600 hover:text-[#0f3a98]'
+                          }`}
+                        >
+                          Double Room
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormDoubleStyle('self_contained_double')}
+                          className={`py-1.5 px-2 rounded-md text-[11px] font-semibold transition text-center whitespace-nowrap ${
+                            formDoubleStyle === 'self_contained_double'
+                              ? 'bg-[#0f3a98] text-white shadow-2xs'
+                              : 'text-slate-600 hover:text-[#0f3a98]'
+                          }`}
+                        >
+                          Self-Contained
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2.5">
                         <div className="col-span-2">
                           <label className="block text-[11px] font-medium text-slate-600 mb-1">Rent / Sem (UGX)</label>
                           <input
@@ -1906,7 +1924,7 @@ export default function SellerPortalPage() {
                             required
                             value={formDoubleRent}
                             onChange={e => setFormDoubleRent(e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-slate-200 font-medium"
+                            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 font-medium focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                           />
                         </div>
                         <div>
@@ -1916,7 +1934,7 @@ export default function SellerPortalPage() {
                             min="0"
                             value={formDoubleAvailable}
                             onChange={e => setFormDoubleAvailable(e.target.value)}
-                            className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-slate-200 font-medium text-center"
+                            className="w-full px-2.5 py-2 text-sm rounded-lg border border-slate-200 font-medium text-center focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                           />
                         </div>
                       </div>
@@ -1925,8 +1943,8 @@ export default function SellerPortalPage() {
                 </div>
 
                 {currentUser?.role !== 'custodian' && (
-                  <div>
-                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <div className="pt-2 border-t border-blue-100">
+                    <label className="block text-xs font-semibold text-[#0f3a98] mb-1">
                       Broker Inspection Fee (UGX)
                     </label>
                     <input
@@ -1935,7 +1953,7 @@ export default function SellerPortalPage() {
                       placeholder="0 or positive UGX"
                       value={formAccessFee}
                       onChange={e => setFormAccessFee(e.target.value)}
-                      className="w-full sm:max-w-xs px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white font-medium"
+                      className="w-full sm:max-w-xs px-3 py-2 text-sm rounded-lg border border-slate-200 bg-white font-medium focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
                     />
                   </div>
                 )}
