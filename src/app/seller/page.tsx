@@ -10,6 +10,7 @@ import { Hostel, HostelPhoto, Offer, SubscriptionPlan, UserSubscription } from '
 import { formatUGX } from '@/lib/utils';
 import FaIcon from '@/components/FaIcon';
 import BoundedSelect from '@/components/BoundedSelect';
+import HostelLocationFinder from '@/components/HostelLocationFinder';
 
 /** Reusable image & video gallery manager for creating or editing hostel listings. */
 function HostelMediaEditor({
@@ -304,6 +305,7 @@ export default function SellerPortalPage() {
   const [formLandmark, setFormLandmark] = useState('');
   const [formLat, setFormLat] = useState('0.3345');
   const [formLng, setFormLng] = useState('32.5621');
+  const [formDistance, setFormDistance] = useState('');
   const [formAccessFee, setFormAccessFee] = useState('20000');
   const [formPhone, setFormPhone] = useState('+256 700 123 456');
   const [formSingleRent, setFormSingleRent] = useState('1200000');
@@ -318,6 +320,8 @@ export default function SellerPortalPage() {
   const [editArea, setEditArea] = useState('');
   const [editAddress, setEditAddress] = useState('');
   const [editLandmark, setEditLandmark] = useState('');
+  const [editLat, setEditLat] = useState('');
+  const [editLng, setEditLng] = useState('');
   const [editDistance, setEditDistance] = useState('');
   const [editGender, setEditGender] = useState<'mixed' | 'girls_only' | 'boys_only'>('mixed');
   const [editDescription, setEditDescription] = useState('');
@@ -406,6 +410,7 @@ export default function SellerPortalPage() {
       landmark: formLandmark,
       lat: parseFloat(formLat),
       lng: parseFloat(formLng),
+      distanceCampusApprox: formDistance.trim() || undefined,
       genderPolicy: 'mixed',
       amenities: ['water', 'security', 'wifi', 'power_backup'],
       sellerId: currentUser?.id || 'usr_custodian_olympia',
@@ -444,6 +449,9 @@ export default function SellerPortalPage() {
         setActiveTab('listings');
         setFormName('');
         setFormDescription('');
+        setFormAddress('');
+        setFormLandmark('');
+        setFormDistance('');
         setFormMedia([]);
         setBypassReason('');
       } else {
@@ -463,6 +471,8 @@ export default function SellerPortalPage() {
     setEditArea(hostel.area);
     setEditAddress(hostel.address);
     setEditLandmark(hostel.landmark);
+    setEditLat(String(hostel.lat));
+    setEditLng(String(hostel.lng));
     setEditDistance(hostel.distanceCampusApprox);
     setEditGender(hostel.genderPolicy);
     setEditDescription(hostel.description);
@@ -495,6 +505,8 @@ export default function SellerPortalPage() {
           area: editArea,
           address: editAddress,
           landmark: editLandmark,
+          lat: parseFloat(editLat),
+          lng: parseFloat(editLng),
           distanceCampusApprox: editDistance,
           genderPolicy: editGender,
           description: editDescription,
@@ -1482,6 +1494,24 @@ export default function SellerPortalPage() {
                 </div>
               </div>
 
+              <HostelLocationFinder
+                hostelName={formName}
+                campus={formCampus}
+                lat={formLat}
+                lng={formLng}
+                distanceLabel={formDistance}
+                autoLookupOnTyping
+                onApplyLocation={({ lat: nextLat, lng: nextLng, distanceLabel, area, address, landmark }) => {
+                  setFormLat(String(nextLat));
+                  setFormLng(String(nextLng));
+                  setFormDistance(distanceLabel);
+                  if (area) setFormArea(area);
+                  if (address) setFormAddress(address);
+                  if (landmark) setFormLandmark(landmark);
+                }}
+                onDistanceTextChange={setFormDistance}
+              />
+
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Description</label>
                 <textarea
@@ -1685,6 +1715,23 @@ export default function SellerPortalPage() {
                   />
                 </div>
               </div>
+
+              <HostelLocationFinder
+                hostelName={editName}
+                campus={editCampus}
+                lat={editLat}
+                lng={editLng}
+                distanceLabel={editDistance}
+                onApplyLocation={({ lat: nextLat, lng: nextLng, distanceLabel, area, address, landmark }) => {
+                  setEditLat(String(nextLat));
+                  setEditLng(String(nextLng));
+                  setEditDistance(distanceLabel);
+                  if (area) setEditArea(area);
+                  if (address) setEditAddress(address);
+                  if (landmark) setEditLandmark(landmark);
+                }}
+                onDistanceTextChange={setEditDistance}
+              />
 
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">Description</label>

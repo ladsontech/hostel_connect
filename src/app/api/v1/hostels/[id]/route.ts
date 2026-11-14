@@ -55,6 +55,8 @@ export async function PUT(
   const {
     name,
     description,
+    lat,
+    lng,
     campus,
     area,
     address,
@@ -88,6 +90,8 @@ export async function PUT(
     hostel.normalizedName = normalizeHostelName(name.trim());
   }
   if (typeof description === 'string') hostel.description = description.trim();
+  if (typeof lat === 'number' && Number.isFinite(lat)) hostel.lat = lat;
+  if (typeof lng === 'number' && Number.isFinite(lng)) hostel.lng = lng;
   if (typeof campus === 'string' && campus.trim()) hostel.campus = campus.trim();
   if (typeof area === 'string' && area.trim()) hostel.area = area.trim();
   if (typeof address === 'string' && address.trim()) hostel.address = address.trim();
