@@ -994,112 +994,128 @@ export default function SellerPortalPage() {
 
         {/* TAB 2: SELLER ANALYTICS */}
         {activeTab === 'analytics' && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-5">
+            <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
-                <h2 className="text-lg font-medium text-[#0f3a98]">Student Inquiries & Leads (FR-9.1)</h2>
-                <p className="text-xs text-slate-500 font-medium">
-                  Track real students reaching your listings via WhatsApp, phone calls, and saves
+                <h2 className="text-lg font-semibold text-[#0f3a98]">Student Inquiries &amp; Leads</h2>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">
+                  Track students reaching your listings via WhatsApp, calls, and saves
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 w-full lg:w-auto">
                 <select
                   value={selectedHostelForAnalytics}
                   onChange={e => setSelectedHostelForAnalytics(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg border text-xs font-medium bg-white text-[#0f3a98]"
+                  className="w-full sm:w-auto sm:min-w-[190px] px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-medium bg-white text-[#0f3a98] focus:ring-2 focus:ring-[#0f3a98]"
                 >
                   {hostels.map(h => (
                     <option key={h.id} value={h.id}>{h.name}</option>
                   ))}
                 </select>
 
-                <div className="flex items-center bg-slate-200 p-0.5 rounded-lg text-xs font-medium">
+                <div className="grid grid-cols-3 sm:inline-flex items-center bg-slate-100 border border-slate-200 p-1 rounded-xl text-xs font-medium w-full sm:w-auto">
                   {(['today', '7days', 'semester'] as const).map(t => (
                     <button
                       key={t}
+                      type="button"
                       onClick={() => setAnalyticsTimeframe(t)}
-                      className={`px-2.5 py-1 rounded transition capitalize ${
-                        analyticsTimeframe === t ? 'bg-[#0f3a98] text-[#ffbe00] shadow-sm' : 'text-slate-600'
+                      className={`px-3 py-1.5 rounded-lg transition capitalize whitespace-nowrap text-center ${
+                        analyticsTimeframe === t
+                          ? 'bg-[#0f3a98] text-[#ffbe00] shadow-xs font-semibold'
+                          : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
-                      {t === '7days' ? 'Last 7 Days' : t}
+                      {t === '7days' ? '7 Days' : t}
                     </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Metric KPI cards with FontAwesome Icons */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between text-slate-400 mb-2">
+            {/* Metric KPI cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-medium text-slate-500">Listing Views</span>
-                  <FaIcon icon="fa-solid fa-eye" className="text-sm text-[#0f3a98]" />
+                  <span className="w-8 h-8 rounded-xl bg-[#edf2fc] text-[#0f3a98] flex items-center justify-center shrink-0">
+                    <FaIcon icon="fa-solid fa-eye" className="text-xs" />
+                  </span>
                 </div>
-                <div className="text-2xl font-medium text-[#0f3a98]">
+                <div className="text-2xl sm:text-3xl font-semibold text-[#0f3a98] tabular-nums">
                   {analyticsData?.views || 1420}
                 </div>
-                <div className="text-[11px] text-[#0f3a98] font-medium mt-1">↑ 18% this week</div>
+                <div className="text-[11px] text-[#0f3a98] font-medium">Up 18% this week</div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between text-slate-400 mb-2">
-                  <span className="text-xs font-medium text-slate-500">WhatsApp Inquiries</span>
-                  <FaIcon icon="fa-brands fa-whatsapp" className="text-base text-[#ffbe00]" />
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-medium text-slate-500">WhatsApp Chats</span>
+                  <span className="w-8 h-8 rounded-xl bg-[#fff8dc] text-[#0f3a98] border border-[#ffbe00]/50 flex items-center justify-center shrink-0">
+                    <FaIcon icon="fa-brands fa-whatsapp" className="text-sm" />
+                  </span>
                 </div>
-                <div className="text-2xl font-medium text-[#0f3a98]">
+                <div className="text-2xl sm:text-3xl font-semibold text-[#0f3a98] tabular-nums">
                   {analyticsData?.whatsAppTaps || 48}
                 </div>
-                <div className="text-[11px] text-slate-400 mt-1 font-medium">Direct wa.me chats</div>
+                <div className="text-[11px] text-slate-500 font-medium">Direct student taps</div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between text-slate-400 mb-2">
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-medium text-slate-500">Phone Calls</span>
-                  <FaIcon icon="fa-solid fa-phone" className="text-sm text-[#0f3a98]" />
+                  <span className="w-8 h-8 rounded-xl bg-[#edf2fc] text-[#0f3a98] flex items-center justify-center shrink-0">
+                    <FaIcon icon="fa-solid fa-phone" className="text-xs" />
+                  </span>
                 </div>
-                <div className="text-2xl font-medium text-[#0f3a98]">
+                <div className="text-2xl sm:text-3xl font-semibold text-[#0f3a98] tabular-nums">
                   {analyticsData?.calls || 26}
                 </div>
-                <div className="text-[11px] text-slate-400 mt-1 font-medium">Direct dial attempts</div>
+                <div className="text-[11px] text-slate-500 font-medium">Direct call inquiries</div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between text-slate-400 mb-2">
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-medium text-slate-500">Student Saves</span>
-                  <FaIcon icon="fa-solid fa-heart" className="text-sm text-rose-500" />
+                  <span className="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
+                    <FaIcon icon="fa-solid fa-heart" className="text-xs" />
+                  </span>
                 </div>
-                <div className="text-2xl font-medium text-[#0f3a98]">
+                <div className="text-2xl sm:text-3xl font-semibold text-[#0f3a98] tabular-nums">
                   {analyticsData?.saves || 312}
                 </div>
-                <div className="text-[11px] text-slate-400 mt-1 font-medium">Added to shortlists</div>
+                <div className="text-[11px] text-slate-500 font-medium">Added to shortlists</div>
               </div>
             </div>
 
-            {/* FR-9.2 Weekly Summary Banner */}
-            <div className="p-4 rounded-2xl bg-[#e8effc] border border-blue-200 flex items-center gap-3">
-              <FaIcon icon="fa-solid fa-wand-magic-sparkles" className="text-lg text-[#ffbe00] shrink-0" />
+            {/* Weekly Summary Banner */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-[#edf2fc] border border-blue-200 flex items-start sm:items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-[#0f3a98] text-[#ffbe00] flex items-center justify-center shrink-0">
+                <FaIcon icon="fa-solid fa-chart-line" className="text-sm" />
+              </div>
               <div>
-                <h4 className="font-medium text-sm text-[#0f3a98]">Weekly Performance Summary (FR-9.2)</h4>
-                <p className="text-xs text-slate-700 mt-0.5 font-medium">
-                  "Your hostel received <strong>{analyticsData?.views || 1420} views</strong> and <strong>{(analyticsData?.whatsAppTaps || 48) + (analyticsData?.calls || 26)} direct enquiries</strong> this week. Availability confirmed 2 days ago."
+                <h4 className="font-semibold text-sm text-[#0f3a98]">Weekly Performance Summary</h4>
+                <p className="text-xs text-slate-700 mt-0.5 font-medium leading-relaxed">
+                  This listing received <strong>{analyticsData?.views || 1420} views</strong> and{' '}
+                  <strong>{(analyticsData?.whatsAppTaps || 48) + (analyticsData?.calls || 26)} direct student enquiries</strong>.
                 </p>
               </div>
             </div>
 
-            {/* FR-9.3 Broker Breakdown for Custodians */}
+            {/* Broker Breakdown for Custodians */}
             {currentUser?.role === 'custodian' && (
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
-                <h3 className="text-base font-medium text-[#0f3a98]">Broker Agent Contribution (FR-9.3)</h3>
+              <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
+                <h3 className="text-base font-semibold text-[#0f3a98]">Broker Agent Activity</h3>
                 <div className="space-y-2">
-                  <div className="p-3 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between text-xs">
+                  <div className="p-3.5 rounded-xl border border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-2">
                       <FaIcon icon="fa-solid fa-users" className="text-xs text-[#0f3a98]" />
                       <span className="font-medium text-slate-800">Brian Kigozi (Campus Scout)</span>
-                      <span className="bg-[#ffbe00] text-[#0f3a98] px-1.5 py-0.5 rounded text-[10px] font-medium">Authorised</span>
+                      <span className="bg-[#ffbe00] text-[#0f3a98] px-2 py-0.5 rounded-md text-[10px] font-semibold">
+                        Authorised
+                      </span>
                     </div>
-                    <div className="font-medium text-[#0f3a98]">22 Student Inquiries Driven</div>
+                    <div className="font-semibold text-[#0f3a98] whitespace-nowrap">22 Student Inquiries Driven</div>
                   </div>
                 </div>
               </div>
@@ -1433,7 +1449,7 @@ export default function SellerPortalPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1">
-                    Broker Access Fee (FR-4.4)
+                    Broker Inspection Fee (UGX)
                   </label>
                   <input
                     type="number"
