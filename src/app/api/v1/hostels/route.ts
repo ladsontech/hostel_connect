@@ -124,6 +124,8 @@ export async function POST(request: Request) {
       rooms,
       sellerId,
       sellerRole,
+      sellerName,
+      sellerAvatarUrl,
       contactPhone,
       whatsapp,
       accessFeeUgx,
@@ -225,17 +227,28 @@ export async function POST(request: Request) {
     db.hostels.unshift(newHostel);
 
     // Create the seller's offer attached to this new hostel
+    const sellerProfile = db.users.find(u => u.id === sellerId);
+    const resolvedAvatarUrl =
+      typeof sellerAvatarUrl === 'string' && sellerAvatarUrl.trim()
+        ? sellerAvatarUrl.trim()
+        : sellerProfile?.avatarUrl;
+    const resolvedUserName =
+      typeof sellerName === 'string' && sellerName.trim()
+        ? sellerName.trim()
+        : sellerProfile?.name || (sellerRole === 'custodian' ? 'Hostel Management' : 'Hostel Agent');
+
     const newOffer = {
       id: `off_${Date.now()}`,
       hostelId: newHostelId,
       userId: sellerId,
-      userName: sellerRole === 'custodian' ? 'Hostel Management' : 'Hostel Agent',
+      userName: resolvedUserName,
       userRole: sellerRole,
       isVerified: true,
       isAuthorised: sellerRole === 'custodian',
       accessFeeUgx: sellerRole === 'broker' ? (parseInt(accessFeeUgx) || 0) : 0,
       contactPhone: contactPhone || '+256700000000',
       whatsapp: whatsapp || contactPhone || '+256700000000',
+      avatarUrl: resolvedAvatarUrl,
       status: 'active' as const,
       createdAt: new Date().toISOString(),
       responseRatePct: 100

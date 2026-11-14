@@ -282,10 +282,16 @@ function HostelMediaEditor({
 }
 
 export default function SellerPortalPage() {
-  const { currentUser, switchRole } = useAuth();
+  const { currentUser, switchRole, updateUserProfile } = useAuth();
   const [activeTab, setActiveTab] = useState<'listings' | 'analytics' | 'subscription' | 'add'>('listings');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+
+  // Broker / Seller Profile Photo Modal State
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [avatarDraft, setAvatarDraft] = useState('');
+  const [avatarSaving, setAvatarSaving] = useState(false);
+  const [avatarError, setAvatarError] = useState('');
 
   // Data states
   const [hostels, setHostels] = useState<Hostel[]>([]);
@@ -415,6 +421,8 @@ export default function SellerPortalPage() {
       amenities: ['water', 'security', 'wifi', 'power_backup'],
       sellerId: currentUser?.id || 'usr_custodian_olympia',
       sellerRole: currentUser?.role || 'custodian',
+      sellerName: currentUser?.name,
+      sellerAvatarUrl: currentUser?.avatarUrl,
       contactPhone: formPhone,
       whatsapp: formPhone,
       accessFeeUgx: parseInt(formAccessFee) || 0,
@@ -686,10 +694,19 @@ export default function SellerPortalPage() {
                 </button>
               </div>
 
-              {/* Overlapping Centered Circular Avatar */}
-              <div className="relative z-10 -mt-11 sm:-mt-12 flex justify-center">
-                <div className="relative">
-                  <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full ring-4 ring-white border-2 border-[#0f3a98] bg-[#edf2fc] overflow-hidden shadow-md flex items-center justify-center">
+              {/* Overlapping Centered Circular Avatar (click or use camera button to add/edit profile photo) */}
+              <div className="relative z-10 -mt-11 sm:-mt-12 flex flex-col items-center">
+                <div className="relative group">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAvatarDraft(currentUser?.avatarUrl || '');
+                      setAvatarError('');
+                      setAvatarModalOpen(true);
+                    }}
+                    title="Add or edit your profile picture"
+                    className="w-20 h-20 sm:w-22 sm:h-22 rounded-full ring-4 ring-white border-2 border-[#0f3a98] bg-[#edf2fc] overflow-hidden shadow-md flex items-center justify-center focus:outline-none focus:ring-[#ffbe00] transition"
+                  >
                     {currentUser?.avatarUrl ? (
                       <img
                         src={currentUser.avatarUrl}
@@ -706,14 +723,34 @@ export default function SellerPortalPage() {
                           .toUpperCase()}
                       </span>
                     )}
-                  </div>
-                  <span
-                    title="Verified Account"
-                    className="absolute bottom-0.5 right-0.5 w-6 h-6 rounded-full bg-[#ffbe00] border-2 border-white flex items-center justify-center text-[#0f3a98] shadow-xs"
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAvatarDraft(currentUser?.avatarUrl || '');
+                      setAvatarError('');
+                      setAvatarModalOpen(true);
+                    }}
+                    aria-label="Edit profile picture"
+                    title="Add or edit profile picture"
+                    className="absolute -bottom-0.5 -right-0.5 w-7 h-7 rounded-full bg-[#ffbe00] hover:bg-[#0f3a98] border-2 border-white flex items-center justify-center text-[#0f3a98] hover:text-white shadow-sm transition"
                   >
-                    <FaIcon icon="fa-solid fa-check" className="text-[10px]" />
-                  </span>
+                    <FaIcon icon="fa-solid fa-camera" className="text-[11px]" />
+                  </button>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAvatarDraft(currentUser?.avatarUrl || '');
+                    setAvatarError('');
+                    setAvatarModalOpen(true);
+                  }}
+                  className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#edf2fc] hover:bg-[#0f3a98] text-[#0f3a98] hover:text-white border border-blue-200 text-[11px] font-medium transition"
+                >
+                  <FaIcon icon="fa-solid fa-camera" className="text-[10px]" />
+                  <span>{currentUser?.avatarUrl ? 'Edit Profile Photo' : 'Add Profile Photo'}</span>
+                </button>
               </div>
 
               {/* Centered Name & Role Bio */}
@@ -1820,6 +1857,197 @@ export default function SellerPortalPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {avatarModalOpen && currentUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs font-sans">
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div className="relative px-8 py-4 bg-[#0f3a98] text-white text-center">
+              <h3 className="text-sm sm:text-base font-semibold text-white">
+                {currentUser.avatarUrl ? 'Edit Profile Photo' : 'Add Profile Photo'}
+              </h3>
+              <p className="text-[11px] text-blue-100 mt-0.5">
+                Students see this photo when booking your inspections
+              </p>
+              <button
+                type="button"
+                onClick={() => setAvatarModalOpen(false)}
+                aria-label="Close modal"
+                className="absolute top-3.5 right-3.5 w-7 h-7 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition"
+              >
+                <FaIcon icon="fa-solid fa-xmark" className="text-xs" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              {/* Circular Booking Preview */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="relative w-24 h-24">
+                  <div className="w-24 h-24 rounded-full border-2 border-[#0f3a98] ring-4 ring-[#edf2fc] bg-[#edf2fc] overflow-hidden flex items-center justify-center shadow-sm">
+                    {avatarDraft.trim() ? (
+                      <img
+                        src={avatarDraft.trim()}
+                        alt={currentUser.name}
+                        onError={() => setAvatarError('Could not load that image URL. Try uploading from your device.')}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-2xl font-semibold text-[#0f3a98]">
+                        {(currentUser.name || 'HC')
+                          .split(' ')
+                          .map(n => n[0])
+                          .slice(0, 2)
+                          .join('')
+                          .toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <span className="absolute bottom-0.5 right-0.5 w-6 h-6 rounded-full bg-[#0f3a98] border-2 border-white flex items-center justify-center text-[10px] text-[#ffbe00]">
+                    <FaIcon icon="fa-solid fa-check" />
+                  </span>
+                </div>
+                <span className="text-xs font-semibold text-[#0f3a98] text-center">
+                  {currentUser.businessName || currentUser.name}
+                </span>
+              </div>
+
+              {/* Upload Photo from Device */}
+              <label className="w-full py-2.5 px-4 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-white text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition shadow-sm">
+                <FaIcon icon="fa-solid fa-cloud-arrow-up" className="text-[#ffbe00]" />
+                <span>Upload Photo from Device</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setAvatarError('');
+                    if (file.size > 10 * 1024 * 1024) {
+                      setAvatarError('Image exceeds 10MB. Please choose a smaller photo.');
+                      return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      const rawUrl = typeof reader.result === 'string' ? reader.result : '';
+                      if (!rawUrl) return;
+                      const img = new Image();
+                      img.onload = () => {
+                        const maxSide = 400;
+                        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(img.width * scale));
+                        canvas.height = Math.max(1, Math.round(img.height * scale));
+                        const ctx = canvas.getContext('2d');
+                        if (ctx) {
+                          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                          setAvatarDraft(canvas.toDataURL('image/jpeg', 0.85));
+                        } else {
+                          setAvatarDraft(rawUrl);
+                        }
+                      };
+                      img.onerror = () => setAvatarDraft(rawUrl);
+                      img.src = rawUrl;
+                    };
+                    reader.readAsDataURL(file);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+
+              {/* Or Paste Image URL */}
+              <div>
+                <label className="block text-[11px] font-medium text-slate-600 mb-1 text-center">
+                  Or paste a profile photo URL
+                </label>
+                <input
+                  type="text"
+                  value={avatarDraft}
+                  onChange={e => {
+                    setAvatarError('');
+                    setAvatarDraft(e.target.value);
+                  }}
+                  placeholder="https://example.com/my-photo.jpg"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+                />
+              </div>
+
+              {avatarError && (
+                <p className="text-[11px] text-red-700 bg-red-50 border border-red-200 rounded-lg px-2.5 py-1.5 text-center font-medium">
+                  {avatarError}
+                </p>
+              )}
+
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                {currentUser.avatarUrl ? (
+                  <button
+                    type="button"
+                    disabled={avatarSaving}
+                    onClick={async () => {
+                      setAvatarSaving(true);
+                      const res = await updateUserProfile({ avatarUrl: '' });
+                      setAvatarSaving(false);
+                      if (res.success) {
+                        setOffers(prev =>
+                          prev.map(o =>
+                            o.userId === currentUser.id ? { ...o, avatarUrl: '' } : o
+                          )
+                        );
+                        setUpdateMsg('Profile photo removed.');
+                        setTimeout(() => setUpdateMsg(''), 3500);
+                        setAvatarModalOpen(false);
+                      } else {
+                        setAvatarError(res.error || 'Could not remove photo.');
+                      }
+                    }}
+                    className="px-3 py-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 text-xs font-medium transition disabled:opacity-50"
+                  >
+                    Remove
+                  </button>
+                ) : (
+                  <span />
+                )}
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setAvatarModalOpen(false)}
+                    className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-50 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={avatarSaving || !avatarDraft.trim()}
+                    onClick={async () => {
+                      const nextUrl = avatarDraft.trim();
+                      if (!nextUrl) return;
+                      setAvatarSaving(true);
+                      setAvatarError('');
+                      const res = await updateUserProfile({ avatarUrl: nextUrl });
+                      setAvatarSaving(false);
+                      if (res.success) {
+                        setOffers(prev =>
+                          prev.map(o =>
+                            o.userId === currentUser.id ? { ...o, avatarUrl: nextUrl } : o
+                          )
+                        );
+                        setUpdateMsg('Profile photo saved and synced across all your booking listings!');
+                        setTimeout(() => setUpdateMsg(''), 4000);
+                        setAvatarModalOpen(false);
+                      } else {
+                        setAvatarError(res.error || 'Failed to save profile photo.');
+                      }
+                    }}
+                    className="px-4 py-2 rounded-xl bg-[#0f3a98] hover:bg-[#0a2666] text-[#ffbe00] text-xs font-semibold shadow-sm transition disabled:opacity-50"
+                  >
+                    {avatarSaving ? 'Saving...' : 'Save Photo'}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

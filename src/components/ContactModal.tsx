@@ -32,6 +32,9 @@ function BrokerAvatar({
   isCustodian?: boolean;
 }) {
   const [imgFailed, setImgFailed] = useState(false);
+  useEffect(() => {
+    setImgFailed(false);
+  }, [avatarUrl]);
   const initials = name
     .replace(/\(.*?\)/g, '')
     .trim()
@@ -1422,7 +1425,13 @@ export default function ContactModal({
                     <BrokerProfileHeader
                       name={offer.userName}
                       subtitle={isCustodian ? `Verified Management • ${hostel.area}` : `Verified Area Broker • ${hostel.area}`}
-                      avatarUrl={offer.avatarUrl || (!isCustodian ? DEFAULT_BROKER_AVATARS[0] : undefined)}
+                      avatarUrl={
+                        offer.avatarUrl !== undefined
+                          ? offer.avatarUrl || undefined
+                          : !isCustodian
+                            ? DEFAULT_BROKER_AVATARS[0]
+                            : undefined
+                      }
                       isCustodian={isCustodian}
                       residentType={offer.residentType}
                       stats={[

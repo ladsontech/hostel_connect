@@ -8,6 +8,12 @@ interface AuthContextType {
   currentUser: User | null;
   setCurrentUser: (user: User | null) => void;
   switchRole: (role: UserRole) => void;
+  updateUserProfile: (updates: {
+    avatarUrl?: string;
+    name?: string;
+    phone?: string;
+    businessName?: string;
+  }) => Promise<{ success: boolean; user?: User; error?: string }>;
   loginWithCredentials: (identifier: string, password?: string) => Promise<{ success: boolean; error?: string }>;
   loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   registerUser: (data: {
@@ -34,11 +40,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => INITIAL_USERS.find(u => u.role === 'student') || INITIAL_USERS[6] || INITIAL_USERS[0]
   );
 
+  const PROFILE_OVERRIDES_KEY = 'hostel_connect_user_profiles';
+
+  const getSavedProfileOverride = (userId: string): Partial<User> | null => {
+    try {
+      const raw = localStorage.getItem(PROFILE_OVERRIDES_KEY);
+      if (!raw) return null;
+      const map = JSON.parse(raw);
+      return map && typeof map === 'object' ? map[userId] || null : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const persistProfileOverride = (user: User) => {
+    try {
+      const raw = localStorage.getItem(PROFILE_OVERRIDES_KEY);
+      const map = raw ? JSON.parse(raw) : {};
+      map[user.id] = {
+        avatarUrl: user.avatarUrl,
+        name: user.name,
+        phone: user.phone,
+        businessName: user.businessName,
+      };
+      localStorage.setItem(PROFILE_OVERRIDES_KEY, JSON.stringify(map));
+    } catch {
+      // Ignore storage quota errors gracefully
+    }
+  };
+
   useEffect(() => {
     const saved = localStorage.getItem('hostel_connect_user');
     if (saved) {
       try {
-        setCurrentUser(JSON.parse(saved));
+        const parsed: User = JSON.parse(saved);
+        const override = parsed?.id ? getSavedProfileOverride(parsed.id) : null;
+        setCurrentUser(override ? { ...parsed, ...override } : parsed);
       } catch (e) {}
     }
   }, []);
@@ -55,7 +92,66 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const switchRole = (role: UserRole) => {
     const target = INITIAL_USERS.find(u => u.role === role);
     if (target) {
-      saveUser(target);
+      const override = getSavedProfileOverride(target.id);
+      const merged = override ? { ...target, ...override } : target;
+      saveUser(merged);
+
+      // Sync latest avatar & profile from server in background if available
+      fetch(`/api/v1/users/profile?userId=${encodeURIComponent(target.id)}`)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => {
+          if (data?.success && data.user) {
+            saveUser({ ...merged, ...data.user });
+          }
+        })
+        .catch(() => {});
+    }
+  };
+
+  const updateUserProfile = async (updates: {
+    avatarUrl?: string;
+    name?: string;
+    phone?: string;
+    businessName?: string;
+  }): Promise<{ success: boolean; user?: User; error?: string }> => {
+    if (!currentUser) {
+      return { success: false, error: 'You must be signed in to update your profile.' };
+    }
+
+    const optimisticUser: User = {
+      ...currentUser,
+      ...(updates.avatarUrl !== undefined ? { avatarUrl: updates.avatarUrl } : {}),
+      ...(updates.name !== undefined ? { name: updates.name } : {}),
+      ...(updates.phone !== undefined ? { phone: updates.phone } : {}),
+      ...(updates.businessName !== undefined ? { businessName: updates.businessName } : {}),
+    };
+
+    saveUser(optimisticUser);
+    persistProfileOverride(optimisticUser);
+
+    try {
+      const res = await fetch('/api/v1/users/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUser.id,
+          role: currentUser.role,
+          name: optimisticUser.name,
+          phone: optimisticUser.phone,
+          businessName: optimisticUser.businessName,
+          avatarUrl: updates.avatarUrl,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        const merged = { ...optimisticUser, ...data.user };
+        saveUser(merged);
+        persistProfileOverride(merged);
+        return { success: true, user: merged };
+      }
+      return { success: false, error: data.error || 'Failed to save profile update.' };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Network error while updating profile.' };
     }
   };
 
@@ -157,6 +253,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         currentUser,
         setCurrentUser: saveUser,
         switchRole,
+        updateUserProfile,
         loginWithCredentials,
         loginWithGoogle,
         registerUser,

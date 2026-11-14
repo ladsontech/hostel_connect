@@ -20,6 +20,11 @@ export async function GET(
   // Find active offers (ordered by: verified Custodian first, authorised Brokers, other Brokers - FR-3.1)
   const offers = db.offers
     .filter(o => o.hostelId === id && o.status === 'active')
+    .map(o => {
+      const ownerProfile = db.users.find(u => u.id === o.userId);
+      const latestAvatar = ownerProfile?.avatarUrl !== undefined ? ownerProfile.avatarUrl : o.avatarUrl;
+      return latestAvatar !== o.avatarUrl ? { ...o, avatarUrl: latestAvatar } : o;
+    })
     .sort((a, b) => {
       // 1. Custodian comes first
       if (a.userRole === 'custodian' && b.userRole !== 'custodian') return -1;
@@ -186,17 +191,29 @@ export async function PUT(
   }
 
   // Update or create the broker's inspection price (accessFeeUgx) on this hostel
+  const actorProfile = userId ? db.users.find(u => u.id === userId) : undefined;
   let updatedOffer = db.offers.find(o => o.hostelId === id && o.userId === userId) || null;
   if (userRole === 'broker' && accessFeeUgx !== undefined && accessFeeUgx !== null && accessFeeUgx !== '') {
     const parsedFee = Math.max(0, parseInt(String(accessFeeUgx), 10) || 0);
+    const resolvedOfferAvatar =
+      actorProfile?.avatarUrl !== undefined
+        ? actorProfile.avatarUrl
+        : userAvatarUrl !== undefined
+          ? userAvatarUrl
+          : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80';
     if (updatedOffer) {
       updatedOffer.accessFeeUgx = parsedFee;
+      if (actorProfile?.avatarUrl !== undefined) {
+        updatedOffer.avatarUrl = actorProfile.avatarUrl;
+      } else if (userAvatarUrl !== undefined) {
+        updatedOffer.avatarUrl = userAvatarUrl;
+      }
     } else if (userId) {
       updatedOffer = {
         id: `off_${id}_${Date.now()}`,
         hostelId: id,
         userId,
-        userName: userName || 'Campus Broker',
+        userName: userName || actorProfile?.name || 'Campus Broker',
         userRole: 'broker',
         isVerified: true,
         isAuthorised: false,
@@ -205,7 +222,7 @@ export async function PUT(
         whatsapp: userPhone || '+256755888999',
         status: 'active',
         notes: 'Can guide you to available rooms and introduce to caretaker.',
-        avatarUrl: userAvatarUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+        avatarUrl: resolvedOfferAvatar,
         residentType: 'communal',
         createdAt: new Date().toISOString(),
         responseRatePct: 90,
