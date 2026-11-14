@@ -1481,22 +1481,20 @@ export default function SellerPortalPage() {
 
       {/* Edit Hostel Details, Photos & Videos Modal */}
       {editingHostel && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans">
-          <div className="bg-white w-full sm:max-w-2xl rounded-t-2xl sm:rounded-2xl shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col overflow-hidden">
-            <div className="p-4 sm:p-5 bg-[#0f3a98] text-white flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-base sm:text-lg leading-tight">
-                  Edit Hostel &amp; Media — {editingHostel.name}
-                </h3>
-                <p className="text-[11px] text-blue-100 mt-0.5">
-                  Update listing details, upload photos or videos, and manage media gallery
-                </p>
-              </div>
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 font-sans">
+          <div className="bg-white w-full sm:max-w-2xl rounded-2xl shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="relative px-10 py-5 bg-[#0f3a98] text-white text-center flex flex-col items-center justify-center">
+              <h3 className="font-semibold text-base sm:text-lg leading-tight">
+                Edit Hostel &amp; Media — {editingHostel.name}
+              </h3>
+              <p className="text-[11px] text-blue-100 mt-1 max-w-md mx-auto">
+                Update listing details, upload photos or videos, and manage media gallery
+              </p>
               <button
                 type="button"
                 onClick={() => setEditingHostel(null)}
                 aria-label="Close editor"
-                className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition"
+                className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition absolute right-3.5 top-3.5"
               >
                 <FaIcon icon="fa-solid fa-xmark" className="text-xs" />
               </button>
