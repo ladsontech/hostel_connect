@@ -948,8 +948,8 @@ export default function SellerPortalPage() {
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
                       <div className="flex items-center gap-2 text-[11px] font-medium">
                         {currentUser?.role === 'broker' ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#fff8dc] border border-[#ffbe00] text-[#0f3a98] font-semibold whitespace-nowrap">
-                            <FaIcon icon="fa-solid fa-tag" className="text-[10px]" />
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0f3a98] border border-[#0f3a98] text-white font-semibold whitespace-nowrap">
+                            <FaIcon icon="fa-solid fa-tag" className="text-[10px] text-[#ffbe00]" />
                             {myOffer
                               ? `Inspection Fee: ${formatUGX(myOffer.accessFeeUgx)}`
                               : 'Inspection Fee: Not Set'}
@@ -1595,12 +1595,12 @@ export default function SellerPortalPage() {
               </div>
 
               {currentUser?.role === 'broker' && (
-                <div className="p-3.5 rounded-xl bg-[#fff8dc] border border-[#ffbe00] space-y-1.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <label className="text-xs font-semibold text-[#0f3a98]">
+                <div className="p-4 rounded-xl bg-[#0f3a98] border border-[#0f3a98] text-white space-y-2 shadow-sm">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <label className="text-xs font-semibold text-white">
                       Your Broker Inspection Price (UGX)
                     </label>
-                    <span className="text-[11px] font-medium text-[#0f3a98]">
+                    <span className="text-[11px] font-medium text-white/90">
                       Shown to students when booking inspection
                     </span>
                   </div>
@@ -1611,7 +1611,7 @@ export default function SellerPortalPage() {
                     value={editAccessFee}
                     onChange={e => setEditAccessFee(e.target.value)}
                     placeholder="e.g. 15000"
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#ffbe00] bg-white font-semibold text-[#0f3a98]"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-white/25 bg-white font-semibold text-[#0f3a98]"
                   />
                 </div>
               )}
