@@ -432,10 +432,10 @@ export default function HomePage() {
             <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:justify-between sm:text-left gap-2.5 sm:gap-3 mb-4">
               <div className="min-w-0 flex flex-col items-center sm:items-start">
                 <h2 className="text-xl sm:text-2xl font-semibold text-[#0f3a98] tracking-tight text-center sm:text-left">
-                  {filters.campus || 'All Ugandan Campuses'}
+                  {filters.campus ? `Just For You • ${filters.campus}` : 'Just For You'}
                 </h2>
                 <p className="text-xs text-slate-500 font-normal mt-0.5 text-center sm:text-left">
-                  {campusBrokerRoomCards.length} broker-guided room cards matching your criteria
+                  {campusBrokerRoomCards.length} curated rooms matched to your campus &amp; budget
                 </p>
               </div>
 
