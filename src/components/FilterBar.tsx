@@ -79,7 +79,7 @@ export default function FilterBar({
       {/* Top Search & Primary Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
         {/* Main Search Input */}
-        <div className="sm:col-span-6 relative">
+        <div className="sm:col-span-5 relative">
           <span className="absolute left-3.5 top-3 text-slate-400">
             <FaIcon icon="fa-solid fa-magnifying-glass" className="text-xs" />
           </span>
@@ -88,7 +88,7 @@ export default function FilterBar({
             placeholder="Search hostel name, area (Kikoni, Banda...) or landmark"
             value={filters.q}
             onChange={e => onChange({ ...filters, q: e.target.value })}
-            className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
+            className="w-full h-[42px] pl-9 pr-8 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0f3a98]"
           />
           {filters.q && (
             <button
@@ -111,11 +111,12 @@ export default function FilterBar({
           />
         </div>
 
-        {/* Toggle Filters & Sort */}
-        <div className="sm:col-span-3 flex items-center gap-2 justify-end">
+        {/* Toggle Filters & Sort (In-Line, Same Height, Flush Full-Width) */}
+        <div className="sm:col-span-4 flex items-center gap-2 w-full">
           <button
+            type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`px-3 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition shrink-0 ${
+            className={`h-[42px] px-3.5 rounded-xl border text-xs sm:text-sm font-medium flex items-center justify-center gap-2 transition shrink-0 ${
               showAdvanced || filters.roomType || filters.amenities.length > 0
                 ? 'border-[#0f3a98] bg-[#e8effc] text-[#0f3a98]'
                 : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50'
@@ -134,6 +135,7 @@ export default function FilterBar({
             value={filters.sort}
             onChange={val => onChange({ ...filters, sort: val })}
             options={sortOptions}
+            className="flex-1 min-w-0"
             menuWidthClass="w-56"
             align="right"
           />
