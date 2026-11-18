@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id
+  phone        String   @unique
+  name         String
+  email        String?  @unique
+  passwordHash String?
+  role         String   @default("student") // student | broker | custodian | admin
+  adminRole    String?  // superadmin | verifier | moderator | finance
+  status       String   @default("active") // active | suspended | deleted
+  isVerified   Boolean  @default(false)
+  avatarUrl    String?
+  university   String?
+  course       String?
+  idNumber     String?
+  businessName String?
+  scoutCount   Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  offers        Offer[]
+  subscriptions UserSubscription[]
+  payments      PaymentTransaction[]
+
+  @@index([role])
+}
+
+model Hostel {
+  id                          String   @id
+  name                        String
+  normalizedName              String
+  description                 String
+  lat                         Float
+  lng                         Float
+  address                     String
+  landmark                    String   @default("")
+  area                        String
+  campus                      String
+  distanceCampusApprox        String   @default("Walking distance")
+  status                      String   @default("unclaimed") // unclaimed | claimed | suspended
+  approvalStatus              String   @default("approved")  // pending | approved | rejected
+  verifiedOwnerId             String?
+  scoutUserId                 String?
+  ratingAvg                   Float    @default(5.0)
+  ratingCount                 Int      @default(1)
+  genderPolicy                String   @default("mixed")     // mixed | girls_only | boys_only
+  amenities                   String[]
+  lastAvailabilityConfirmedAt DateTime @default(now())
+  createdAt                   DateTime @default(now())
+  viewCount                   Int      @default(0)
+  saveCount                   Int      @default(0)
+
+  photos  HostelPhoto[]
+  rooms   RoomType[]
+  offers  Offer[]
+  leads   Lead[]
+  reviews Review[]
+
+  @@index([campus])
+  @@index([area])
+  @@index([status, approvalStatus])
+}
+
+model RoomType {
+  id             String   @id
+  hostelId       String
+  name           String
+  type           String   // single | double | self_contained_single | self_contained_double | triple | quad
+  rentUgx        Int
+  roomsTotal     Int      @default(10)
+  roomsAvailable Int      @default(0)
+  updatedAt      DateTime @default(now())
+  updatedBy      String   @default("system")
+
+  hostel Hostel @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+
+  @@index([hostelId])
+  @@index([type])
+}
+
+model HostelPhoto {
+  id        String  @id
+  hostelId  String
+  url       String
+  caption   String?
+  isCover   Boolean @default(false)
+  order     Int     @default(1)
+  mediaType String  @default("image") // image | video
+
+  hostel Hostel @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+
+  @@index([hostelId])
+}
+
+model Offer {
+  id              String   @id
+  hostelId        String
+  userId          String
+  userName        String
+  userRole        String   // custodian | broker
+  isVerified      Boolean  @default(true)
+  isAuthorised    Boolean  @default(false)
+  accessFeeUgx    Int      @default(0)
+  contactPhone    String
+  whatsapp        String
+  status          String   @default("active") // active | hidden
+  notes           String?
+  avatarUrl       String?
+  residentType    String?  // student | communal
+  createdAt       DateTime @default(now())
+  responseRatePct Int      @default(100)
+
+  hostel Hostel @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([hostelId])
+  @@index([userId])
+}
+
+model Lead {
+  id           String   @id
+  studentId    String
+  studentName  String?
+  studentPhone String?
+  hostelId     String
+  offerId      String?
+  type         String   // contact_tap | call | whatsapp | save
+  timestamp    DateTime @default(now())
+
+  hostel Hostel @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+
+  @@index([hostelId])
+  @@index([studentId])
+}
+
+model SubscriptionPlan {
+  id           String   @id
+  role         String   // custodian | broker
+  name         String
+  priceUgx     Int
+  hostelCap    Int      @default(1)
+  durationDays Int      @default(120)
+  features     String[]
+
+  subscriptions UserSubscription[]
+}
+
+model UserSubscription {
+  id              String   @id
+  userId          String
+  planId          String
+  status          String   @default("active") // trial | active | expired | cancelled
+  isTrial         Boolean  @default(false)
+  startDate       DateTime @default(now())
+  endDate         DateTime
+  activeHostelIds String[]
+
+  user User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PaymentTransaction {
+  id             String   @id
+  userId         String
+  subscriptionId String
+  amountUgx      Int
+  provider       String   // mtn_momo | airtel_money
+  phone          String
+  reference      String   @unique
+  status         String   @default("pending") // pending | success | failed
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Review {
+  id            String   @id
+  hostelId      String
+  studentId     String
+  studentName   String
+  studentAvatar String?
+  rating        Int
+  text          String
+  status        String   @default("approved") // pending | approved | rejected
+  sellerReply   String?
+  createdAt     DateTime @default(now())
+
+  hostel Hostel @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+
+  @@index([hostelId])
+}
+
+model Report {
+  id            String   @id
+  reporterId    String
+  reporterPhone String?
+  targetType    String   // hostel | offer | review
+  targetId      String
+  targetName    String
+  reason        String
+  details       String?
+  status        String   @default("pending") // pending | resolved | dismissed
+  resolvedBy    String?
+  actionTaken   String?
+  createdAt     DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id
+  actorId   String
+  actorName String
+  action    String
+  entity    String
+  entityId  String
+  before    Json?
+  after     Json?
+  timestamp DateTime @default(now())
+}
+
